@@ -1,11 +1,14 @@
 import {defineConfig} from 'vitepress';
 
+const githubPages = process.env.DOCKLINE_GITHUB_PAGES === 'true';
+
 export default defineConfig({
     title: 'Dockline',
     description: 'One transfer API for FTP, FTPS and SFTP, with controls for demanding applications.',
     lang: 'en-US',
+    base: process.env.DOCKLINE_DOCS_BASE ?? '/',
     appearance: false,
-    cleanUrls: true,
+    cleanUrls: !githubPages,
     lastUpdated: true,
     markdown: {theme: 'github-dark'},
     head: [['meta', {name: 'theme-color', content: '#171a1d'}]],

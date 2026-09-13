@@ -1,0 +1,64 @@
+name: Deploy VitePress docs to Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.15.0
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+      - name: Use the declared package manager
+        run: npm install --global npm@12.0.2
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v6
+      - name: Install documentation dependencies
+        run: npm run docs:install
+      - name: Audit documentation dependencies
+        run: npm run audit:docs
+      - name: Build VitePress
+        run: npm run docs:build
+        env:
+          DOCKLINE_GITHUB_PAGES: 'true'
+          DOCKLINE_DOCS_BASE: ${{ steps.pages.outputs.base_path }}/
+      - name: Upload the documentation site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
