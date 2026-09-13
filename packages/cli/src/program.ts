@@ -1,6 +1,6 @@
 import {createRequire} from 'node:module';
 import {Command, CommanderError, Option} from 'commander';
-import {OperationAbortedError} from '@dockline/core';
+import {OperationAbortedError} from '@jalsoedesign/dockline-core';
 import {CliConfigError, loadCliConfig, type CliCommand} from './config.js';
 import {resolveContext, type CliContext, type ResolvedCliContext} from './context.js';
 import {CliUsageError, redactText, terminalText} from './errors.js';
@@ -122,7 +122,7 @@ function buildProgram(context: ResolvedCliContext, state: RunState): Command {
         throw new CliUsageError('Choose a command: download, upload, list or remove. Use --help for usage');
     });
 
-    program.addHelpText('after', '\nInstall @dockline/ftp-client for FTP/FTPS or @dockline/sftp-client for SFTP.\nAdvanced connection, retry, bandwidth and limit settings belong in the YAML config.');
+    program.addHelpText('after', '\nInstall @jalsoedesign/dockline-ftp-client for FTP/FTPS or @jalsoedesign/dockline-sftp-client for SFTP.\nAdvanced connection, retry, bandwidth and limit settings belong in the YAML config.');
 
     return program;
 }

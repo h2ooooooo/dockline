@@ -2,7 +2,7 @@ import {open, lstat, mkdir, rename, unlink} from 'node:fs/promises';
 import {dirname, resolve} from 'node:path';
 import {createHash, randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
-import {ConnectorError, HostTrustError, OperationAbortedError} from '@dockline/abstract';
+import {ConnectorError, HostTrustError, OperationAbortedError} from '@jalsoedesign/dockline-abstract';
 import type {SftpHostKeyChallenge, SftpTrustPolicy} from './SftpConnector.js';
 
 const MAX_FILE_BYTES = 1024 * 1024;

@@ -6,30 +6,29 @@ Dockline is one [Git repository](https://github.com/h2ooooooo/dockline) containi
 
 | Package | Responsibility | Runtime dependency boundary |
 | --- | --- | --- |
-| `@dockline/core` | `Dockline`, configuration-based client selection, connection scopes and local file helpers | Depends on abstract. FTP and SFTP clients are optional peers. |
-| `@dockline/abstract` | Shared adapter/configuration contracts, errors, retry policy, streams, limits, progress, publication, checksums, traversal and pools | Has no FTP or SSH transport implementation. |
-| `@dockline/ftp-client` | `FtpConnector`, common-config factory, FTP/FTPS sessions, TLS and filename handling | Depends on abstract and `basic-ftp`; does not depend on core or SFTP. |
-| `@dockline/sftp-client` | `SftpConnector`, common-config factory, SSH authentication, trust and `KnownHostsStore` | Depends on abstract and `ssh2-sftp-client`; does not depend on core or FTP. |
-| `@dockline/cli` | YAML-configured download, upload, list and remove commands; optional embedding API | Uses core and the selected client; does not bundle either transport. |
+| `@jalsoedesign/dockline-core` | `Dockline`, configuration-based client selection, connection scopes and local file helpers | Depends on abstract. FTP and SFTP clients are optional peers. |
+| `@jalsoedesign/dockline-abstract` | Shared adapter/configuration contracts, errors, retry policy, streams, limits, progress, publication, checksums, traversal and pools | Has no FTP or SSH transport implementation. |
+| `@jalsoedesign/dockline-ftp-client` | `FtpConnector`, common-config factory, FTP/FTPS sessions, TLS and filename handling | Depends on abstract and `basic-ftp`; does not depend on core or SFTP. |
+| `@jalsoedesign/dockline-sftp-client` | `SftpConnector`, common-config factory, SSH authentication, trust and `KnownHostsStore` | Depends on abstract and `ssh2-sftp-client`; does not depend on core or FTP. |
+| `@jalsoedesign/dockline-cli` | YAML-configured download, upload, list and remove commands; optional embedding API | Uses core and the selected client; does not bundle either transport. |
 
 Use **CLI plus a client** for terminal commands and YAML configuration. Use **core plus a client** for `Dockline.connect()`, `uploadFile()` and `downloadFile()`. Use a **direct client** for its adapter API without the convenience wrapper. Use **abstract** when building your own adapter or working only with shared errors and transfer tools.
 
 ```text
-                         your application
-                         /              \
-                  @dockline/core     direct client use
-                       |                    |
-                selected installed client only
-                    /                 \
-       @dockline/ftp-client    @dockline/sftp-client
-                |                       |
-            basic-ftp            ssh2-sftp-client
+your application
+  |
+  +-- @jalsoedesign/dockline-core
+  |     `-- selects the installed client for the configured protocol
+  |
+  `-- direct client use
+        +-- @jalsoedesign/dockline-ftp-client  -> basic-ftp
+        `-- @jalsoedesign/dockline-sftp-client -> ssh2-sftp-client
 
-Core and both clients depend on @dockline/abstract.
+Core and both clients depend on @jalsoedesign/dockline-abstract.
 The clients do not depend on core or on each other.
 ```
 
-Installing `@dockline/core` alone does not install FTP, SFTP or their transport libraries. Importing core does not load both clients. Creating a connector resolves only the package required by `protocol`: FTP, FTPS and implicit FTPS select `@dockline/ftp-client`; SFTP selects `@dockline/sftp-client`.
+Installing `@jalsoedesign/dockline-core` alone does not install FTP, SFTP or their transport libraries. Importing core does not load both clients. Creating a connector resolves only the package required by `protocol`: FTP, FTPS and implicit FTPS select `@jalsoedesign/dockline-ftp-client`; SFTP selects `@jalsoedesign/dockline-sftp-client`.
 
 The optional [CLI](/guide/cli) uses core for transfers and contributes one executable, `dockline`. Installing the SDK or a direct client does not require the CLI. YAML parsing, command flags, terminal output and interactive host approval belong to the CLI package rather than the transfer engine.
 
@@ -38,7 +37,7 @@ The optional [CLI](/guide/cli) uses core for transfers and contributes one execu
 `new Dockline(config)`, `Dockline.create(config)` and core's `createConnector(config)` remain synchronous. They validate the configuration and load the selected installed client without opening a network connection. If the selected client is absent, they throw `MissingClientPackageError`.
 
 ```ts
-import {Dockline, MissingClientPackageError} from '@dockline/core';
+import {Dockline, MissingClientPackageError} from '@jalsoedesign/dockline-core';
 
 try {
     const remote = Dockline.create({
@@ -59,7 +58,7 @@ try {
 }
 ```
 
-The error extends `ConnectorError`, has code `DOCKLINE_CLIENT_NOT_INSTALLED`, and provides the requested `protocol`, required `packageName` and suggested `installCommand`. For FTP, the package is `@dockline/ftp-client`; for SFTP, it is `@dockline/sftp-client`.
+The error extends `ConnectorError`, has code `DOCKLINE_CLIENT_NOT_INSTALLED`, and provides the requested `protocol`, required `packageName` and suggested `installCommand`. For FTP, the package is `@jalsoedesign/dockline-ftp-client`; for SFTP, it is `@jalsoedesign/dockline-sftp-client`.
 
 The command is guidance for the application's developer. Dockline never runs it, installs a package or changes protocols. See [installation](/guide/installation) for npm commands covering each package combination. A present but broken client, including a missing dependency or an exception while loading, retains its original error instead of being mislabeled as an absent optional client.
 
@@ -68,10 +67,10 @@ The command is guidance for the application's developer. Dockline never runs it,
 ## Shared exports and concrete clients
 
 ```ts
-import {Dockline, type FtpTransferConfig, ConnectorError} from '@dockline/core';
-import {ConnectorPool, type TransferAdapter} from '@dockline/abstract';
-import {FtpConnector} from '@dockline/ftp-client';
-import {SftpConnector, KnownHostsStore} from '@dockline/sftp-client';
+import {Dockline, type FtpTransferConfig, ConnectorError} from '@jalsoedesign/dockline-core';
+import {ConnectorPool, type TransferAdapter} from '@jalsoedesign/dockline-abstract';
+import {FtpConnector} from '@jalsoedesign/dockline-ftp-client';
+import {SftpConnector, KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
 ```
 
 Core re-exports the generic abstract API and common configuration types. Its `TransferAdapter` is a structural contract, not a union that imports both concrete clients. `remote.connector` implements that contract. Import a concrete class from its own client package when you need protocol-specific members.

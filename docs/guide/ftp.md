@@ -1,9 +1,9 @@
 # FTP connection and transfer options
 
-FTP, explicit FTPS and implicit FTPS use `FtpConnector` from `@dockline/ftp-client`, backed by `basic-ftp`. This package is usable directly without core or the SFTP client. Its `createConnector(FtpTransferConfig)` factory also accepts the common configuration names. It accepts an ordinary configuration object and does not load configuration from another application. See the [Quick start FTP](/ftp/quick-start) for the convenience API.
+FTP, explicit FTPS and implicit FTPS use `FtpConnector` from `@jalsoedesign/dockline-ftp-client`, backed by `basic-ftp`. This package is usable directly without core or the SFTP client. Its `createConnector(FtpTransferConfig)` factory also accepts the common configuration names. It accepts an ordinary configuration object and does not load configuration from another application. See the [Quick start FTP](/ftp/quick-start) for the convenience API.
 
 ```ts
-import {FtpConnector, type FtpConnectorConfig} from '@dockline/ftp-client';
+import {FtpConnector, type FtpConnectorConfig} from '@jalsoedesign/dockline-ftp-client';
 
 const connection: FtpConnectorConfig = {
     host: 'ftp.example.com',
@@ -48,7 +48,7 @@ import {
     NameResolutionError,
     ConnectionRefusedError,
     TlsTrustError,
-} from '@dockline/ftp-client';
+} from '@jalsoedesign/dockline-ftp-client';
 
 try {
     await connector.connect();
@@ -130,7 +130,7 @@ await connector.write('release.zip', () => createReadStream(localPath), {
 ## Transfer progress and bandwidth
 
 ```ts
-import {BandwidthBudget} from '@dockline/abstract';
+import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
 
 const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
 

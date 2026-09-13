@@ -6,7 +6,7 @@ export type {
     SftpConnectorConfig, SftpHostKeyChallenge, SftpTrustPolicy, SftpHostVerifier,
     SftpKeyboardInteractive, SftpKeyboardInteractiveChallenge,
 } from './SftpConnector.js';
-export type {ConnectorOperationOptions} from '@dockline/abstract';
+export type {ConnectorOperationOptions} from '@jalsoedesign/dockline-abstract';
 
 export {createConnector} from './createConnector.js';
-export type {SftpTransferConfig, TransferAdapter} from '@dockline/abstract';
+export type {SftpTransferConfig, TransferAdapter} from '@jalsoedesign/dockline-abstract';

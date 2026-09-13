@@ -2,7 +2,7 @@ import {createRequire} from 'node:module';
 import {homedir} from 'node:os';
 import path from 'node:path';
 import {createInterface} from 'node:readline/promises';
-import {HostTrustError, checkAbort, type SftpHostKeyChallenge, type SftpTransferConfig} from '@dockline/core';
+import {HostTrustError, checkAbort, type SftpHostKeyChallenge, type SftpTransferConfig} from '@jalsoedesign/dockline-core';
 import type {CliTrustConfig} from './config.js';
 import type {ResolvedCliContext} from './context.js';
 import {terminalText} from './errors.js';
@@ -33,7 +33,7 @@ export function createCliTrust(
     function store(): Promise<TrustStore> {
         if (!storePromise) {
             // Loaded only after the core has selected the installed SFTP client.
-            const module = createRequire(import.meta.url)('@dockline/sftp-client') as TrustStoreModule;
+            const module = createRequire(import.meta.url)('@jalsoedesign/dockline-sftp-client') as TrustStoreModule;
             const file = trust?.knownHostsFile ?? path.join(homedir(), '.dockline', 'known-hosts.json');
 
             storePromise = module.KnownHostsStore.open({file});

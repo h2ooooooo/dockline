@@ -7,12 +7,12 @@ Dockline offers one transfer API over independently usable protocol clients. It 
 ```text
 Application configuration and credential/trust callbacks
                          |
-                   @dockline/core
+                   @jalsoedesign/dockline-core
              relative paths, local file helpers
                          |
              selected installed client only
                     /           \
-   @dockline/ftp-client         @dockline/sftp-client
+   @jalsoedesign/dockline-ftp-client         @jalsoedesign/dockline-sftp-client
           FtpConnector          SftpConnector
                |                    |
            basic-ftp           ssh2-sftp-client
@@ -20,7 +20,7 @@ Application configuration and credential/trust callbacks
        FTP / explicit             SSH / SFTP
         or implicit TLS
 
-Core and both clients use @dockline/abstract:
+Core and both clients use @jalsoedesign/dockline-abstract:
 contracts, errors, retries, progress, budgets, publication,
 checksums, traversal, capabilities and session pools.
 ```
@@ -99,4 +99,4 @@ Walking uses explicit depth/entry budgets and prunes rejected directories. Exami
 
 The adapters implement the storage-adapter contract used by `@flystorage/file-storage`; applications may choose to wrap them. The ordinary SDK does not instantiate that wrapper. Unsupported visibility, MIME guessing and public/temporary URL methods remain explicit interface rejections.
 
-The optional `@dockline/cli` package supplies terminal commands and YAML loading. There is no UI, external site-configuration importer, deployment journal, automatic synchronization, server-native copy, resumable transfer or proxy/jump-host configuration. See [dependencies](../development/dependencies.md) for upstream error/normalization boundaries and [testing](../development/testing.md) for how these guarantees are verified.
+The optional `@jalsoedesign/dockline-cli` package supplies terminal commands and YAML loading. There is no UI, external site-configuration importer, deployment journal, automatic synchronization, server-native copy, resumable transfer or proxy/jump-host configuration. See [dependencies](../development/dependencies.md) for upstream error/normalization boundaries and [testing](../development/testing.md) for how these guarantees are verified.

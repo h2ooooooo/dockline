@@ -1,6 +1,6 @@
 # CLI commands
 
-The `dockline` executable comes from `@dockline/cli`. Install a matching protocol client and prepare a [YAML connection](/cli/configuration) before transferring files. Help and version do not require either.
+The `dockline` executable comes from `@jalsoedesign/dockline-cli`. Install a matching protocol client and prepare a [YAML connection](/cli/configuration) before transferring files. Help and version do not require either.
 
 ## Shared flags
 

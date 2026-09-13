@@ -2,7 +2,7 @@
 
 Start with [Quick start SFTP](/sftp/quick-start) to connect, download and upload a file. This page covers the detailed authentication and transport settings.
 
-The low-level `SftpConnector` in `@dockline/sftp-client` uses `ssh2-sftp-client` and its SSH transport. It is usable directly without core or the FTP client and also exports `createConnector(SftpTransferConfig)` for common configuration. It exposes authentication, trust and keepalive options without choosing a CLI, UI or credential vault for your application.
+The low-level `SftpConnector` in `@jalsoedesign/dockline-sftp-client` uses `ssh2-sftp-client` and its SSH transport. It is usable directly without core or the FTP client and also exports `createConnector(SftpTransferConfig)` for common configuration. It exposes authentication, trust and keepalive options without choosing a CLI, UI or credential vault for your application.
 
 ## Connection ownership and paths
 
@@ -17,7 +17,7 @@ Transfers have no size limit by default. Set `maxBytes` on the connector or an i
 Password, private-key contents, private-key paths and passphrases remain supported. An optional credential provider resolves authentication material at each connection attempt, including explicit reconnections and permitted transient connection retries:
 
 ```ts
-import {SftpConnector} from '@dockline/sftp-client';
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
 
 const connector = new SftpConnector({
     host: 'sftp.example.com',

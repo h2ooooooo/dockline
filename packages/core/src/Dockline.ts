@@ -11,10 +11,10 @@ import {
     type ConnectorOperationOptions, type TransferContents, type PoolOptions,
     type PublishFileOptions, type ChecksumDetailsOptions, type CopyStrategyOptions, type RenameOptions,
     type WalkOptions, type TransferAdapter, type TransferConfig, type TransferProtocol,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 
 export {createConnector} from './client-loader.js';
-export type {FtpTransferConfig, SftpTransferConfig, TransferConfig, TransferProtocol, TransferAdapter} from '@dockline/abstract';
+export type {FtpTransferConfig, SftpTransferConfig, TransferConfig, TransferProtocol, TransferAdapter} from '@jalsoedesign/dockline-abstract';
 
 export interface UploadFileOptions extends ConnectorOperationOptions {
     /** Ordinary uploads replace an existing remote file. Fail requires a supported no-replace publication. */

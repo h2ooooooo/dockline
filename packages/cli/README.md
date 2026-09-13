@@ -1,4 +1,4 @@
-# @dockline/cli
+# @jalsoedesign/dockline-cli
 
 The `dockline` terminal command for FTP, FTPS and SFTP: download, upload, list and remove files using a YAML connection. Part of [Dockline](https://github.com/h2ooooooo/dockline).
 
@@ -9,7 +9,7 @@ Install the CLI and selected protocol clients from npm. For development, use [bu
 ### Global terminal command
 
 ```sh
-npm i -g @dockline/cli @dockline/ftp-client @dockline/sftp-client
+npm i -g @jalsoedesign/dockline-cli @jalsoedesign/dockline-ftp-client @jalsoedesign/dockline-sftp-client
 dockline --help
 ```
 
@@ -18,11 +18,11 @@ Keep only the FTP or SFTP client if one protocol is enough. The `dockline` comma
 ### Local project dependency
 
 ```sh
-npm i @dockline/cli @dockline/sftp-client
+npm i @jalsoedesign/dockline-cli @jalsoedesign/dockline-sftp-client
 npm exec -- dockline --help
 ```
 
-Use `@dockline/ftp-client` instead for FTP/FTPS. In npm scripts, use `dockline` directly; from an ordinary terminal, prefix the commands below with `npm exec --` after a local install. Install the CLI and selected clients in the same location: a global CLI uses globally installed clients, while a local CLI uses its project's clients.
+Use `@jalsoedesign/dockline-ftp-client` instead for FTP/FTPS. In npm scripts, use `dockline` directly; from an ordinary terminal, prefix the commands below with `npm exec --` after a local install. Install the CLI and selected clients in the same location: a global CLI uses globally installed clients, while a local CLI uses its project's clients.
 
 Core and abstract are required dependencies. Protocol clients are optional peers, so Dockline does not install either unless selected. Help and version work without a client or configuration file.
 

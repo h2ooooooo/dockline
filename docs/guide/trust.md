@@ -7,7 +7,7 @@ Authentication proves your account to the server; host verification decides whic
 For low-level `SftpConnector`, `requireTrustPolicy` is opt-in. When set to `true`, both `hasTrustPolicy` and `acceptTrustPolicy` must be functions, or connection fails before network access. The lookup runs before the acceptance hook; returning `true` accepts an unchanged exact challenge without prompting. A changed key observed by the same connector still requires explicit acceptance. Otherwise the acceptance hook must explicitly return `true`. Neither hook creates a terminal prompt automatically.
 
 ```ts
-import {SftpConnector} from '@dockline/sftp-client';
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
 
 const connector = new SftpConnector({
     host: 'sftp.example.com',
@@ -38,7 +38,7 @@ FTP TLS uses Node certificate verification and `FtpConnectorConfig.secureOptions
 `KnownHostsStore` is an optional, explicitly selected JSON store. It does not discover or edit `~/.ssh/known_hosts`, another client's trust files or the Windows registry. Opening a missing store does not create it until an approval is recorded.
 
 ```ts
-import {KnownHostsStore, SftpConnector} from '@dockline/sftp-client';
+import {KnownHostsStore, SftpConnector} from '@jalsoedesign/dockline-sftp-client';
 
 const store = await KnownHostsStore.open({file: selectedTrustFile});
 const connector = new SftpConnector({

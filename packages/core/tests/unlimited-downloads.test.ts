@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';
 import {join, resolve, sep} from 'node:path';
 import {Readable, Writable} from 'node:stream';
 import {Dockline} from '../src/Dockline.js';
-import {ResourceLimitError} from '@dockline/abstract';
+import {ResourceLimitError} from '@jalsoedesign/dockline-abstract';
 
 const sink = vi.hoisted(() => ({bytes: 0}));
 

@@ -1,16 +1,16 @@
 # Public API
 
-This catalogue describes the `@dockline/*` packages. The generated declarations are the authority for exact TypeScript overloads. Start with [Quick start FTP](../ftp/quick-start.md) or [Quick start SFTP](../sftp/quick-start.md) for complete configuration and file-transfer examples.
+This catalogue describes the `@jalsoedesign/dockline-*` packages. The generated declarations are the authority for exact TypeScript overloads. Start with [Quick start FTP](../ftp/quick-start.md) or [Quick start SFTP](../sftp/quick-start.md) for complete configuration and file-transfer examples.
 
 ## Package entry points
 
 | Import | Exports |
 | --- | --- |
-| `@dockline/core` | `Dockline`, SDK file helpers/options, configuration-based client selection, `MissingClientPackageError` and the generic abstract API. |
-| `@dockline/abstract` | Shared configuration/adapter types, errors, connection/operation types, progress, bandwidth, publication/checksum/copy/walk helpers, capabilities and pools. |
-| `@dockline/ftp-client` | `FtpConnector`, `createConnector(FtpTransferConfig)`, low-level/common FTP configuration, filename helpers and relevant shared exports. |
-| `@dockline/sftp-client` | `SftpConnector`, `createConnector(SftpTransferConfig)`, SFTP configuration/authentication/trust types, managed known hosts and relevant shared exports. |
-| `@dockline/cli` | Embeddable command runner/program, YAML loader and CLI context/config types; also installs the `dockline` executable. |
+| `@jalsoedesign/dockline-core` | `Dockline`, SDK file helpers/options, configuration-based client selection, `MissingClientPackageError` and the generic abstract API. |
+| `@jalsoedesign/dockline-abstract` | Shared configuration/adapter types, errors, connection/operation types, progress, bandwidth, publication/checksum/copy/walk helpers, capabilities and pools. |
+| `@jalsoedesign/dockline-ftp-client` | `FtpConnector`, `createConnector(FtpTransferConfig)`, low-level/common FTP configuration, filename helpers and relevant shared exports. |
+| `@jalsoedesign/dockline-sftp-client` | `SftpConnector`, `createConnector(SftpTransferConfig)`, SFTP configuration/authentication/trust types, managed known hosts and relevant shared exports. |
+| `@jalsoedesign/dockline-cli` | Embeddable command runner/program, YAML loader and CLI context/config types; also installs the `dockline` executable. |
 | Each package's `/package.json` | Metadata for that package. |
 
 Core depends only on abstract and declares the two clients as optional peers. Install the selected client explicitly. Core does not re-export concrete clients, `KnownHostsStore` or old `/ftp`, `/sftp`, `/core` subpaths. Use [package entry points](/guide/packages) instead of generated implementation paths.
@@ -158,7 +158,7 @@ Streamed hashes/copies are unlimited unless `maxBytes` is explicitly configured 
 
 ## Direct FTP and SFTP adapters
 
-Import concrete adapters and their factories from `@dockline/ftp-client` or `@dockline/sftp-client`. Neither client requires core or the other client. The common config types are defined in abstract and re-exported by the appropriate client.
+Import concrete adapters and their factories from `@jalsoedesign/dockline-ftp-client` or `@jalsoedesign/dockline-sftp-client`. Neither client requires core or the other client. The common config types are defined in abstract and re-exported by the appropriate client.
 
 `FtpConnectorConfig` uses `host`, required `port`, `user`, `password`, `secure: boolean | 'implicit'`, `initialPath`, `passive`, optional `secureOptions` and `filenameEncoding`, plus shared connection/operation fields. `FtpUploadSource` aliases `TransferContents`.
 
@@ -180,7 +180,7 @@ FTP also exports `FtpFilenameEncodingOptions`, `FtpFilenameEncoding`, `resolveFi
 
 ## SFTP trust and managed known hosts
 
-Common authentication/trust contracts are defined in abstract and re-exported through core and the SFTP client. `KnownHostsStore`, its storage-specific types and `KnownHostsConflictError` are exported only by `@dockline/sftp-client`.
+Common authentication/trust contracts are defined in abstract and re-exported through core and the SFTP client. `KnownHostsStore`, its storage-specific types and `KnownHostsConflictError` are exported only by `@jalsoedesign/dockline-sftp-client`.
 
 | Export | Contract |
 | --- | --- |
@@ -200,12 +200,12 @@ Selecting `requireTrustPolicy: true` requires both `hasTrustPolicy` and `acceptT
 
 ## Error exports
 
-`@dockline/abstract` and its core re-exports provide `ConnectionStage`, `ConnectorError`, `AuthError`, `NotFoundError`, `PermissionError`, `UnsupportedProtocolError`, `NotSupportedError`, `OperationAbortedError`, `OperationTimeoutError`, `ConnectionClosedError`, `HostTrustError`, `NameResolutionError`, `ConnectionRefusedError`, `TlsTrustError`, `CredentialProviderError`, `DirectoryAccessError`, `ResourceLimitError`, `IntegrityError`, `PoolClosedError` and `PublicationError`.
+`@jalsoedesign/dockline-abstract` and its core re-exports provide `ConnectionStage`, `ConnectorError`, `AuthError`, `NotFoundError`, `PermissionError`, `UnsupportedProtocolError`, `NotSupportedError`, `OperationAbortedError`, `OperationTimeoutError`, `ConnectionClosedError`, `HostTrustError`, `NameResolutionError`, `ConnectionRefusedError`, `TlsTrustError`, `CredentialProviderError`, `DirectoryAccessError`, `ResourceLimitError`, `IntegrityError`, `PoolClosedError` and `PublicationError`.
 
-`@dockline/sftp-client` adds `KnownHostsConflictError` and deprecated `KeyAuthError`, an alias of `AuthError`. Clients re-export relevant shared errors; import abstract or core for the complete shared hierarchy. Core additionally exports `MissingClientPackageError`; that loader-specific error is not exported by abstract. Configuration/local filesystem failures can retain `TypeError`, `RangeError`, native errors or `AggregateError`. The [error guide](../guide/errors.md) documents stable fields, causes, recovery state and the limits of classification.
+`@jalsoedesign/dockline-sftp-client` adds `KnownHostsConflictError` and deprecated `KeyAuthError`, an alias of `AuthError`. Clients re-export relevant shared errors; import abstract or core for the complete shared hierarchy. Core additionally exports `MissingClientPackageError`; that loader-specific error is not exported by abstract. Configuration/local filesystem failures can retain `TypeError`, `RangeError`, native errors or `AggregateError`. The [error guide](../guide/errors.md) documents stable fields, causes, recovery state and the limits of classification.
 
 ## CLI package API
 
-The optional `@dockline/cli` package exports `runCli(argv?: readonly string[], context?: CliContext): Promise<number>`, `createProgram(context?: CliContext)`, `loadCliConfig(filename, options?)`, and its CLI context/configuration types. The runner returns an exit code after cleanup rather than forcing the host process to exit. Commander/YAML behavior and terminal host approval stay in this package; the core SDK does not depend on it. See [embedding and SDK integration](/guide/cli-integration#embed-the-packaged-cli), [commands](/cli/commands) and [YAML configuration](/cli/configuration).
+The optional `@jalsoedesign/dockline-cli` package exports `runCli(argv?: readonly string[], context?: CliContext): Promise<number>`, `createProgram(context?: CliContext)`, `loadCliConfig(filename, options?)`, and its CLI context/configuration types. The runner returns an exit code after cleanup rather than forcing the host process to exit. Commander/YAML behavior and terminal host approval stay in this package; the core SDK does not depend on it. See [embedding and SDK integration](/guide/cli-integration#embed-the-packaged-cli), [commands](/cli/commands) and [YAML configuration](/cli/configuration).
 
 The CLI also exports `resolveCliCommandDefaults`, `CliConfigError`, `CliUsageError` and the types `CliCommand`, `CliCommandOptions`, `CliCommandDefaults`, `CliTrustConfig`, `LoadedCliConfig`, `CliContext` and `CliResult`. `CliResult` describes successful command results; the runner separately formats failures with error code/message. The [embedding table](/guide/cli-integration#embed-the-packaged-cli) documents these contracts.

@@ -1,7 +1,7 @@
 import {describe, expect, it, vi} from 'vitest';
 import {Readable, Writable} from 'node:stream';
 import {FTPError} from 'basic-ftp';
-import {AuthError as SharedAuthError} from '@dockline/abstract';
+import {AuthError as SharedAuthError} from '@jalsoedesign/dockline-abstract';
 import {FtpConnector} from '../src/FtpConnector.js';
 import {AuthError, PermissionError, OperationAbortedError, OperationTimeoutError, ConnectionClosedError} from '../src/errors.js';
 

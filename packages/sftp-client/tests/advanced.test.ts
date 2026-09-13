@@ -1,7 +1,7 @@
 import {afterAll, afterEach, beforeAll, describe, expect, it} from 'vitest';
 import {Readable} from 'node:stream';
 import {createHash} from 'node:crypto';
-import {NotSupportedError, PublicationError} from '@dockline/abstract';
+import {NotSupportedError, PublicationError} from '@jalsoedesign/dockline-abstract';
 import {SftpConnector} from '../src/SftpConnector.js';
 import {createLocalSftp} from './local-sftp.js';
 

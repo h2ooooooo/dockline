@@ -3,7 +3,7 @@ export {
     UnsupportedProtocolError, NotSupportedError, HostTrustError,
     OperationAbortedError, OperationTimeoutError, ConnectionClosedError,
     NameResolutionError, ConnectionRefusedError, CredentialProviderError, DirectoryAccessError,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 
 /** @deprecated Authentication failures share AuthError across all connectors. */
-export {AuthError as KeyAuthError} from '@dockline/abstract';
+export {AuthError as KeyAuthError} from '@jalsoedesign/dockline-abstract';

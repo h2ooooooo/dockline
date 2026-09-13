@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';
 import {join, resolve, sep} from 'node:path';
 import {FtpSrv} from 'ftp-srv';
 import {Dockline, relativeRemotePath} from '../src/Dockline.js';
-import {PublicationError} from '@dockline/abstract';
+import {PublicationError} from '@jalsoedesign/dockline-abstract';
 import {createLocalSftp} from '../../sftp-client/tests/local-sftp.js';
 
 let directory: string;

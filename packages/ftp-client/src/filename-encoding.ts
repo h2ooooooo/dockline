@@ -1,7 +1,7 @@
 import {NotSupportedError} from './errors.js';
-import type {FtpFilenameEncoding, FtpFilenameEncodingOptions} from '@dockline/abstract';
+import type {FtpFilenameEncoding, FtpFilenameEncodingOptions} from '@jalsoedesign/dockline-abstract';
 
-export type {FtpFilenameEncoding, FtpFilenameEncodingOptions} from '@dockline/abstract';
+export type {FtpFilenameEncoding, FtpFilenameEncodingOptions} from '@jalsoedesign/dockline-abstract';
 
 export function resolveFilenameEncoding(options?: FtpFilenameEncodingOptions): FtpFilenameEncoding {
     if (options?.onUnrepresentable !== undefined && options.onUnrepresentable !== 'reject') {

@@ -5,7 +5,7 @@ The low-level `FtpConnector` and `SftpConnector` share progress, bandwidth, chec
 ## Progress and bandwidth
 
 ```ts
-import {BandwidthBudget} from '@dockline/abstract';
+import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
 
 const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
 

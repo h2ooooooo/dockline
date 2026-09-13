@@ -1,4 +1,4 @@
-# @dockline/abstract
+# @jalsoedesign/dockline-abstract
 
 Shared contracts and transfer tools for [Dockline](https://github.com/h2ooooooo/dockline). This package contains no FTP or SSH transport implementation and does not require core or either client.
 
@@ -11,13 +11,13 @@ For a source build, follow the [compiler guide](https://github.com/h2ooooooo/doc
 After publication, the registry command will be:
 
 ```sh
-npm install @dockline/abstract
+npm install @jalsoedesign/dockline-abstract
 ```
 
 ## Validate configuration without loading a client
 
 ```ts
-import {validateTransferConfig, type FtpTransferConfig} from '@dockline/abstract';
+import {validateTransferConfig, type FtpTransferConfig} from '@jalsoedesign/dockline-abstract';
 
 const configuration: FtpTransferConfig = {
     protocol: 'ftps',
@@ -33,7 +33,7 @@ console.log(defaults.port, defaults.root);
 This validates common configuration and resolves the default port/root without making a connection. `TransferAdapter` describes the common storage, lifecycle and advanced transfer interface for client implementations. Abstract does not discover or construct protocol clients.
 
 ```ts
-import {BandwidthBudget, ConnectorError, type TransferAdapter} from '@dockline/abstract';
+import {BandwidthBudget, ConnectorError, type TransferAdapter} from '@jalsoedesign/dockline-abstract';
 
 const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
 ```

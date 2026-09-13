@@ -10,7 +10,7 @@ Install [core and the FTP client](/guide/installation#ftp-and-ftps), put a file 
 
 ```ts
 import {mkdir} from 'node:fs/promises';
-import {Dockline, type FtpTransferConfig} from '@dockline/core';
+import {Dockline, type FtpTransferConfig} from '@jalsoedesign/dockline-core';
 
 function requiredEnv(name: string): string {
     const value = process.env[name];

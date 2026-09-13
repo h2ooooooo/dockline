@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {FtpSrv} from 'ftp-srv';
-import {KnownHostsStore} from '@dockline/sftp-client';
+import {KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
 import {createLocalSftp} from '../../sftp-client/tests/local-sftp.js';
 
 const executable = fileURLToPath(new URL('../dist/bin.js', import.meta.url));

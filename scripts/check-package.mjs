@@ -30,7 +30,7 @@ assert.equal(result.status, 0, result.stderr);
 const packResult = JSON.parse(result.stdout);
 const packed = Array.isArray(packResult) ? packResult : Object.values(packResult);
 
-assert.deepEqual(packed.map(item => item.name).sort(), workspaces.map(name => `@dockline/${name}`).sort());
+assert.deepEqual(packed.map(item => item.name).sort(), workspaces.map(name => `@jalsoedesign/dockline-${name}`).sort());
 
 for (const workspace of workspaces) {
     const directory = path.join(root, 'packages', workspace);
@@ -64,35 +64,35 @@ for (const workspace of workspaces) {
     const dependencies = Object.keys(manifest.dependencies ?? {});
 
     if (workspace === 'core') {
-        assert.deepEqual(dependencies, ['@dockline/abstract']);
+        assert.deepEqual(dependencies, ['@jalsoedesign/dockline-abstract']);
         assert.equal(manifest.optionalDependencies, undefined);
 
-        for (const client of ['@dockline/ftp-client', '@dockline/sftp-client']) {
+        for (const client of ['@jalsoedesign/dockline-ftp-client', '@jalsoedesign/dockline-sftp-client']) {
             assert.ok(manifest.peerDependencies[client]);
             assert.equal(manifest.peerDependenciesMeta[client].optional, true);
         }
     }
 
     if (workspace === 'cli') {
-        assert.deepEqual(dependencies.sort(), ['@dockline/core', 'commander', 'yaml']);
+        assert.deepEqual(dependencies.sort(), ['@jalsoedesign/dockline-core', 'commander', 'yaml']);
         assert.equal(manifest.bin.dockline, './dist/bin.js');
         assert.ok(files.has('dist/bin.js'));
         assert.equal(manifest.optionalDependencies, undefined);
         assert.match(await readFile(path.join(directory, 'dist/bin.js'), 'utf8'), /^#!\/usr\/bin\/env node\r?\n/);
 
-        for (const client of ['@dockline/ftp-client', '@dockline/sftp-client']) {
+        for (const client of ['@jalsoedesign/dockline-ftp-client', '@jalsoedesign/dockline-sftp-client']) {
             assert.ok(manifest.peerDependencies[client]);
             assert.equal(manifest.peerDependenciesMeta[client].optional, true);
         }
     }
 
     const prohibited = workspace === 'sftp-client' ?
-        ['@dockline/core', '@dockline/ftp-client', 'basic-ftp'] :
+        ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-ftp-client', 'basic-ftp'] :
         workspace === 'ftp-client' ?
-            ['@dockline/core', '@dockline/sftp-client', 'ssh2-sftp-client', 'ssh2'] :
+            ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-sftp-client', 'ssh2-sftp-client', 'ssh2'] :
             [
-                '@dockline/ftp-client',
-                '@dockline/sftp-client',
+                '@jalsoedesign/dockline-ftp-client',
+                '@jalsoedesign/dockline-sftp-client',
                 'basic-ftp',
                 'ssh2-sftp-client',
                 'ssh2',
@@ -108,7 +108,7 @@ for (const workspace of workspaces) {
 
             const declaration = await readFile(path.join(directory, filename), 'utf8');
 
-            assert.ok(!/(?:from\s*|import\s*\()['"](?:@dockline\/(?:ftp-client|sftp-client)|basic-ftp|ssh2(?:-sftp-client)?)['"]/.test(declaration),
+            assert.ok(!/(?:from\s*|import\s*\()['"](?:@jalsoedesign\/dockline-(?:ftp-client|sftp-client)|basic-ftp|ssh2(?:-sftp-client)?)['"]/.test(declaration),
                 `Optional transport declaration leaked into ${manifest.name}/${filename}`);
         }
     }

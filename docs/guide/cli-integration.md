@@ -1,13 +1,13 @@
 # CLI integration
 
-Use `@dockline/core` directly when your application owns argument parsing, credential lookup and host approval. Use the optional `@dockline/cli` package when you want to embed Dockline's existing command surface. The [ready-to-use CLI](/guide/cli) is available separately; SDK users do not need to install it.
+Use `@jalsoedesign/dockline-core` directly when your application owns argument parsing, credential lookup and host approval. Use the optional `@jalsoedesign/dockline-cli` package when you want to embed Dockline's existing command surface. The [ready-to-use CLI](/guide/cli) is available separately; SDK users do not need to install it.
 
 ## A small command
 
-Save this as `upload.mjs` in an ESM project with `@dockline/core` and `@dockline/sftp-client` installed. The host fingerprint must have been verified independently; this unattended example refuses unknown keys.
+Save this as `upload.mjs` in an ESM project with `@jalsoedesign/dockline-core` and `@jalsoedesign/dockline-sftp-client` installed. The host fingerprint must have been verified independently; this unattended example refuses unknown keys.
 
 ```js
-import {Dockline} from '@dockline/core';
+import {Dockline} from '@jalsoedesign/dockline-core';
 
 const [localPath, remotePath] = process.argv.slice(2);
 const {SFTP_HOST, SFTP_USERNAME, SFTP_PASSWORD, SFTP_SHA256} = process.env;
@@ -50,10 +50,10 @@ Catch [typed errors](/guide/errors) to choose exit codes and concise messages. W
 
 ## Embed the packaged CLI
 
-Install `@dockline/cli` and the clients used by your application. `runCli()` accepts command arguments without the Node executable or script filename and resolves to an exit code:
+Install `@jalsoedesign/dockline-cli` and the clients used by your application. `runCli()` accepts command arguments without the Node executable or script filename and resolves to an exit code:
 
 ```ts
-import {runCli} from '@dockline/cli';
+import {runCli} from '@jalsoedesign/dockline-cli';
 
 const exitCode = await runCli([
     'download',

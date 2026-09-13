@@ -3,8 +3,8 @@
 ## One connection budget
 
 ```ts
-import {ConnectorPool} from '@dockline/abstract';
-import {SftpConnector, type SftpConnectorConfig} from '@dockline/sftp-client';
+import {ConnectorPool} from '@jalsoedesign/dockline-abstract';
+import {SftpConnector, type SftpConnectorConfig} from '@jalsoedesign/dockline-sftp-client';
 
 // Supply ordinary connection settings and explicit application trust hooks.
 const connection: SftpConnectorConfig = verifiedConnectionOptions;

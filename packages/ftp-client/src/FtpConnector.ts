@@ -1,4 +1,4 @@
-import {resolveByteLimit, type FtpConnectorConfig, type TransferAdapter} from '@dockline/abstract';
+import {resolveByteLimit, type FtpConnectorConfig, type TransferAdapter} from '@jalsoedesign/dockline-abstract';
 import {Client, FTPError, type FileInfo as FtpFileInfo} from 'basic-ftp';
 import type {
     StatEntry, FileContents, AdapterListOptions, WriteOptions,
@@ -18,14 +18,14 @@ import {
     checksumDetails as calculateChecksum, type ChecksumDetailsOptions, type ChecksumResult,
     copyFileWithStrategy as copyTransfer, type CopyStrategyOptions, type CopyResult,
     walk as walkEntries, type WalkOptions,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 import {
     ConnectorError, AuthError, NotFoundError, PermissionError, NotSupportedError,
     OperationAbortedError, OperationTimeoutError, ConnectionClosedError,
 } from './errors.js';
 import {resolveFilenameEncoding, validateFilename, type FtpFilenameEncoding} from './filename-encoding.js';
 
-export type {FtpConnectorConfig} from '@dockline/abstract';
+export type {FtpConnectorConfig} from '@jalsoedesign/dockline-abstract';
 
 type FtpOptions<T = MiscellaneousOptions> = T & ConnectorOperationOptions;
 

@@ -1,4 +1,4 @@
-import {UnsupportedProtocolError, validateTransferConfig, type FtpTransferConfig} from '@dockline/abstract';
+import {UnsupportedProtocolError, validateTransferConfig, type FtpTransferConfig} from '@jalsoedesign/dockline-abstract';
 import {FtpConnector} from './FtpConnector.js';
 
 /** Create an FTP/FTPS adapter without opening a connection. */

@@ -5,8 +5,8 @@ import os from 'node:os';
 import path from 'node:path';
 import {PassThrough, Writable} from 'node:stream';
 import {setTimeout as delay} from 'node:timers/promises';
-import {HostTrustError, type SftpHostKeyChallenge, type SftpTransferConfig} from '@dockline/core';
-import {KnownHostsStore} from '@dockline/sftp-client';
+import {HostTrustError, type SftpHostKeyChallenge, type SftpTransferConfig} from '@jalsoedesign/dockline-core';
+import {KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
 import {createCliTrust} from '../src/trust.js';
 
 const connection: SftpTransferConfig = {protocol: 'sftp', host: 'fixture.invalid', username: 'fixture'};

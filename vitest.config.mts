@@ -10,7 +10,7 @@ export default defineConfig({
         server: {
             deps: {
                 external: [
-                    /^@dockline\/(?:abstract|core|ftp-client|sftp-client)(?:\/|$)/,
+                    /^@jalsoedesign\/dockline-(?:abstract|core|ftp-client|sftp-client)(?:\/|$)/,
                     /[/\\]packages[/\\](?:abstract|core|ftp-client|sftp-client)[/\\]dist[/\\]/,
                 ],
             },

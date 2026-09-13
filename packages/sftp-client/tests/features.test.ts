@@ -8,7 +8,7 @@ import ssh2 from 'ssh2';
 import {
     AuthError, CredentialProviderError, NotSupportedError, OperationAbortedError,
     OperationTimeoutError, type TransferProgressEvent,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 import {SftpConnector, type SftpConnectorConfig} from '../src/SftpConnector.js';
 import {createLocalSftp} from './local-sftp.js';
 

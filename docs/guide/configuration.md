@@ -1,6 +1,6 @@
 # Configuration
 
-`TransferConfig` is the union of `FtpTransferConfig` and `SftpTransferConfig`, defined in `@dockline/abstract` and re-exported by `@dockline/core`. Choose the protocol explicitly and install its [matching client](/guide/packages); all connection values come from your application. The concrete client factories accept these common configuration types too.
+`TransferConfig` is the union of `FtpTransferConfig` and `SftpTransferConfig`, defined in `@jalsoedesign/dockline-abstract` and re-exported by `@jalsoedesign/dockline-core`. Choose the protocol explicitly and install its [matching client](/guide/packages); all connection values come from your application. The concrete client factories accept these common configuration types too.
 
 | Field | Behavior |
 | --- | --- |

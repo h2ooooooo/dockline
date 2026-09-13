@@ -1,8 +1,8 @@
-# @dockline/sftp-client
+# @jalsoedesign/dockline-sftp-client
 
-SFTP, SSH authentication and explicit host trust for [Dockline](https://github.com/h2ooooooo/dockline), backed by `ssh2-sftp-client`. Use this client directly or alongside `@dockline/core` for the common `Dockline` API and local file helpers.
+SFTP, SSH authentication and explicit host trust for [Dockline](https://github.com/h2ooooooo/dockline), backed by `ssh2-sftp-client`. Use this client directly or alongside `@jalsoedesign/dockline-core` for the common `Dockline` API and local file helpers.
 
-The client depends on `@dockline/abstract` and its own SSH/SFTP transport stack. It does not require core, the FTP client or `basic-ftp`.
+The client depends on `@jalsoedesign/dockline-abstract` and its own SSH/SFTP transport stack. It does not require core, the FTP client or `basic-ftp`.
 
 ## Installation
 
@@ -11,13 +11,13 @@ For a source build, follow the [compiler guide](https://github.com/h2ooooooo/doc
 Choose the installation matching your API:
 
 ```sh
-npm install @dockline/core @dockline/sftp-client
+npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
 ```
 
 For only the direct client:
 
 ```sh
-npm install @dockline/sftp-client
+npm install @jalsoedesign/dockline-sftp-client
 ```
 
 ## Use the client directly
@@ -25,7 +25,7 @@ npm install @dockline/sftp-client
 Obtain the server's OpenSSH `SHA256:…` fingerprint from your administrator or another trusted source, then supply it through `SFTP_SHA256`:
 
 ```ts
-import {createConnector} from '@dockline/sftp-client';
+import {createConnector} from '@jalsoedesign/dockline-sftp-client';
 
 const fingerprint = process.env.SFTP_SHA256;
 
@@ -64,7 +64,7 @@ The established `new SftpConnector(SftpConnectorConfig)` constructor remains ava
 The client supports passwords, private keys, selected SSH agents, application credential providers and keyboard-interactive responses. It does not choose a CLI, UI or vault. Host policy callbacks decide whether to accept an identity; `KnownHostsStore` can remember only explicitly approved decisions.
 
 ```ts
-import {KnownHostsStore} from '@dockline/sftp-client';
+import {KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
 ```
 
 `KnownHostsStore` is owned by this client and is not re-exported from core. See [host trust](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/trust.md) for persisted approval and changed-key handling.

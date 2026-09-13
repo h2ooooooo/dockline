@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {UnsupportedProtocolError} from '@dockline/abstract';
+import {UnsupportedProtocolError} from '@jalsoedesign/dockline-abstract';
 import {createConnector} from '../src/createConnector.js';
 
 describe('SFTP client factory', () => {

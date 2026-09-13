@@ -1,7 +1,7 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {Readable, Writable} from 'node:stream';
 import {FTPError} from 'basic-ftp';
-import type {CredentialContext} from '@dockline/abstract';
+import type {CredentialContext} from '@jalsoedesign/dockline-abstract';
 import {FtpConnector, type FtpConnectorConfig} from '../src/FtpConnector.js';
 import {resolveFilenameEncoding, validateFilename} from '../src/filename-encoding.js';
 import {

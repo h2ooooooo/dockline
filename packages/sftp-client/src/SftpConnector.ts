@@ -1,4 +1,4 @@
-import {resolveByteLimit, type SftpConnectorConfig, type SftpHostKeyChallenge, type SftpKeyboardInteractiveChallenge, type TransferAdapter} from '@dockline/abstract';
+import {resolveByteLimit, type SftpConnectorConfig, type SftpHostKeyChallenge, type SftpKeyboardInteractiveChallenge, type TransferAdapter} from '@jalsoedesign/dockline-abstract';
 import SftpClient from 'ssh2-sftp-client';
 import type {KeyboardInteractiveAuthMethod} from 'ssh2';
 import type {
@@ -21,12 +21,12 @@ import {
     type PublishFileOptions, type ChecksumDetailsOptions, type CopyStrategyOptions, type CopyResult, type WalkOptions,
     type ConnectionStateEvent, type ConnectionStage,
     type ConnectorOperationOptions, type ResolvedConnectorOperationOptions, type TransferContents,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 
 export type {
     SftpConnectorConfig, SftpHostKeyChallenge, SftpTrustPolicy, SftpHostVerifier,
     SftpKeyboardInteractive, SftpKeyboardInteractiveChallenge,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 
 type OperationOptions<T> = T & ConnectorOperationOptions;
 interface OperationAttempt {

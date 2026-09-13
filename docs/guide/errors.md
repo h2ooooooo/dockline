@@ -1,10 +1,10 @@
 # Error reference
 
-Import shared connector errors from `@dockline/abstract` or its re-exports in `@dockline/core`. Both clients re-export relevant shared constructors. These identities agree when the packages resolve the same installed abstract copy. Multiple separately installed copies can have ordinary JavaScript class-identity differences. Core's missing-client error and the SFTP known-hosts conflict subclass are described separately below.
+Import shared connector errors from `@jalsoedesign/dockline-abstract` or its re-exports in `@jalsoedesign/dockline-core`. Both clients re-export relevant shared constructors. These identities agree when the packages resolve the same installed abstract copy. Multiple separately installed copies can have ordinary JavaScript class-identity differences. Core's missing-client error and the SFTP known-hosts conflict subclass are described separately below.
 
 ## Missing protocol client
 
-Import `MissingClientPackageError` from `@dockline/core`. It extends `ConnectorError`, has code `DOCKLINE_CLIENT_NOT_INSTALLED`, and exposes `protocol`, `packageName` and `installCommand`. Synchronous construction throws it when the selected optional client is absent; asynchronous connection helpers reject with it.
+Import `MissingClientPackageError` from `@jalsoedesign/dockline-core`. It extends `ConnectorError`, has code `DOCKLINE_CLIENT_NOT_INSTALLED`, and exposes `protocol`, `packageName` and `installCommand`. Synchronous construction throws it when the selected optional client is absent; asynchronous connection helpers reject with it.
 
 Install the matching client explicitly using the [installation guide](/guide/installation). Dockline does not run the suggested command or change protocols. Errors from a present but broken client keep their original identity. This loader-specific error is not exported by abstract.
 
@@ -62,7 +62,7 @@ An uncertain rename acknowledgement is not permission to replay a publication. R
 
 ## Managed host-store failures
 
-`KnownHostsConflictError` is exported by `@dockline/sftp-client` and extends `HostTrustError`. Its zero-argument constructor indicates that the trusted record changed while approval was pending. Inspect and ask for approval against the new state; do not repeat an old approval. Store validation/locking can throw `ConnectorError`, cancellation uses `OperationAbortedError`, and filesystem failures may retain their ordinary Node error identity. See [managed known hosts](/guide/trust#managed-known-hosts-storage).
+`KnownHostsConflictError` is exported by `@jalsoedesign/dockline-sftp-client` and extends `HostTrustError`. Its zero-argument constructor indicates that the trusted record changed while approval was pending. Inspect and ask for approval against the new state; do not repeat an old approval. Store validation/locking can throw `ConnectorError`, cancellation uses `OperationAbortedError`, and filesystem failures may retain their ordinary Node error identity. See [managed known hosts](/guide/trust#managed-known-hosts-storage).
 
 ## Recovery boundaries
 

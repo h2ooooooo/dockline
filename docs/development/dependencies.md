@@ -6,13 +6,13 @@ The private root manifest defines the five npm workspaces and development tools.
 
 | Package | Required dependencies | Optional peers |
 | --- | --- | --- |
-| `@dockline/abstract` | `@flystorage/file-storage` `1.2.2` for shared storage contracts | None |
-| `@dockline/core` | `@dockline/abstract` `^1.0.0` | `@dockline/ftp-client` and `@dockline/sftp-client` `^1.0.0`; neither is automatically installed |
-| `@dockline/ftp-client` | Abstract `^1.0.0`, storage contracts `1.2.2`, `basic-ftp` `6.2.1` | None |
-| `@dockline/sftp-client` | Abstract `^1.0.0`, storage contracts `1.2.2`, `ssh2-sftp-client` `12.1.1`, `@types/ssh2-sftp-client` `9.0.6`, `@types/ssh2` `1.15.6` | None |
-| `@dockline/cli` | `@dockline/core` `^1.0.0`, Commander `15.0.0`, YAML `2.9.1` | FTP and SFTP clients `^1.0.0` are optional peers; select the matching client explicitly |
+| `@jalsoedesign/dockline-abstract` | `@flystorage/file-storage` `1.2.2` for shared storage contracts | None |
+| `@jalsoedesign/dockline-core` | `@jalsoedesign/dockline-abstract` `^1.0.0` | `@jalsoedesign/dockline-ftp-client` and `@jalsoedesign/dockline-sftp-client` `^1.0.0`; neither is automatically installed |
+| `@jalsoedesign/dockline-ftp-client` | Abstract `^1.0.0`, storage contracts `1.2.2`, `basic-ftp` `6.2.1` | None |
+| `@jalsoedesign/dockline-sftp-client` | Abstract `^1.0.0`, storage contracts `1.2.2`, `ssh2-sftp-client` `12.1.1`, `@types/ssh2-sftp-client` `9.0.6`, `@types/ssh2` `1.15.6` | None |
+| `@jalsoedesign/dockline-cli` | `@jalsoedesign/dockline-core` `^1.0.0`, Commander `15.0.0`, YAML `2.9.1` | FTP and SFTP clients `^1.0.0` are optional peers; select the matching client explicitly |
 
-Commander `15.0.0` and YAML `2.9.1` are production dependencies only of `@dockline/cli`. Installing core, abstract or a direct protocol client does not add either CLI dependency.
+Commander `15.0.0` and YAML `2.9.1` are production dependencies only of `@jalsoedesign/dockline-cli`. Installing core, abstract or a direct protocol client does not add either CLI dependency.
 
 Abstract contains no FTP or SSH transport library. Core does not depend on either concrete client. An FTP-only application receives no SFTP/SSH runtime stack from these packages, and an SFTP-only application receives no FTP runtime stack. Direct clients do not depend on core or one another. The workspace development install contains all clients because it builds and tests all packages; that is different from a selected production installation.
 

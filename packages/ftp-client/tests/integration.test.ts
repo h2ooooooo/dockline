@@ -1,4 +1,4 @@
-import {ResourceLimitError} from '@dockline/abstract';
+import {ResourceLimitError} from '@jalsoedesign/dockline-abstract';
 import {FtpSrv} from 'ftp-srv';
 import {mkdtemp, mkdir, writeFile, readFile, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';

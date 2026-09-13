@@ -1,5 +1,5 @@
 {
-    "name": "@dockline/ftp-client",
+    "name": "@jalsoedesign/dockline-ftp-client",
     "version": "1.0.0",
     "description": "FTP and FTPS transfer client for Dockline",
     "type": "module",
@@ -43,7 +43,7 @@
         "prepack": "npm run build"
     },
     "dependencies": {
-        "@dockline/abstract": "^1.0.0",
+        "@jalsoedesign/dockline-abstract": "^1.0.0",
         "@flystorage/file-storage": "1.2.2",
         "basic-ftp": "6.2.1"
     }

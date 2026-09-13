@@ -7,7 +7,7 @@ import {Dockline, type SftpTransferConfig} from '../src/Dockline.js';
 import {
     IntegrityError, NotSupportedError, OperationAbortedError, ResourceLimitError,
     type TransferSourceFactory, type TransferContents, type ConnectorOperationOptions,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 
 const connection: SftpTransferConfig = {
     protocol: 'sftp',

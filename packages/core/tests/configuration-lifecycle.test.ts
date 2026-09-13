@@ -1,8 +1,8 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {Dockline, createConnector, relativeRemotePath, type SftpTransferConfig} from '../src/Dockline.js';
-import {FtpConnector} from '@dockline/ftp-client';
-import {SftpConnector} from '@dockline/sftp-client';
-import {OperationAbortedError, UnsupportedProtocolError} from '@dockline/abstract';
+import {FtpConnector} from '@jalsoedesign/dockline-ftp-client';
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
+import {OperationAbortedError, UnsupportedProtocolError} from '@jalsoedesign/dockline-abstract';
 
 const connection: SftpTransferConfig = {
     protocol: 'sftp',

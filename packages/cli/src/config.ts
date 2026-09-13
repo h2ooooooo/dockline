@@ -6,7 +6,7 @@ import {isAlias, isMap, isScalar, isSeq, parseDocument, visit} from 'yaml';
 import {
     resolveOperationOptions, validateTransferConfig,
     type ConnectorOperationOptions, type TransferConfig, type FtpTransferConfig, type SftpTransferConfig,
-} from '@dockline/core';
+} from '@jalsoedesign/dockline-core';
 
 export type CliCommand = 'download' | 'upload' | 'list' | 'remove';
 

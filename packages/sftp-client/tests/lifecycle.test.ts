@@ -4,7 +4,7 @@ import {once} from 'node:events';
 import {
     AuthError, ConnectorError, ConnectionClosedError, HostTrustError, NotFoundError,
     OperationAbortedError, OperationTimeoutError, PermissionError,
-} from '@dockline/abstract';
+} from '@jalsoedesign/dockline-abstract';
 import {SftpConnector, type SftpConnectorConfig} from '../src/SftpConnector.js';
 
 const state = vi.hoisted(() => ({

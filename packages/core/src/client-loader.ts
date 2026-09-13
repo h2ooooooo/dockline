@@ -1,9 +1,9 @@
 import {createRequire} from 'node:module';
-import {ConnectorError, validateTransferConfig, type TransferAdapter, type TransferConfig, type TransferProtocol} from '@dockline/abstract';
+import {ConnectorError, validateTransferConfig, type TransferAdapter, type TransferConfig, type TransferProtocol} from '@jalsoedesign/dockline-abstract';
 
 const require = createRequire(import.meta.url);
 
-type ClientPackageName = '@dockline/ftp-client' | '@dockline/sftp-client';
+type ClientPackageName = '@jalsoedesign/dockline-ftp-client' | '@jalsoedesign/dockline-sftp-client';
 
 export class MissingClientPackageError extends ConnectorError {
     public readonly installCommand: string;
@@ -21,7 +21,7 @@ export class MissingClientPackageError extends ConnectorError {
 export function createConnector(config: TransferConfig): TransferAdapter {
     validateTransferConfig(config);
 
-    const packageName = config.protocol === 'sftp' ? '@dockline/sftp-client' : '@dockline/ftp-client';
+    const packageName = config.protocol === 'sftp' ? '@jalsoedesign/dockline-sftp-client' : '@jalsoedesign/dockline-ftp-client';
 
     try {
         require.resolve(`${packageName}/package.json`);

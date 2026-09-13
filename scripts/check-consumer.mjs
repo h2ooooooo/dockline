@@ -58,11 +58,11 @@ const tarballs = Object.fromEntries(packed.map(item => [
 ]));
 
 assert.deepEqual(Object.keys(tarballs).sort(), [
-    '@dockline/abstract',
-    '@dockline/cli',
-    '@dockline/core',
-    '@dockline/ftp-client',
-    '@dockline/sftp-client',
+    '@jalsoedesign/dockline-abstract',
+    '@jalsoedesign/dockline-cli',
+    '@jalsoedesign/dockline-core',
+    '@jalsoedesign/dockline-ftp-client',
+    '@jalsoedesign/dockline-sftp-client',
 ]);
 
 const runtimePreamble = `import assert from 'node:assert/strict';
@@ -76,7 +76,7 @@ function notLoaded(fragment) {
 }
 `;
 
-const sdkTypes = `import {Dockline, MissingClientPackageError, type TransferConfig, type TransferAdapter} from '@dockline/core';
+const sdkTypes = `import {Dockline, MissingClientPackageError, type TransferConfig, type TransferAdapter} from '@jalsoedesign/dockline-core';
 const config: TransferConfig = {
     protocol: 'sftp', host: 'fixture.invalid', username: 'fixture', maxBytes: 1024,
     requireTrustPolicy: true,
@@ -94,7 +94,7 @@ const example = async () => {
 void [example, MissingClientPackageError];
 `;
 
-const cliTypes = `import {runCli, createProgram, loadCliConfig, type LoadedCliConfig, type CliContext} from '@dockline/cli';
+const cliTypes = `import {runCli, createProgram, loadCliConfig, type LoadedCliConfig, type CliContext} from '@jalsoedesign/dockline-cli';
 const context: CliContext = {};
 const run = () => runCli(['--help'], context);
 const configIdentity = (config: LoadedCliConfig) => config;
@@ -103,14 +103,14 @@ void [run, createProgram, loadCliConfig, configIdentity];`;
 const cliRuntime = `const {spawnSync} = await import('node:child_process');
 const {writeFileSync, existsSync} = await import('node:fs');
 const path = await import('node:path');
-const {runCli, createProgram, loadCliConfig} = await import('@dockline/cli');
+const {runCli, createProgram, loadCliConfig} = await import('@jalsoedesign/dockline-cli');
 assert.equal(typeof runCli, 'function');
 assert.equal(typeof createProgram, 'function');
 assert.equal(typeof loadCliConfig, 'function');
 notLoaded('/basic-ftp/');
 notLoaded('/ssh2-sftp-client/');
 notLoaded('/ssh2/');
-const executable = path.join(path.dirname(require.resolve('@dockline/cli/package.json')), 'dist/bin.js');
+const executable = path.join(path.dirname(require.resolve('@jalsoedesign/dockline-cli/package.json')), 'dist/bin.js');
 assert.ok(existsSync(path.join('node_modules/.bin', process.platform === 'win32' ? 'dockline.cmd' : 'dockline')));
 function cli(...args) {
     return spawnSync(process.execPath, [executable, ...args], {encoding: 'utf8', windowsHide: true, timeout: 10000});
@@ -123,7 +123,7 @@ assert.match(help.stdout, /list/);
 assert.match(help.stdout, /remove/);
 const version = cli('--version');
 assert.equal(version.status, 0, version.stderr);
-assert.equal(version.stdout.trim(), require('@dockline/cli/package.json').version);
+assert.equal(version.stdout.trim(), require('@jalsoedesign/dockline-cli/package.json').version);
 function configuredList(protocol) {
     const connection = {
         protocol, host: '127.0.0.1', port: 1, username: 'fixture', password: 'fixture-password',
@@ -144,22 +144,22 @@ const scenarios = [
     {
         name: 'abstract-only',
         packages: ['abstract'],
-        types: `import {ConnectorPool, ResourceLimitError, type TransferAdapter, type SftpTransferConfig} from '@dockline/abstract';
+        types: `import {ConnectorPool, ResourceLimitError, type TransferAdapter, type SftpTransferConfig} from '@jalsoedesign/dockline-abstract';
 const config: SftpTransferConfig = {protocol: 'sftp', host: 'fixture.invalid', username: 'fixture'};
 const identity = (adapter: TransferAdapter) => adapter;
 void [ConnectorPool, ResourceLimitError, identity, config];`,
-        runtime: `const shared = await import('@dockline/abstract');
+        runtime: `const shared = await import('@jalsoedesign/dockline-abstract');
 assert.equal(typeof shared.ConnectorPool, 'function');
-for (const name of ['@dockline/core', '@dockline/ftp-client', '@dockline/sftp-client', 'basic-ftp', 'ssh2-sftp-client', 'ssh2']) absent(name);`,
+for (const name of ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-ftp-client', '@jalsoedesign/dockline-sftp-client', 'basic-ftp', 'ssh2-sftp-client', 'ssh2']) absent(name);`,
     },
     {
         name: 'core-only',
         packages: ['abstract', 'core'],
         types: sdkTypes,
-        runtime: `const {Dockline, MissingClientPackageError, UnsupportedProtocolError} = await import('@dockline/core');
-for (const name of ['@dockline/ftp-client', '@dockline/sftp-client', 'basic-ftp', 'ssh2-sftp-client', 'ssh2']) absent(name);
+        runtime: `const {Dockline, MissingClientPackageError, UnsupportedProtocolError} = await import('@jalsoedesign/dockline-core');
+for (const name of ['@jalsoedesign/dockline-ftp-client', '@jalsoedesign/dockline-sftp-client', 'basic-ftp', 'ssh2-sftp-client', 'ssh2']) absent(name);
 for (const protocol of ['ftp', 'ftps', 'ftps-implicit', 'sftp']) {
-    const packageName = protocol === 'sftp' ? '@dockline/sftp-client' : '@dockline/ftp-client';
+    const packageName = protocol === 'sftp' ? '@jalsoedesign/dockline-sftp-client' : '@jalsoedesign/dockline-ftp-client';
     assert.throws(() => Dockline.create({protocol, host: 'fixture.invalid', username: 'fixture'}), error => {
         assert.ok(error instanceof MissingClientPackageError);
         assert.equal(error.code, 'DOCKLINE_CLIENT_NOT_INSTALLED');
@@ -175,14 +175,14 @@ assert.throws(() => Dockline.create({protocol: 'ftp', host: 'fixture.invalid', u
     {
         name: 'ftp-only',
         packages: ['abstract', 'ftp-client'],
-        types: `import {FtpConnector, createConnector, type FtpTransferConfig} from '@dockline/ftp-client';
+        types: `import {FtpConnector, createConnector, type FtpTransferConfig} from '@jalsoedesign/dockline-ftp-client';
 const config: FtpTransferConfig = {protocol: 'ftps', host: 'fixture.invalid', username: 'fixture', secureOptions: {rejectUnauthorized: true}};
 const client: FtpConnector = createConnector(config);
 void client;`,
-        runtime: `const {FtpConnector, createConnector, AuthError} = await import('@dockline/ftp-client');
-const {AuthError: SharedAuthError} = await import('@dockline/abstract');
+        runtime: `const {FtpConnector, createConnector, AuthError} = await import('@jalsoedesign/dockline-ftp-client');
+const {AuthError: SharedAuthError} = await import('@jalsoedesign/dockline-abstract');
 assert.equal(AuthError, SharedAuthError);
-for (const name of ['@dockline/core', '@dockline/sftp-client', 'ssh2-sftp-client', 'ssh2']) absent(name);
+for (const name of ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-sftp-client', 'ssh2-sftp-client', 'ssh2']) absent(name);
 const client = createConnector({protocol: 'ftp', host: 'fixture.invalid', username: 'fixture'});
 assert.ok(client instanceof FtpConnector);
 await client.disconnect();`,
@@ -190,14 +190,14 @@ await client.disconnect();`,
     {
         name: 'sftp-only',
         packages: ['abstract', 'sftp-client'],
-        types: `import {SftpConnector, KnownHostsStore, createConnector, type SftpTransferConfig} from '@dockline/sftp-client';
+        types: `import {SftpConnector, KnownHostsStore, createConnector, type SftpTransferConfig} from '@jalsoedesign/dockline-sftp-client';
 const config: SftpTransferConfig = {protocol: 'sftp', host: 'fixture.invalid', username: 'fixture', requireTrustPolicy: true, hasTrustPolicy: () => false, acceptTrustPolicy: () => false};
 const client: SftpConnector = createConnector(config);
 void [client, KnownHostsStore];`,
-        runtime: `const {SftpConnector, createConnector, AuthError} = await import('@dockline/sftp-client');
-const {AuthError: SharedAuthError} = await import('@dockline/abstract');
+        runtime: `const {SftpConnector, createConnector, AuthError} = await import('@jalsoedesign/dockline-sftp-client');
+const {AuthError: SharedAuthError} = await import('@jalsoedesign/dockline-abstract');
 assert.equal(AuthError, SharedAuthError);
-for (const name of ['@dockline/core', '@dockline/ftp-client', 'basic-ftp']) absent(name);
+for (const name of ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-ftp-client', 'basic-ftp']) absent(name);
 const client = createConnector({protocol: 'sftp', host: 'fixture.invalid', username: 'fixture'});
 assert.ok(client instanceof SftpConnector);
 await client.disconnect();`,
@@ -206,12 +206,12 @@ await client.disconnect();`,
         name: 'core-ftp',
         packages: ['abstract', 'core', 'ftp-client'],
         types: sdkTypes,
-        runtime: `const {Dockline, MissingClientPackageError, AuthError} = await import('@dockline/core');
+        runtime: `const {Dockline, MissingClientPackageError, AuthError} = await import('@jalsoedesign/dockline-core');
 notLoaded('/basic-ftp/');
-for (const name of ['@dockline/sftp-client', 'ssh2-sftp-client', 'ssh2']) absent(name);
+for (const name of ['@jalsoedesign/dockline-sftp-client', 'ssh2-sftp-client', 'ssh2']) absent(name);
 for (const protocol of ['ftp', 'ftps', 'ftps-implicit']) {
     const remote = Dockline.create({protocol, host: 'fixture.invalid', username: 'fixture'});
-    const {FtpConnector, AuthError: ClientAuthError} = await import('@dockline/ftp-client');
+    const {FtpConnector, AuthError: ClientAuthError} = await import('@jalsoedesign/dockline-ftp-client');
     assert.ok(remote.connector instanceof FtpConnector);
     assert.equal(AuthError, ClientAuthError);
     await remote.disconnect();
@@ -222,12 +222,12 @@ assert.throws(() => Dockline.create({protocol: 'sftp', host: 'fixture.invalid', 
         name: 'core-sftp',
         packages: ['abstract', 'core', 'sftp-client'],
         types: sdkTypes,
-        runtime: `const {Dockline, MissingClientPackageError, AuthError} = await import('@dockline/core');
+        runtime: `const {Dockline, MissingClientPackageError, AuthError} = await import('@jalsoedesign/dockline-core');
 notLoaded('/ssh2-sftp-client/');
 notLoaded('/ssh2/');
-for (const name of ['@dockline/ftp-client', 'basic-ftp']) absent(name);
+for (const name of ['@jalsoedesign/dockline-ftp-client', 'basic-ftp']) absent(name);
 const remote = Dockline.create({protocol: 'sftp', host: 'fixture.invalid', username: 'fixture'});
-const {SftpConnector, AuthError: ClientAuthError} = await import('@dockline/sftp-client');
+const {SftpConnector, AuthError: ClientAuthError} = await import('@jalsoedesign/dockline-sftp-client');
 assert.ok(remote.connector instanceof SftpConnector);
 assert.equal(AuthError, ClientAuthError);
 await remote.disconnect();
@@ -237,15 +237,15 @@ assert.throws(() => Dockline.create({protocol: 'ftp', host: 'fixture.invalid', u
         name: 'all-clients',
         packages: ['abstract', 'core', 'ftp-client', 'sftp-client'],
         types: sdkTypes,
-        runtime: `const {Dockline, AuthError} = await import('@dockline/core');
+        runtime: `const {Dockline, AuthError} = await import('@jalsoedesign/dockline-core');
 notLoaded('/basic-ftp/');
 notLoaded('/ssh2-sftp-client/');
 const ftp = Dockline.create({protocol: 'ftp', host: 'fixture.invalid', username: 'fixture'});
 notLoaded('/ssh2-sftp-client/');
 const sftp = Dockline.create({protocol: 'sftp', host: 'fixture.invalid', username: 'fixture'});
-const {FtpConnector, AuthError: FtpAuthError} = await import('@dockline/ftp-client');
-const {SftpConnector, AuthError: SftpAuthError} = await import('@dockline/sftp-client');
-const {AuthError: SharedAuthError} = await import('@dockline/abstract');
+const {FtpConnector, AuthError: FtpAuthError} = await import('@jalsoedesign/dockline-ftp-client');
+const {SftpConnector, AuthError: SftpAuthError} = await import('@jalsoedesign/dockline-sftp-client');
+const {AuthError: SharedAuthError} = await import('@jalsoedesign/dockline-abstract');
 assert.ok(ftp.connector instanceof FtpConnector);
 assert.ok(sftp.connector instanceof SftpConnector);
 assert.equal(AuthError, SharedAuthError);
@@ -258,18 +258,18 @@ await sftp.disconnect();`,
         name: 'cli-only',
         packages: ['abstract', 'core', 'cli'],
         types: cliTypes,
-        runtime: cliRuntime + `for (const name of ['@dockline/ftp-client', '@dockline/sftp-client', 'basic-ftp', 'ssh2-sftp-client', 'ssh2']) absent(name);
+        runtime: cliRuntime + `for (const name of ['@jalsoedesign/dockline-ftp-client', '@jalsoedesign/dockline-sftp-client', 'basic-ftp', 'ssh2-sftp-client', 'ssh2']) absent(name);
 for (const protocol of ['ftp', 'sftp']) {
     const failure = configuredList(protocol);
     assert.equal(failure.code, 'DOCKLINE_CLIENT_NOT_INSTALLED');
-    assert.match(failure.message, /npm install @dockline\\/(?:sftp|ftp)-client/);
+    assert.match(failure.message, /npm install @jalsoedesign\\/dockline-(?:sftp|ftp)-client/);
 }`,
     },
     {
         name: 'cli-ftp',
         packages: ['abstract', 'core', 'cli', 'ftp-client'],
         types: cliTypes,
-        runtime: cliRuntime + `for (const name of ['@dockline/sftp-client', 'ssh2-sftp-client', 'ssh2']) absent(name);
+        runtime: cliRuntime + `for (const name of ['@jalsoedesign/dockline-sftp-client', 'ssh2-sftp-client', 'ssh2']) absent(name);
 assert.notEqual(configuredList('ftp').code, 'DOCKLINE_CLIENT_NOT_INSTALLED');
 assert.equal(configuredList('sftp').code, 'DOCKLINE_CLIENT_NOT_INSTALLED');`,
     },
@@ -277,7 +277,7 @@ assert.equal(configuredList('sftp').code, 'DOCKLINE_CLIENT_NOT_INSTALLED');`,
         name: 'cli-sftp',
         packages: ['abstract', 'core', 'cli', 'sftp-client'],
         types: cliTypes,
-        runtime: cliRuntime + `for (const name of ['@dockline/ftp-client', 'basic-ftp']) absent(name);
+        runtime: cliRuntime + `for (const name of ['@jalsoedesign/dockline-ftp-client', 'basic-ftp']) absent(name);
 assert.notEqual(configuredList('sftp').code, 'DOCKLINE_CLIENT_NOT_INSTALLED');
 assert.equal(configuredList('ftp').code, 'DOCKLINE_CLIENT_NOT_INSTALLED');`,
     },
@@ -338,7 +338,7 @@ for (const scenario of scenarios) {
         name: `dockline-${scenario.name}-consumer`,
         private: true,
         type: 'module',
-        dependencies: Object.fromEntries(scenario.packages.map(name => [`@dockline/${name}`, tarballs[`@dockline/${name}`]])),
+        dependencies: Object.fromEntries(scenario.packages.map(name => [`@jalsoedesign/dockline-${name}`, tarballs[`@jalsoedesign/dockline-${name}`]])),
         devDependencies: {typescript: '6.0.3', '@types/node': '22.20.2'},
         allowScripts: {'ssh2': false, 'cpu-features': false},
     }, null, 4));
@@ -369,9 +369,9 @@ for (const scenario of scenarios) {
     await command(`${scenario.name}-runtime`, [path.join(target, 'runtime.mjs')], target);
 
     const lock = JSON.parse(await readFile(path.join(target, 'package-lock.json'), 'utf8'));
-    const installed = Object.keys(lock.packages).filter(name => /^node_modules\/@dockline\//.test(name)).sort();
+    const installed = Object.keys(lock.packages).filter(name => /^node_modules\/@jalsoedesign\/dockline-/.test(name)).sort();
 
-    assert.deepEqual(installed, scenario.packages.map(name => `node_modules/@dockline/${name}`).sort());
+    assert.deepEqual(installed, scenario.packages.map(name => `node_modules/@jalsoedesign/dockline-${name}`).sort());
 }
 
 // Global installation has its own dependency tree and executable shims.
@@ -392,11 +392,11 @@ for (const selection of [[], ['ftp-client'], ['sftp-client']]) {
         '--offline=false',
         '--no-audit',
         '--no-fund',
-        ...packages.map(name => tarballs['@dockline/' + name].slice(5)),
+        ...packages.map(name => tarballs['@jalsoedesign/dockline-' + name].slice(5)),
     ], target);
 
     const moduleRoot = path.join(prefix, ...(process.platform === 'win32' ? [] : ['lib']), 'node_modules');
-    const cliDirectory = path.join(moduleRoot, '@dockline', 'cli');
+    const cliDirectory = path.join(moduleRoot, '@jalsoedesign', 'dockline-cli');
     const shim = path.join(prefix, ...(process.platform === 'win32' ? [] : ['bin']),
         process.platform === 'win32' ? 'dockline.cmd' : 'dockline');
 
@@ -416,7 +416,7 @@ for (const selection of [[], ['ftp-client'], ['sftp-client']]) {
         "import assert from 'node:assert/strict';",
         "import {createRequire} from 'node:module';",
         'const require = createRequire(' + JSON.stringify(path.join(cliDirectory, 'package.json')) + ');',
-        "const {Dockline, MissingClientPackageError} = require('@dockline/core');",
+        "const {Dockline, MissingClientPackageError} = require('@jalsoedesign/dockline-core');",
         'const installed = ' + JSON.stringify(selection) + ';',
         "for (const [protocol, client] of [['ftp', 'ftp-client'], ['sftp', 'sftp-client']]) {",
         "    const create = () => Dockline.create({protocol, host: 'fixture.invalid', username: 'fixture'});",
@@ -431,18 +431,18 @@ for (const selection of [[], ['ftp-client'], ['sftp-client']]) {
 
 // An installed package that fails internally must not be reported as merely absent.
 const brokenConsumer = path.join(directory, 'core-only');
-const brokenPackage = path.join(brokenConsumer, 'node_modules/@dockline/sftp-client');
+const brokenPackage = path.join(brokenConsumer, 'node_modules/@jalsoedesign/dockline-sftp-client');
 
 await mkdir(brokenPackage, {recursive: true});
 await writeFile(path.join(brokenPackage, 'package.json'), JSON.stringify({
-    name: '@dockline/sftp-client',
+    name: '@jalsoedesign/dockline-sftp-client',
     version: '1.0.0',
     type: 'module',
     exports: {'.': './index.js', './package.json': './package.json'},
 }));
 await writeFile(path.join(brokenPackage, 'index.js'), "import 'dockline-intentionally-missing-transitive-fixture';\n");
 await writeFile(path.join(brokenConsumer, 'broken.mjs'), `import assert from 'node:assert/strict';
-import {Dockline, MissingClientPackageError} from '@dockline/core';
+import {Dockline, MissingClientPackageError} from '@jalsoedesign/dockline-core';
 assert.throws(() => Dockline.create({protocol: 'sftp', host: 'fixture.invalid', username: 'fixture'}), error => {
     assert.ok(!(error instanceof MissingClientPackageError));
     assert.equal(error.code, 'ERR_MODULE_NOT_FOUND');
@@ -453,7 +453,7 @@ assert.throws(() => Dockline.create({protocol: 'sftp', host: 'fixture.invalid', 
 await command('broken-installed-client', [path.join(brokenConsumer, 'broken.mjs')], brokenConsumer);
 await writeFile(path.join(brokenPackage, 'index.js'), 'export const incompatibleClient = true;\n');
 await writeFile(path.join(brokenConsumer, 'incompatible.mjs'), `import assert from 'node:assert/strict';
-import {Dockline, MissingClientPackageError} from '@dockline/core';
+import {Dockline, MissingClientPackageError} from '@jalsoedesign/dockline-core';
 assert.throws(() => Dockline.create({protocol: 'sftp', host: 'fixture.invalid', username: 'fixture'}), error => {
     assert.ok(error instanceof TypeError);
     assert.ok(!(error instanceof MissingClientPackageError));

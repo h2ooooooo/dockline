@@ -1,8 +1,8 @@
-# @dockline/ftp-client
+# @jalsoedesign/dockline-ftp-client
 
-FTP, explicit FTPS and implicit FTPS for [Dockline](https://github.com/h2ooooooo/dockline), backed by `basic-ftp`. Use this client directly or install it alongside `@dockline/core` for the common `Dockline` API and local file helpers.
+FTP, explicit FTPS and implicit FTPS for [Dockline](https://github.com/h2ooooooo/dockline), backed by `basic-ftp`. Use this client directly or install it alongside `@jalsoedesign/dockline-core` for the common `Dockline` API and local file helpers.
 
-The client depends on `@dockline/abstract` and its own FTP transport stack. It does not require core, the SFTP client or the SSH transport libraries.
+The client depends on `@jalsoedesign/dockline-abstract` and its own FTP transport stack. It does not require core, the SFTP client or the SSH transport libraries.
 
 ## Installation
 
@@ -11,13 +11,13 @@ For a source build, follow the [compiler guide](https://github.com/h2ooooooo/doc
 Choose the installation matching your API:
 
 ```sh
-npm install @dockline/core @dockline/ftp-client
+npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-ftp-client
 ```
 
 For only the direct client:
 
 ```sh
-npm install @dockline/ftp-client
+npm install @jalsoedesign/dockline-ftp-client
 ```
 
 ## Use the client directly
@@ -25,7 +25,7 @@ npm install @dockline/ftp-client
 `createConnector()` accepts the common FTP configuration and returns a concrete `FtpConnector` without connecting:
 
 ```ts
-import {createConnector} from '@dockline/ftp-client';
+import {createConnector} from '@jalsoedesign/dockline-ftp-client';
 
 const connector = createConnector({
     protocol: 'ftps',

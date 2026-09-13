@@ -8,11 +8,11 @@ Source: [h2ooooooo/dockline](https://github.com/h2ooooooo/dockline). Node `^22.2
 
 | Package | What it provides |
 | --- | --- |
-| `@dockline/core` | The `Dockline` API, connection scopes, local file helpers and shared exports. Install a matching client to connect. |
-| `@dockline/abstract` | Shared contracts, configuration types, errors, retries, streams, transfer helpers and pools; no FTP or SSH transport implementation. |
-| `@dockline/ftp-client` | FTP, explicit FTPS and implicit FTPS using `basic-ftp`. Usable directly without core. |
-| `@dockline/sftp-client` | SFTP, SSH authentication, host trust and managed known hosts. Usable directly without core. |
-| `@dockline/cli` | The `dockline` command: download, upload, list and remove using YAML settings. |
+| `@jalsoedesign/dockline-core` | The `Dockline` API, connection scopes, local file helpers and shared exports. Install a matching client to connect. |
+| `@jalsoedesign/dockline-abstract` | Shared contracts, configuration types, errors, retries, streams, transfer helpers and pools; no FTP or SSH transport implementation. |
+| `@jalsoedesign/dockline-ftp-client` | FTP, explicit FTPS and implicit FTPS using `basic-ftp`. Usable directly without core. |
+| `@jalsoedesign/dockline-sftp-client` | SFTP, SSH authentication, host trust and managed known hosts. Usable directly without core. |
+| `@jalsoedesign/dockline-cli` | The `dockline` command: download, upload, list and remove using YAML settings. |
 
 The repository is an npm workspace. Install the individual packages for applications or the CLI for terminal use.
 
@@ -23,7 +23,7 @@ To contribute to Dockline, follow [build from source](docs/development/compiler.
 ### Global CLI
 
 ```sh
-npm i -g @dockline/cli @dockline/ftp-client @dockline/sftp-client
+npm i -g @jalsoedesign/dockline-cli @jalsoedesign/dockline-ftp-client @jalsoedesign/dockline-sftp-client
 dockline --help
 ```
 
@@ -32,17 +32,17 @@ Install only the client packages needed for the protocols you use. FTP and both 
 ### Local CLI
 
 ```sh
-npm i @dockline/cli @dockline/sftp-client
+npm i @jalsoedesign/dockline-cli @jalsoedesign/dockline-sftp-client
 npm exec -- dockline --help
 ```
 
 ### TypeScript or JavaScript SDK
 
 ```sh
-npm i @dockline/core @dockline/sftp-client
+npm i @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
 ```
 
-Use `@dockline/ftp-client` for FTP/FTPS, or install both clients. See [installation](docs/guide/installation.md) for direct adapters, shared tools and source builds.
+Use `@jalsoedesign/dockline-ftp-client` for FTP/FTPS, or install both clients. See [installation](docs/guide/installation.md) for direct adapters, shared tools and source builds.
 
 ## Terminal commands
 
@@ -63,7 +63,7 @@ Choose [Quick start FTP](docs/ftp/quick-start.md) or [Quick start SFTP](docs/sft
 The short SFTP example below uses core plus the SFTP client:
 
 ```ts
-import {Dockline, type SftpTransferConfig} from '@dockline/core';
+import {Dockline, type SftpTransferConfig} from '@jalsoedesign/dockline-core';
 
 const fingerprint = process.env.SFTP_SHA256;
 

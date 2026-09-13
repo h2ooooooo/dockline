@@ -1,5 +1,5 @@
 {
-    "name": "@dockline/abstract",
+    "name": "@jalsoedesign/dockline-abstract",
     "version": "1.0.0",
     "description": "Shared contracts, errors and transfer utilities for Dockline protocol clients",
     "type": "module",

@@ -1,11 +1,11 @@
-import {ResourceLimitError} from '@dockline/abstract';
+import {ResourceLimitError} from '@jalsoedesign/dockline-abstract';
 import {afterAll, afterEach, beforeAll, describe, expect, it, vi} from 'vitest';
 import {Readable} from 'node:stream';
 import {once} from 'node:events';
 import {mkdtemp, writeFile, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
-import {AuthError, HostTrustError, NotFoundError, PermissionError, NotSupportedError, OperationAbortedError} from '@dockline/abstract';
+import {AuthError, HostTrustError, NotFoundError, PermissionError, NotSupportedError, OperationAbortedError} from '@jalsoedesign/dockline-abstract';
 import {SftpConnector, type SftpConnectorConfig} from '../src/SftpConnector.js';
 import {createLocalSftp} from './local-sftp.js';
 

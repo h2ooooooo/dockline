@@ -3,7 +3,7 @@ import path from 'node:path';
 import {
     Dockline, NotSupportedError, ResourceLimitError, checkAbort, relativeRemotePath,
     type ConnectorOperationOptions, type TransferConfig,
-} from '@dockline/core';
+} from '@jalsoedesign/dockline-core';
 import {resolveCliCommandDefaults, type CliCommand, type CliCommandDefaults, type LoadedCliConfig} from './config.js';
 import type {ResolvedCliContext} from './context.js';
 import {CliUsageError} from './errors.js';

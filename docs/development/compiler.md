@@ -47,7 +47,7 @@ Each public package exposes its own root ESM/declaration entry point and package
 
 Cross-package runtime dependencies use version ranges, not `file:../` references. Npm workspaces satisfy those ranges locally. The isolated-consumer checks install locally packed abstract, core and selected clients together to validate their dependency relationships. One package's tarball does not contain sibling source code.
 
-Core depends on `@dockline/abstract`; the FTP and SFTP packages are optional peers. Its client selection is synchronous so `new Dockline`, `Dockline.create` and `createConnector` preserve their signatures. The loader uses Node's module resolution from the installed core package and selects only the requested installed client. Missing optional clients receive the dedicated error; errors from a broken present client propagate. The supported Node floor is part of this loading contract.
+Core depends on `@jalsoedesign/dockline-abstract`; the FTP and SFTP packages are optional peers. Its client selection is synchronous so `new Dockline`, `Dockline.create` and `createConnector` preserve their signatures. The loader uses Node's module resolution from the installed core package and selects only the requested installed client. Missing optional clients receive the dedicated error; errors from a broken present client propagate. The supported Node floor is part of this loading contract.
 
 Declaration dependencies belong to the package whose public declarations use them. An installed client must have the types needed by its public API even after a production-only install. Abstract and core must remain compilable without requiring either concrete client. The consumer matrix verifies these boundaries instead of relying on workspace hoisting.
 
@@ -55,7 +55,7 @@ The five package versions can change independently. When abstract contracts or c
 
 ## CLI executable
 
-`@dockline/cli` declares the `dockline` executable and a separate package root API for embedding. Its compiled entry point preserves the Node shebang. The executable handles terminal signals and invokes the same command runner exposed to applications; it does not vendor the FTP or SFTP clients. YAML examples ship with the CLI package.
+`@jalsoedesign/dockline-cli` declares the `dockline` executable and a separate package root API for embedding. Its compiled entry point preserves the Node shebang. The executable handles terminal signals and invokes the same command runner exposed to applications; it does not vendor the FTP or SFTP clients. YAML examples ship with the CLI package.
 
 Commander handles command parsing and YAML handles the configuration syntax. The runtime still selects only an installed client through core. Distribution checks must exercise the installed executable, help/version without configuration or clients, and real commands with selected protocol tarballs.
 

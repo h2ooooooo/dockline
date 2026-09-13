@@ -1,4 +1,4 @@
-import {UnsupportedProtocolError, validateTransferConfig, type SftpTransferConfig} from '@dockline/abstract';
+import {UnsupportedProtocolError, validateTransferConfig, type SftpTransferConfig} from '@jalsoedesign/dockline-abstract';
 import {SftpConnector} from './SftpConnector.js';
 
 /** Create an SFTP adapter without opening a connection. */

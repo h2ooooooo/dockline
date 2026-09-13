@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {KnownHostsStore} from '../src/KnownHostsStore.js';
-import {OperationAbortedError} from '@dockline/abstract';
+import {OperationAbortedError} from '@jalsoedesign/dockline-abstract';
 import type {SftpHostKeyChallenge} from '../src/SftpConnector.js';
 
 const {openFile} = vi.hoisted(() => ({openFile: vi.fn()}));

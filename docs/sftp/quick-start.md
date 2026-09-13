@@ -10,7 +10,7 @@ Install [core and the SFTP client](/guide/installation#sftp), put a file named `
 
 ```ts
 import {mkdir} from 'node:fs/promises';
-import {Dockline, type SftpTransferConfig} from '@dockline/core';
+import {Dockline, type SftpTransferConfig} from '@jalsoedesign/dockline-core';
 
 function requiredEnv(name: string): string {
     const value = process.env[name];
