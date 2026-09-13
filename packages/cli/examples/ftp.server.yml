@@ -1,0 +1,22 @@
+# Supply the FTP_* environment variables before running the CLI.
+# Change protocol to ftps or ftps-implicit when the server supports TLS.
+version: 1
+connection:
+    protocol: ftp
+    host: ${FTP_HOST}
+    username: ${FTP_USERNAME}
+    password: ${FTP_PASSWORD}
+    root: /home/ftp
+    timeoutMs: 60000
+commands:
+    download:
+        sourceFile: blabla.txt
+        destinationFile: downloads/blabla.txt
+        overwrite: fail
+    upload:
+        sourceFile: hello.txt
+        destinationFile: hello.txt
+        overwrite: replace
+    list:
+        path: .
+        recursive: false

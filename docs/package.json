@@ -1,0 +1,26 @@
+{
+    "name": "@dockline/docs",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vitepress dev . --host 127.0.0.1",
+        "build": "vitepress build .",
+        "preview": "vitepress preview . --host 127.0.0.1"
+    },
+    "devDependencies": {
+        "sass": "1.104.0",
+        "vitepress": "1.6.4",
+        "vue": "3.5.30"
+    },
+    "overrides": {
+        "vitepress": {
+            "vite": "6.4.3"
+        }
+    },
+    "allowScripts": {
+        "esbuild@0.25.12": true,
+        "@parcel/watcher@2.6.0": true,
+        "fsevents": false
+    }
+}

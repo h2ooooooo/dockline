@@ -1,0 +1,23 @@
+# Verify the server's SHA256 fingerprint independently before setting SFTP_SHA256.
+version: 1
+connection:
+    protocol: sftp
+    host: ${SFTP_HOST}
+    username: ${SFTP_USERNAME}
+    password: ${SFTP_PASSWORD}
+    root: /home/ftp
+    trust:
+        fingerprint: ${SFTP_SHA256}
+    timeoutMs: 60000
+commands:
+    download:
+        sourceFile: blabla.txt
+        destinationFile: downloads/blabla.txt
+        overwrite: fail
+    upload:
+        sourceFile: hello.txt
+        destinationFile: hello.txt
+        overwrite: replace
+    list:
+        path: .
+        recursive: false

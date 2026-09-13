@@ -1,0 +1,60 @@
+{
+    "name": "@dockline/core",
+    "version": "1.0.0",
+    "description": "Shared file-transfer SDK with independently installed Dockline clients",
+    "type": "module",
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist",
+        "src",
+        "LICENSE",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "engines": {
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0",
+        "npm": ">=12.0.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/h2ooooooo/dockline.git",
+        "directory": "packages/core"
+    },
+    "homepage": "https://github.com/h2ooooooo/dockline#readme",
+    "bugs": {
+        "url": "https://github.com/h2ooooooo/dockline/issues"
+    },
+    "scripts": {
+        "build": "node ../../scripts/build.mjs --package core",
+        "test": "node ../../scripts/test-package.mjs core",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "prepack": "npm run build"
+    },
+    "dependencies": {
+        "@dockline/abstract": "^1.0.0"
+    },
+    "peerDependencies": {
+        "@dockline/ftp-client": "^1.0.0",
+        "@dockline/sftp-client": "^1.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@dockline/ftp-client": {
+            "optional": true
+        },
+        "@dockline/sftp-client": {
+            "optional": true
+        }
+    }
+}

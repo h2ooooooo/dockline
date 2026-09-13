@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  library:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [22.22.2, 24.15.0]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - name: Use the declared package manager
+        run: npm install --global npm@12.0.2
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check repository contents
+        run: npm run check:repository
+      - name: Lint authored code and styles
+        run: npm run lint
+      - name: Check formatting rules
+        run: npm run test:style
+      - name: Check source and test types
+        run: npm run typecheck
+      - name: Exercise local protocol servers and SDK behavior
+        run: npm test
+      - name: Build declarations and ESM
+        run: npm run build
+      - name: Verify all five publishable packages
+        run: npm run check:packages
+      - name: Verify isolated package combinations and optional clients
+        run: npm run check:consumer
+      - name: Check production dependencies
+        run: npm run audit:production
+
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+      - run: npm install --global npm@12.0.2
+      - run: npm run docs:install
+      - run: npm run audit:docs
+      - run: npm run docs:build

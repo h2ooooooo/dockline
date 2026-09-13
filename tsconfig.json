@@ -1,0 +1,20 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "./packages/abstract"
+        },
+        {
+            "path": "./packages/ftp-client"
+        },
+        {
+            "path": "./packages/sftp-client"
+        },
+        {
+            "path": "./packages/core"
+        },
+        {
+            "path": "./packages/cli"
+        }
+    ]
+}

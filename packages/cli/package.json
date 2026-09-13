@@ -1,0 +1,66 @@
+{
+    "name": "@dockline/cli",
+    "version": "1.0.0",
+    "description": "Dockline command-line transfer client for FTP, FTPS and SFTP",
+    "type": "module",
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist",
+        "src",
+        "LICENSE",
+        "README.md",
+        "examples"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "engines": {
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0",
+        "npm": ">=12.0.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/h2ooooooo/dockline.git",
+        "directory": "packages/cli"
+    },
+    "homepage": "https://github.com/h2ooooooo/dockline#readme",
+    "bugs": {
+        "url": "https://github.com/h2ooooooo/dockline/issues"
+    },
+    "scripts": {
+        "build": "node ../../scripts/build.mjs --package cli",
+        "test": "node ../../scripts/test-package.mjs cli",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "prepack": "npm run build"
+    },
+    "dependencies": {
+        "@dockline/core": "^1.0.0",
+        "commander": "15.0.0",
+        "yaml": "2.9.1"
+    },
+    "peerDependencies": {
+        "@dockline/ftp-client": "^1.0.0",
+        "@dockline/sftp-client": "^1.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@dockline/ftp-client": {
+            "optional": true
+        },
+        "@dockline/sftp-client": {
+            "optional": true
+        }
+    },
+    "bin": {
+        "dockline": "./dist/bin.js"
+    }
+}
