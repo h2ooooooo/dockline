@@ -2,6 +2,19 @@
 
 Dockline is a TypeScript monorepo that emits five ESM packages. The root is private and coordinates the workspaces; it is not a distributable SDK package. Builds use the compiler installed in this repository.
 
+## Build from source
+
+Clone [h2ooooooo/dockline](https://github.com/h2ooooooo/dockline) to contribute to the packages or documentation:
+
+```sh
+git clone https://github.com/h2ooooooo/dockline.git
+cd dockline
+npm ci
+npm run build
+```
+
+The root is a private workspace. Applications should use [npm package installation](/guide/installation). Run the package and isolated-consumer checks below to validate distribution artifacts before publishing.
+
 ## Source and output
 
 The packages live under `packages/abstract`, `packages/core`, `packages/ftp-client`, `packages/sftp-client` and `packages/cli`. Each owns `src/`, `tests/`, its package manifest and generated `dist/`. Shared compiler settings target ES2022 with `NodeNext` modules and module resolution, strict checking, JavaScript source maps, declarations and declaration maps. Source imports use `.js` specifiers for relative emitted modules and package names across workspace boundaries.
@@ -26,13 +39,13 @@ The isolated consumer check compiles public declarations with `skipLibCheck: fal
 
 Builds validate their owned output directories before replacing generated files. Do not run a clean build concurrently with a test, package check or linked consumer reading those outputs. A build does not publish packages or install a missing optional client.
 
-Linked applications load package `dist/` entries and need a rebuild after source changes. They should reference selected workspace folders, not the private repository root. A tarball installation removes that source-checkout requirement.
+Linked applications load package `dist/` entries and need a rebuild after source changes. They should reference selected workspace folders, not the private repository root. Installing released packages from npm removes that source-checkout requirement.
 
 ## Package contents and metadata
 
 Each public package exposes its own root ESM/declaration entry point and package metadata. The distribution includes generated output, source needed by source/declaration maps, its README, license and manifest. Tests, dependency installations, scratch data and Git metadata are excluded.
 
-Cross-package runtime dependencies use version ranges, not `file:../` references. Npm workspaces satisfy those ranges locally. Before registry publication, isolated consumers explicitly install the abstract tarball with the selected core/client tarballs. One package's tarball does not contain sibling source code.
+Cross-package runtime dependencies use version ranges, not `file:../` references. Npm workspaces satisfy those ranges locally. The isolated-consumer checks install locally packed abstract, core and selected clients together to validate their dependency relationships. One package's tarball does not contain sibling source code.
 
 Core depends on `@dockline/abstract`; the FTP and SFTP packages are optional peers. Its client selection is synchronous so `new Dockline`, `Dockline.create` and `createConnector` preserve their signatures. The loader uses Node's module resolution from the installed core package and selects only the requested installed client. Missing optional clients receive the dedicated error; errors from a broken present client propagate. The supported Node floor is part of this loading contract.
 

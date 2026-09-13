@@ -6,7 +6,7 @@ Use it for adapter/configuration types, shared errors, retry and deadline policy
 
 ## Installation
 
-For a source build, follow the [installation guide](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/installation.md#build-from-source).
+For a source build, follow the [compiler guide](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
 
 After publication, the registry command will be:
 

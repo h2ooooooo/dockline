@@ -4,7 +4,7 @@
 
 ## Install
 
-Registry commands require a published release. For a source checkout, use [build from source](/guide/installation#build-from-source).
+Install the CLI and selected protocol clients from npm. For development, use [build from source](/development/compiler#build-from-source).
 
 ### Global terminal command
 

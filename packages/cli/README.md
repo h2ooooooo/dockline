@@ -4,7 +4,7 @@ The `dockline` terminal command for FTP, FTPS and SFTP: download, upload, list a
 
 ## Install
 
-Registry commands require a published release. For a source checkout, use [build from source](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/installation.md#build-from-source).
+Install the CLI and selected protocol clients from npm. For development, use [build from source](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
 
 ### Global terminal command
 

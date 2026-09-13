@@ -61,7 +61,7 @@ try {
 
 The error extends `ConnectorError`, has code `DOCKLINE_CLIENT_NOT_INSTALLED`, and provides the requested `protocol`, required `packageName` and suggested `installCommand`. For FTP, the package is `@dockline/ftp-client`; for SFTP, it is `@dockline/sftp-client`.
 
-The command is guidance for the application's developer. Dockline never runs it, installs a package or changes protocols. Before registry publication, follow the equivalent [local tarball installation](/guide/installation). A present but broken client, including a missing dependency or an exception while loading, retains its original error instead of being mislabeled as an absent optional client.
+The command is guidance for the application's developer. Dockline never runs it, installs a package or changes protocols. See [installation](/guide/installation) for npm commands covering each package combination. A present but broken client, including a missing dependency or an exception while loading, retains its original error instead of being mislabeled as an absent optional client.
 
 `Dockline.connect()` and `Dockline.withConnection()` return promises. A missing client rejects that promise before authentication. Client installation and host authentication are separate: finding a package does not open a connection or approve a host key.
 

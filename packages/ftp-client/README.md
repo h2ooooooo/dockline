@@ -6,7 +6,7 @@ The client depends on `@dockline/abstract` and its own FTP transport stack. It d
 
 ## Installation
 
-For a source build, follow the [installation guide](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/installation.md#build-from-source).
+For a source build, follow the [compiler guide](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
 
 Choose the installation matching your API:
 

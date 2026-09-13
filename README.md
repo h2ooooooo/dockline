@@ -18,7 +18,7 @@ The repository is an npm workspace. Install the individual packages for applicat
 
 ## Install
 
-Registry commands require a published release. To install directly from the source checkout, follow [build from source](docs/guide/installation.md#build-from-source).
+To contribute to Dockline, follow [build from source](docs/development/compiler.md#build-from-source).
 
 ### Global CLI
 

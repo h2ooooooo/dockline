@@ -1,6 +1,6 @@
 # @dockline/core
 
-The shared Dockline SDK. Install only the protocol clients your application uses. For a source build, follow the [installation guide](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/installation.md#build-from-source).
+The shared Dockline SDK. Install only the protocol clients your application uses. For a source build, follow the [compiler guide](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
 
 ```sh
 npm install @dockline/core @dockline/sftp-client
