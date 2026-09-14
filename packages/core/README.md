@@ -1,6 +1,8 @@
+**[Read the documentation](https://h2ooooooo.github.io/dockline/)**
+
 # @jalsoedesign/dockline-core
 
-The shared Dockline SDK. Install only the protocol clients your application uses. For a source build, follow the [compiler guide](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
+The shared Dockline SDK. Install only the protocol clients your application uses. For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dockline/development/compiler.html#build-from-source).
 
 ```sh
 npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
@@ -31,4 +33,4 @@ Supply the host identity, credentials and independently verified server fingerpr
 
 The supported Node versions can load these synchronous ESM client packages with `createRequire`. Core does not statically import either client and its declarations require neither transport library.
 
-See the [repository documentation](https://github.com/h2ooooooo/dockline/tree/main/docs), [SFTP quick start](https://github.com/h2ooooooo/dockline/blob/main/docs/sftp/quick-start.md) and [FTP quick start](https://github.com/h2ooooooo/dockline/blob/main/docs/ftp/quick-start.md).
+See the [repository documentation](https://github.com/h2ooooooo/dockline/tree/main/docs), [SFTP quick start](https://h2ooooooo.github.io/dockline/sftp/quick-start.html) and [FTP quick start](https://h2ooooooo.github.io/dockline/ftp/quick-start.html).

@@ -5,8 +5,6 @@ export default {
         '**/node_modules/**',
         '**/dist/**',
         '**/.scratch/**',
-        '**/.ui-reference/**',
-        '**/.sgi-deployer-reference/**',
         '**/public/**',
     ],
     rules: {

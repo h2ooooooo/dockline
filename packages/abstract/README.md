@@ -1,3 +1,5 @@
+**[Read the documentation](https://h2ooooooo.github.io/dockline/)**
+
 # @jalsoedesign/dockline-abstract
 
 Shared contracts and transfer tools for [Dockline](https://github.com/h2ooooooo/dockline). This package contains no FTP or SSH transport implementation and does not require core or either client.
@@ -6,7 +8,7 @@ Use it for adapter/configuration types, shared errors, retry and deadline policy
 
 ## Installation
 
-For a source build, follow the [compiler guide](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
+For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dockline/development/compiler.html#build-from-source).
 
 After publication, the registry command will be:
 
@@ -40,4 +42,4 @@ const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
 
 Transfer size is unlimited unless a connection or call explicitly supplies `maxBytes`. Shared errors retain one runtime identity when clients resolve the same abstract installation. Pooling and transfer helpers operate on a caller-supplied adapter; unsupported guarantees remain explicit.
 
-See [packages](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/packages.md), [API](https://github.com/h2ooooooo/dockline/blob/main/docs/reference/api.md), [advanced transfers](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/advanced-transfers.md) and [connection pools](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/pools.md).
+See [packages](https://h2ooooooo.github.io/dockline/guide/packages.html), [API](https://h2ooooooo.github.io/dockline/reference/api.html), [advanced transfers](https://h2ooooooo.github.io/dockline/guide/advanced-transfers.html) and [connection pools](https://h2ooooooo.github.io/dockline/guide/pools.html).

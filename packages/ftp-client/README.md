@@ -1,3 +1,5 @@
+**[Read the documentation](https://h2ooooooo.github.io/dockline/)**
+
 # @jalsoedesign/dockline-ftp-client
 
 FTP, explicit FTPS and implicit FTPS for [Dockline](https://github.com/h2ooooooo/dockline), backed by `basic-ftp`. Use this client directly or install it alongside `@jalsoedesign/dockline-core` for the common `Dockline` API and local file helpers.
@@ -6,7 +8,7 @@ The client depends on `@jalsoedesign/dockline-abstract` and its own FTP transpor
 
 ## Installation
 
-For a source build, follow the [compiler guide](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
+For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dockline/development/compiler.html#build-from-source).
 
 Choose the installation matching your API:
 
@@ -56,4 +58,4 @@ The adapter provides listing, metadata, streamed reads/writes, directories, dele
 
 FTP cannot guarantee portable no-replace or atomic rename. Publication and rename require explicit replacement permission where documented. Unsupported guarantees fail instead of being silently weakened.
 
-See [Quick start FTP](https://github.com/h2ooooooo/dockline/blob/main/docs/ftp/quick-start.md) for connecting, local-to-remote uploads, remote-to-local downloads and everyday operations through core. Read [FTP options](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/ftp.md), [API](https://github.com/h2ooooooo/dockline/blob/main/docs/reference/api.md) and [errors](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/errors.md) for direct-client details.
+See [Quick start FTP](https://h2ooooooo.github.io/dockline/ftp/quick-start.html) for connecting, local-to-remote uploads, remote-to-local downloads and everyday operations through core. Read [FTP options](https://h2ooooooo.github.io/dockline/guide/ftp.html), [API](https://h2ooooooo.github.io/dockline/reference/api.html) and [errors](https://h2ooooooo.github.io/dockline/guide/errors.html) for direct-client details.

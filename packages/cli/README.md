@@ -1,10 +1,12 @@
+**[Read the documentation](https://h2ooooooo.github.io/dockline/)**
+
 # @jalsoedesign/dockline-cli
 
 The `dockline` terminal command for FTP, FTPS and SFTP: download, upload, list and remove files using a YAML connection. Part of [Dockline](https://github.com/h2ooooooo/dockline).
 
 ## Install
 
-Install the CLI and selected protocol clients from npm. For development, use [build from source](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
+Install the CLI and selected protocol clients from npm. For development, use [build from source](https://h2ooooooo.github.io/dockline/development/compiler.html#build-from-source).
 
 ### Global terminal command
 
@@ -65,4 +67,4 @@ SFTP uses managed host trust by default: interactive unknown-host approval can b
 
 `--json` provides structured results for scripts; `--quiet` suppresses routine human output. Exit codes are `0` success, `1` transfer/connection error, `2` usage/configuration error and `130` cancellation. Cleanup completes before the executable exits.
 
-See [commands](https://github.com/h2ooooooo/dockline/blob/main/docs/cli/commands.md), [configuration](https://github.com/h2ooooooo/dockline/blob/main/docs/cli/configuration.md), [CLI integration](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/cli-integration.md) and the sample YAML files in this package's `examples/` directory.
+See [commands](https://h2ooooooo.github.io/dockline/cli/commands.html), [configuration](https://h2ooooooo.github.io/dockline/cli/configuration.html), [CLI integration](https://h2ooooooo.github.io/dockline/guide/cli-integration.html) and the sample YAML files in this package's `examples/` directory.

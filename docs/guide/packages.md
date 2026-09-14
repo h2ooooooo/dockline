@@ -114,3 +114,17 @@ Dockline/
 Each package has its own manifest, version, public entry point, source and generated `dist/` directory. Published dependency ranges describe npm packages rather than sibling filesystem paths. Local workspaces satisfy those ranges during development; packed-consumer checks install actual tarballs outside the checkout.
 
 The five packages currently have version `1.0.0`. They can be versioned independently, but a shared-contract change must keep dependent ranges and optional peer compatibility accurate. Nothing in this layout publishes a release automatically. See [compiler and package build](/development/compiler).
+
+## Package links
+
+All packages belong to the [Dockline repository](https://github.com/h2ooooooo/dockline); the CLI source is in [packages/cli](https://github.com/h2ooooooo/dockline/tree/main/packages/cli). Each npm package has its own page.
+
+| Package | npm | GitHub source |
+| --- | --- | --- |
+| `@jalsoedesign/dockline-abstract` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-abstract) | [packages/abstract](https://github.com/h2ooooooo/dockline/tree/main/packages/abstract) |
+| `@jalsoedesign/dockline-ftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-ftp-client) | [packages/ftp-client](https://github.com/h2ooooooo/dockline/tree/main/packages/ftp-client) |
+| `@jalsoedesign/dockline-sftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-sftp-client) | [packages/sftp-client](https://github.com/h2ooooooo/dockline/tree/main/packages/sftp-client) |
+| `@jalsoedesign/dockline-core` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-core) | [packages/core](https://github.com/h2ooooooo/dockline/tree/main/packages/core) |
+| `@jalsoedesign/dockline-cli` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-cli) | [packages/cli](https://github.com/h2ooooooo/dockline/tree/main/packages/cli) |
+
+See [updates and releases](/development/releasing) for workspace versioning, publishing and documentation deployment.

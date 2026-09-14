@@ -1,3 +1,5 @@
+**[Read the documentation](https://h2ooooooo.github.io/dockline/)**
+
 # @jalsoedesign/dockline-sftp-client
 
 SFTP, SSH authentication and explicit host trust for [Dockline](https://github.com/h2ooooooo/dockline), backed by `ssh2-sftp-client`. Use this client directly or alongside `@jalsoedesign/dockline-core` for the common `Dockline` API and local file helpers.
@@ -6,7 +8,7 @@ The client depends on `@jalsoedesign/dockline-abstract` and its own SSH/SFTP tra
 
 ## Installation
 
-For a source build, follow the [compiler guide](https://github.com/h2ooooooo/dockline/blob/main/docs/development/compiler.md#build-from-source).
+For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dockline/development/compiler.html#build-from-source).
 
 Choose the installation matching your API:
 
@@ -67,8 +69,8 @@ The client supports passwords, private keys, selected SSH agents, application cr
 import {KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
 ```
 
-`KnownHostsStore` is owned by this client and is not re-exported from core. See [host trust](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/trust.md) for persisted approval and changed-key handling.
+`KnownHostsStore` is owned by this client and is not re-exported from core. See [host trust](https://h2ooooooo.github.io/dockline/guide/trust.html) for persisted approval and changed-key handling.
 
 Size is unlimited by default; configure `maxBytes` when a transfer needs a cap. Timeouts, cancellation, streams, progress, retry controls and explicit publication guarantees share the abstract contracts. Consume returned streams before closing the session.
 
-See [Quick start SFTP](https://github.com/h2ooooooo/dockline/blob/main/docs/sftp/quick-start.md) for connection, downloads, uploads and everyday operations through core. Read [SSH options](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/sftp.md), [API](https://github.com/h2ooooooo/dockline/blob/main/docs/reference/api.md) and [errors](https://github.com/h2ooooooo/dockline/blob/main/docs/guide/errors.md) for direct-client details.
+See [Quick start SFTP](https://h2ooooooo.github.io/dockline/sftp/quick-start.html) for connection, downloads, uploads and everyday operations through core. Read [SSH options](https://h2ooooooo.github.io/dockline/guide/sftp.html), [API](https://h2ooooooo.github.io/dockline/reference/api.html) and [errors](https://h2ooooooo.github.io/dockline/guide/errors.html) for direct-client details.

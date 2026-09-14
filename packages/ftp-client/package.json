@@ -32,7 +32,7 @@
         "url": "git+https://github.com/h2ooooooo/dockline.git",
         "directory": "packages/ftp-client"
     },
-    "homepage": "https://github.com/h2ooooooo/dockline#readme",
+    "homepage": "https://h2ooooooo.github.io/dockline/",
     "bugs": {
         "url": "https://github.com/h2ooooooo/dockline/issues"
     },

@@ -1,3 +1,5 @@
+**[Read the documentation](https://h2ooooooo.github.io/dockline/)**
+
 # Dockline
 
 One TypeScript API for FTP, explicit/implicit FTPS and SFTP, with an optional YAML-configured CLI. Install the protocol clients your application uses, with direct access to their adapters when you need more control.
@@ -120,3 +122,5 @@ npm run docs:dev
 ```
 
 See [dependencies](docs/development/dependencies.md) for the remaining development-only FTP test-server advisory and live audit commands. See [CLI integration](docs/guide/cli-integration.md) to use the SDK or packaged commands in your own tool.
+
+See [updates and releases](https://h2ooooooo.github.io/dockline/development/releasing.html) for updating all packages, publishing to npm and deploying documentation.
