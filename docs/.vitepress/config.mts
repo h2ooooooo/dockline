@@ -30,6 +30,7 @@ export default defineConfig({
             {text: 'Specification', link: '/spec/architecture'},
         ],
         sidebar: [
+            {text: 'SSH', items: [{text: 'Commands and transfers', link: '/ssh/quick-start'}]},
             {
                 text: 'Start here',
                 items: [

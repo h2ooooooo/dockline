@@ -63,6 +63,7 @@ assert.deepEqual(Object.keys(tarballs).sort(), [
     '@jalsoedesign/dockline-core',
     '@jalsoedesign/dockline-ftp-client',
     '@jalsoedesign/dockline-sftp-client',
+    '@jalsoedesign/dockline-ssh-client',
 ]);
 
 const runtimePreamble = `import assert from 'node:assert/strict';
@@ -203,6 +204,17 @@ assert.ok(client instanceof SftpConnector);
 await client.disconnect();`,
     },
     {
+        name: 'ssh-only',
+        packages: ['abstract', 'sftp-client', 'ssh-client'],
+        types: `import {SshClient, type ExecResult} from '@jalsoedesign/dockline-ssh-client';
+const client = new SshClient({host: 'fixture.invalid', port: 22, username: 'fixture'});
+const execute = () => client.withConnection(async server => { const result: ExecResult = await server.exec('uptime'); return result.code; });
+void execute;`,
+        runtime: `const {SshClient} = await import('@jalsoedesign/dockline-ssh-client');
+assert.equal(typeof SshClient, 'function');
+for (const name of ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-ftp-client', 'basic-ftp']) absent(name);`,
+    },
+    {
         name: 'core-ftp',
         packages: ['abstract', 'core', 'ftp-client'],
         types: sdkTypes,
@@ -289,6 +301,7 @@ async function addDocumentationExamples(target, scenario) {
         'core-only': 'core',
         'ftp-only': 'ftp-client',
         'sftp-only': 'sftp-client',
+        'ssh-only': 'ssh-client',
     };
     const workspace = readmePackages[scenario];
 
@@ -463,4 +476,4 @@ assert.throws(() => Dockline.create({protocol: 'sftp', host: 'fixture.invalid', 
 `);
 await command('incompatible-installed-client', [path.join(brokenConsumer, 'incompatible.mjs')], brokenConsumer);
 
-console.log(`Ten local package combinations and three global CLI installations verified: ${directory}`);
+console.log(`${scenarios.length} local package combinations and three global CLI installations verified: ${directory}`);

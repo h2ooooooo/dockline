@@ -11,6 +11,7 @@ if (![
     'abstract',
     'ftp-client',
     'sftp-client',
+    'ssh-client',
     'core',
     'cli',
 ].includes(name)) {
@@ -18,7 +19,7 @@ if (![
 }
 
 const require = createRequire(import.meta.url);
-const vitest = require.resolve('vitest/vitest.mjs');
+const vitest = path.join(path.dirname(require.resolve('vitest/package.json')), 'vitest.mjs');
 const buildArguments = ['core', 'cli'].includes(name) ? [] : ['--package', name];
 const commands = [
     [path.join(root, 'scripts/build.mjs'), ...buildArguments],

@@ -9,6 +9,7 @@ const packages = [
     'abstract',
     'ftp-client',
     'sftp-client',
+    'ssh-client',
     'core',
     'cli',
 ];
@@ -19,7 +20,7 @@ if (arguments_.length > 0 && (arguments_.length !== 2 || !target || !packages.in
     throw new TypeError('Usage: node scripts/build.mjs [--package abstract|ftp-client|sftp-client|core|cli]');
 }
 
-const selected = target === 'cli' ? ['abstract', 'core', 'cli'] :
+const selected = target === 'ssh-client' ? ['abstract', 'sftp-client', 'ssh-client'] : target === 'cli' ? ['abstract', 'core', 'cli'] :
     target === 'abstract' ? ['abstract'] :
         target === 'core' ? ['abstract', 'core'] :
             target ? ['abstract', target] : packages;

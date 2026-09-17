@@ -124,3 +124,7 @@ npm run docs:dev
 See [dependencies](docs/development/dependencies.md) for the remaining development-only FTP test-server advisory and live audit commands. See [CLI integration](docs/guide/cli-integration.md) to use the SDK or packaged commands in your own tool.
 
 See [updates and releases](https://h2ooooooo.github.io/dockline/development/releasing.html) for updating all packages, publishing to npm and deploying documentation.
+
+## SSH command execution
+
+The optional [`@jalsoedesign/dockline-ssh-client`](https://github.com/h2ooooooo/dockline/tree/main/packages/ssh-client) workspace provides SSH commands, sudo scopes and SFTP helpers. See the [SSH guide](https://h2ooooooo.github.io/dockline/ssh/quick-start).

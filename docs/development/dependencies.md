@@ -65,3 +65,7 @@ An application that separately adds the Flystorage wrapper also adopts its norma
 The upstream SSH library's Ed25519 test-key generator can produce malformed fixture keys for leading-zero key material. Dynamic tests use valid RSA fixtures where the algorithm is incidental; a fixed valid Ed25519 fixture retains real Ed25519 authentication coverage. This is a test-fixture adjustment, not a protocol implementation patch or removal of supported user-provided keys. SSH-agent and key authentication remain covered by behavioral tests.
 
 These correctness boundaries are independent of npm vulnerability counts. They remain documented until a compatible released dependency resolves them and the corresponding regressions verify the result.
+
+## SSH client
+
+The optional SSH workspace uses `ssh2` for command channels and the existing Dockline SFTP client for file transfers. It shares the Node version requirement and introduces no patches or forks. Application-specific configuration and prompt interfaces are supplied by callbacks.

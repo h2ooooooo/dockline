@@ -138,3 +138,7 @@ npm --prefix docs run preview -- --host 0.0.0.0 --port 4176
 ```
 
 The site uses one Sunset theme and no appearance toggle.
+
+## SSH command execution
+
+For commands, sudo scopes and transfers in a connection callback, see the [SSH client guide](/ssh/quick-start). This is a separate optional workspace and is pending its first npm publication.

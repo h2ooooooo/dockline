@@ -2,7 +2,7 @@
 
 [GitHub repository](https://github.com/h2ooooooo/dockline) · [Public documentation](https://h2ooooooo.github.io/dockline/) · [Workflow runs](https://github.com/h2ooooooo/dockline/actions)
 
-The repository contains five public npm packages. The CLI is one of those workspaces, not a separate Git repository. Library and CLI documentation share this VitePress site. Each page links to its Markdown source on GitHub, and the package reference links to each package's source and npm page.
+The repository contains six public package workspaces, including the new SSH client. The SSH client must receive its first explicit publication before registry installation is available. The CLI is one of those workspaces, not a separate Git repository. Library and CLI documentation share this VitePress site. Each page links to its Markdown source on GitHub, and the package reference links to each package's source and npm page.
 
 ## Choose what to update
 
@@ -11,7 +11,7 @@ The repository contains five public npm packages. The CLI is one of those worksp
 | Only files in docs/ | Build the docs, commit and push main; Pages deploys the site. No npm version bump is needed. |
 | Package README or homepage metadata | Publish a new version of each affected package to update its npm presentation. A GitHub push alone does not update npm. |
 | Package behavior, declarations or dependencies | Choose a semantic version, validate affected consumers and publish the affected packages. |
-| All five packages together | Version and validate the workspaces together, then publish them sequentially in dependency order. |
+| All packages together | Version and validate the workspaces together, then publish them sequentially in dependency order. |
 
 Published name/version pairs are immutable. A message saying a version is already published is not a reason to retry or unpublish it. Check the registry and resume only the unfinished packages. The website tracks main; installed packages track the versions selected by each consumer's lockfile.
 
@@ -72,6 +72,7 @@ $releasePackages = @(
     '@jalsoedesign/dockline-abstract',
     '@jalsoedesign/dockline-ftp-client',
     '@jalsoedesign/dockline-sftp-client',
+    '@jalsoedesign/dockline-ssh-client',
     '@jalsoedesign/dockline-core',
     '@jalsoedesign/dockline-cli'
 )

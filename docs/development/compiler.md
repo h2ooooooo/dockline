@@ -1,6 +1,6 @@
 # Compiler and package build
 
-Dockline is a TypeScript monorepo that emits five ESM packages. The root is private and coordinates the workspaces; it is not a distributable SDK package. Builds use the compiler installed in this repository.
+Dockline is a TypeScript monorepo that emits six ESM packages. The root is private and coordinates the workspaces; it is not a distributable SDK package. Builds use the compiler installed in this repository.
 
 ## Build from source
 
@@ -27,7 +27,7 @@ The isolated consumer check compiles public declarations with `skipLibCheck: fal
 
 | Command | Result |
 | --- | --- |
-| `npm ci` | Installs the root lockfile and links the five local workspaces. |
+| `npm ci` | Installs the root lockfile and links the six local workspaces. |
 | `npm run build` | Builds all packages in dependency order with the local compiler. |
 | `npm run dev` | Runs the declared workspace development/watch workflow. |
 | `npm run typecheck` | Checks package source and test types. |
@@ -51,7 +51,7 @@ Core depends on `@jalsoedesign/dockline-abstract`; the FTP and SFTP packages are
 
 Declaration dependencies belong to the package whose public declarations use them. An installed client must have the types needed by its public API even after a production-only install. Abstract and core must remain compilable without requiring either concrete client. The consumer matrix verifies these boundaries instead of relying on workspace hoisting.
 
-The five package versions can change independently. When abstract contracts or client compatibility change, update affected dependency/optional-peer ranges together. The private root's version is workspace metadata and is not a registry release.
+The six package versions can change independently. When abstract contracts or client compatibility change, update affected dependency/optional-peer ranges together. The private root's version is workspace metadata and is not a registry release.
 
 ## CLI executable
 

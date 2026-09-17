@@ -11,6 +11,7 @@ const workspaces = [
     'core',
     'ftp-client',
     'sftp-client',
+    'ssh-client',
     'cli',
 ];
 
@@ -86,17 +87,19 @@ for (const workspace of workspaces) {
         }
     }
 
-    const prohibited = workspace === 'sftp-client' ?
+    const prohibited = workspace === 'ssh-client' ?
         ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-ftp-client', 'basic-ftp'] :
-        workspace === 'ftp-client' ?
-            ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-sftp-client', 'ssh2-sftp-client', 'ssh2'] :
-            [
-                '@jalsoedesign/dockline-ftp-client',
-                '@jalsoedesign/dockline-sftp-client',
-                'basic-ftp',
-                'ssh2-sftp-client',
-                'ssh2',
-            ];
+        workspace === 'sftp-client' ?
+            ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-ftp-client', 'basic-ftp'] :
+            workspace === 'ftp-client' ?
+                ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-sftp-client', 'ssh2-sftp-client', 'ssh2'] :
+                [
+                    '@jalsoedesign/dockline-ftp-client',
+                    '@jalsoedesign/dockline-sftp-client',
+                    'basic-ftp',
+                    'ssh2-sftp-client',
+                    'ssh2',
+                ];
 
     assert.ok(!dependencies.some(name => prohibited.includes(name)), `Unexpected dependency in ${manifest.name}`);
 
