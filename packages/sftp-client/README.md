@@ -74,3 +74,7 @@ import {KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
 Size is unlimited by default; configure `maxBytes` when a transfer needs a cap. Timeouts, cancellation, streams, progress, retry controls and explicit publication guarantees share the abstract contracts. Consume returned streams before closing the session.
 
 See [Quick start SFTP](https://h2ooooooo.github.io/dockline/sftp/quick-start.html) for connection, downloads, uploads and everyday operations through core. Read [SSH options](https://h2ooooooo.github.io/dockline/guide/sftp.html), [API](https://h2ooooooo.github.io/dockline/reference/api.html) and [errors](https://h2ooooooo.github.io/dockline/guide/errors.html) for direct-client details.
+
+### PuTTY key files
+
+PuTTY PPK v3 keys are accepted directly through `privateKeyPath`, `privateKey` or a credential provider, with `passphrase` for encrypted keys. RSA, DSA, Ed25519 and ECDSA keys are supported, including Argon2d/i/id encryption. Conversion and integrity verification happen in memory; no decrypted key file is written. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).

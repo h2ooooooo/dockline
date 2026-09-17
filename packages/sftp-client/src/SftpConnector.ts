@@ -11,6 +11,7 @@ import {Readable} from 'node:stream';
 import {pipeline} from 'node:stream/promises';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
+import {prepareSshPrivateKey} from './PrivateKey.js';
 import {
     ConnectorError, AuthError, NotFoundError, PermissionError, NotSupportedError,
     HostTrustError, OperationAbortedError, OperationTimeoutError, ConnectionClosedError,
@@ -427,9 +428,15 @@ export class SftpConnector implements TransferAdapter {
             };
         }
 
+        authentication.privateKey = await prepareSshPrivateKey(authentication.privateKey, authentication.passphrase);
+
+        if (abortSignal.aborted) {
+            throw new OperationAbortedError('SFTP key preparation was cancelled');
+        }
+
         for (const value of [authentication.password, authentication.passphrase, authentication.privateKey]) {
-            if (typeof value === 'string' && value) {
-                this.secrets.add(value);
+            if ((typeof value === 'string' || Buffer.isBuffer(value)) && value.length) {
+                this.secrets.add(value.toString());
             }
         }
 

@@ -149,3 +149,31 @@ Capability reports expose an `inventory` state: `not-requested`, `advertised` or
 - [SSH client authentication, agents, keepalives and keyboard-interactive callbacks](https://github.com/mscdex/ssh2#client-methods)
 - [SSH agent protocol](https://github.com/mscdex/ssh2#agentprotocol)
 - [ssh2-sftp-client connection options and operations](https://github.com/theophilusx/ssh2-sftp-client)
+
+## PuTTY PPK keys
+
+`privateKeyPath` accepts PuTTY PPK v3 files directly, including encrypted keys. Supply `passphrase` for an encrypted file; the application is responsible for collecting or retrieving it. The same reader is used for direct private-key contents and keys returned by a credential provider.
+
+Supported v3 algorithms are RSA, DSA, Ed25519 and ECDSA (nistp256, nistp384 and nistp521). AES-256-CBC encryption supports Argon2d, Argon2i and Argon2id. Existing OpenSSH, PEM and PPK v2 support continues through the SSH transport; PPK v2 support is limited to RSA and DSA. Server algorithm policies still apply, so recognizing an older key algorithm does not guarantee the server will accept it.
+
+Dockline verifies the PPK integrity MAC and the public/private key relationship, then converts the key in memory. It does not rewrite the original key or create a decrypted key file. Host trust remains a separate required application decision.
+
+```ts
+const connector = new SftpConnector({
+    host: 'sftp.example.com',
+    port: 22,
+    username: 'deployer',
+    initialPath: '',
+    privateKeyPath: './keys/deployer.ppk',
+    passphrase: process.env.DEPLOY_KEY_PASSPHRASE,
+    ...trustOptions,
+});
+```
+
+`SshPrivateKeyError` extends `CredentialProviderError` and exposes a `reason`: `passphrase-required`, `integrity`, `format`, `unsupported` or `resource-limit`. An integrity failure can mean a wrong passphrase or a changed key; it cannot reliably distinguish between them. These failures are not transient connection errors and are not automatically retried.
+
+For custom SSH integrations, `prepareSshPrivateKey(key, passphrase)` is exported from `@jalsoedesign/dockline-sftp-client`. It accepts a string, Buffer or undefined; existing formats pass through unchanged. Applications normally use the connector directly.
+
+Key parsing is limited to 1 MiB per PPK file, 256 MiB Argon2 memory, 100 passes and 16 lanes. These limits apply to key processing, not transfer sizes. Argon2 derivation cannot be interrupted mid-calculation; cancellation is checked before authentication. Files with custom parameters beyond those bounds are rejected with `resource-limit`.
+
+The format reader follows [PuTTY's PPK specification](https://www.puttyssh.org/0.80/htmldoc/AppendixC.html) and [OpenSSH's private-key format](https://github.com/openssh/openssh-portable/blob/master/PROTOCOL.key).

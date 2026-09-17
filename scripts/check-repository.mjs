@@ -20,6 +20,16 @@ const files = [...new Set(output.split('\0').filter(Boolean))];
 const publicKeys = new Set([
     'packages/ftp-client/tests/fixtures/localhost-test-key.pem',
     'packages/sftp-client/tests/fixtures/public-test-ed25519-key.pem',
+    'packages/sftp-client/tests/fixtures/ppk/dsa_v3.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/rsa-reference.openssh',
+    'packages/sftp-client/tests/fixtures/ppk/test_ecdsa_nistp256_puttygen_v3.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/test_ecdsa_nistp384_2_puttygen_v3.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/test_ecdsa_nistp521_2_puttygen_v3.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/test_ed25519_puttygen_v3.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/v3_ecdsa.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/v3_rsa_argon2d.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/v3_rsa_argon2i.ppk',
+    'packages/sftp-client/tests/fixtures/ppk/v3_rsa_argon2id.ppk',
 ]);
 const excluded = /(^|\/)(node_modules|dist|coverage|\.git|\.idea|\.vscode|\.scratch|\.serena|cache)(\/|$)/;
 const localSettings = /(^|\/)(\.npmrc|\.env(?:\..+)?|dockline\.server\.ya?ml|known-hosts\.json(?:\.lock)?)$/;
@@ -42,7 +52,11 @@ for (const filename of files) {
 
     assert.ok(!credentials.test(text), `Potential credential found in ${filename}`);
 
-    if (/-----BEGIN [A-Z ]*PRIVATE KEY-----/.test(text)) {
+    // Match key material, not an encoder's literal PEM header string.
+    const pemKey = /-----BEGIN [A-Z ]*PRIVATE KEY-----\s*(?:\r?\n|\\n)(?:(?:Proc-Type|DEK-Info):[^\r\n]*(?:\r?\n|\\n)\s*)*[A-Za-z0-9+/]{24,}/.test(text);
+    const puttyKey = /^PuTTY-User-Key-File-[23]: /m.test(text);
+
+    if (pemKey || puttyKey) {
         assert.ok(publicKeys.has(filename), `Undocumented private key included: ${filename}`);
 
         const notice = await readFile(path.join(root, path.dirname(filename), 'README.md'), 'utf8');

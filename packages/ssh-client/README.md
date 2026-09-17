@@ -59,3 +59,7 @@ Sudo defaults to noninteractive mode. Set `sudo.password: 'prompt'` with an `ask
 Cancellation requests command termination and closes channels. The remote server may ignore a signal; inspect remote state before retrying. Remote Windows shell syntax and persistent interactive `sudo su` sessions are not supported.
 
 See the [SSH package source](https://github.com/h2ooooooo/dockline/tree/main/packages/ssh-client).
+
+### PuTTY key files
+
+`privateKeyPath` accepts PPK v3 keys directly, including encrypted keys when `passphrase` is supplied. SSH commands and SFTP transfers share the same in-memory reader. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).

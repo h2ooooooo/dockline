@@ -7,7 +7,7 @@ import path from 'node:path';
 import {SshClient, quotePosix} from '../src/index.js';
 import {createLocalSftp} from '../../sftp-client/tests/local-sftp.js';
 
-async function endpoint() {
+async function endpoint(userKey?: ReturnType<typeof ssh2.utils.parseKey>) {
     const keys = generateKeyPairSync('rsa', {modulusLength: 2048, privateKeyEncoding: {type: 'pkcs1', format: 'pem'}, publicKeyEncoding: {type: 'spki', format: 'pem'}});
     const parsed = ssh2.utils.parseKey(keys.privateKey);
 
@@ -24,6 +24,16 @@ async function endpoint() {
         client.on('close', () => clients.delete(client));
         client.on('authentication', context => {
             if (context.method === 'password' && context.username === 'fixture' && context.password === 'test') {
+                context.accept();
+            } else if (
+                context.method === 'publickey' &&
+                context.username === 'fixture' &&
+                userKey &&
+                !(userKey instanceof Error) &&
+                context.key.data.equals(userKey.getPublicSSH()) &&
+                (!context.signature ||
+                    userKey.verify(context.blob!, context.signature, context.hashAlgo))
+            ) {
                 context.accept();
             } else {
                 context.reject();
@@ -176,4 +186,25 @@ describe('SSH client', () => {
             await rm(directory, {recursive: true, force: true});
         }
     });
+});
+
+it('authenticates SSH commands with an encrypted PPK v3 key', async () => {
+    const directory = new URL('../../sftp-client/tests/fixtures/ppk/', import.meta.url);
+    const reference = ssh2.utils.parseKey(await readFile(new URL('rsa-reference.openssh', directory)));
+    const server = await endpoint(reference);
+
+    try {
+        const client = new SshClient({
+            ...server.config,
+            password: undefined,
+            privateKeyPath: (await import('node:url')).fileURLToPath(new URL('v3_rsa_argon2id.ppk', directory)),
+            passphrase: 'changeit',
+        });
+        const result = await client.withConnection(session => session.exec('whoami'));
+
+        expect(result.code).toBe(0);
+        expect(result.stdout).toBe("'whoami'");
+    } finally {
+        await server.close();
+    }
 });
