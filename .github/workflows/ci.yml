@@ -10,6 +10,7 @@ permissions:
 jobs:
   library:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         node: [22.22.2, 24.15.0]
@@ -21,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - name: Use the declared package manager
-        run: npm install --global npm@12.0.2
+        uses: ./.github/actions/setup-npm
       - name: Install locked dependencies
         run: npm ci
       - name: Check repository contents
@@ -36,7 +37,7 @@ jobs:
         run: npm test
       - name: Build declarations and ESM
         run: npm run build
-      - name: Verify all five publishable packages
+      - name: Verify all six publishable packages
         run: npm run check:packages
       - name: Verify isolated package combinations and optional clients
         run: npm run check:consumer
@@ -52,7 +53,7 @@ jobs:
           node-version: 24.15.0
           cache: npm
           cache-dependency-path: docs/package-lock.json
-      - run: npm install --global npm@12.0.2
+      - uses: ./.github/actions/setup-npm
       - run: npm run docs:install
       - run: npm run audit:docs
       - run: npm run docs:build

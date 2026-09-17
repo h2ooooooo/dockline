@@ -46,7 +46,15 @@ The workspace gate checks each package's real distribution boundary. Tests impor
 
 Current size-limit regressions stream a download and transfer monitor above 1 GiB without allocating a whole file in memory. Checksum/copy regressions supply metadata above that threshold and confirm streaming proceeds to the ordinary integrity checks instead of an implicit size rejection. Additional cases cover explicit connector/call limits, `Infinity` overrides, empty files, invalid limits and partial-transfer cleanup. Unlimited size must not weaken completion or integrity checks. Keep these assertions independent of package versions and release dates.
 
+## CI toolchain and platform coverage
+
+The library matrix runs on Linux and Windows with both declared Node.js versions. Each combination finishes independently so one failure does not cancel the other platform results.
+
+CI and Pages use the shared `.github/actions/setup-npm` action. It reads `packageManager` from the root manifest, installs that npm version into a temporary runner prefix, adds its executables to subsequent steps and verifies the selected version. Keeping this installation separate avoids replacing files that the bootstrap npm process is still using. It does not change the project lockfile or the Node.js version under test.
+
 ## Fixture boundaries
+
+The local SFTP server disables Nagle buffering with the public SSH connection API to avoid server-side response buffering stalls caused by TCP acknowledgement timing on Linux. The multi-megabyte transfer regression retains its five-second operation deadline; stalled-transfer and cancellation tests still verify timeout and cleanup behavior.
 
 Protocol endpoints bind locally and use disposable state. FTP and SFTP data/metadata responses must represent the same synthetic filesystem. Empty or malformed directory descriptions can legitimately be rejected as unsupported entries and are not substitutes for valid-server fixtures.
 
@@ -58,7 +66,7 @@ Resource tests should close sessions, listeners, streams and temporary files eve
 
 ## Consumer installation matrix
 
-The package check inspects every tarball. The library portion of the isolated-consumer check covers seven installations: abstract only, core only, a direct FTP client, a direct SFTP client, core with FTP, core with SFTP, and core with both clients. It verifies required dependency closure, optional-client isolation, shared error identities, runtime imports and public declarations. Production checks must use installed tarballs rather than source aliases or workspace hoisting.
+The package check inspects every tarball. The library portion of the isolated-consumer check covers eight installations: abstract only, core only, a direct FTP client, a direct SFTP client, a direct SSH client, core with FTP, core with SFTP, and core with both transfer clients. It verifies required dependency closure, optional-client isolation, shared error identities, runtime imports and public declarations. Production checks must use installed tarballs rather than source aliases or workspace hoisting.
 
 Core-only tests exercise missing-client failures without opening a network connection. A present client that throws or has a broken dependency must preserve that original error; an incompatible client export is reported as an interface failure. Tests must not turn that case into a misleading installation suggestion.
 
@@ -68,7 +76,7 @@ The current consumer check reads the actual [FTP](../ftp/quick-start.md) and [SF
 
 ## CLI verification
 
-The consumer matrix adds CLI only, CLI with FTP and CLI with SFTP to the existing seven library combinations, for ten installations in total. CLI-only help/version must work without a YAML file or clients; an actual connection must identify a missing required client. The CLI needs configuration and command tests in addition to SDK transfer coverage. Check option precedence, relative/absolute path handling, environment expansion, malformed YAML, credential/trust policy, overwrite defaults, recursive completion, JSON output and exit codes. Its package checks exercise the compiled executable outside the checkout, including help/version without YAML or clients and commands with only their selected protocol package.
+The consumer matrix adds CLI only, CLI with FTP and CLI with SFTP to the eight library combinations, for eleven installations in total. CLI-only help/version must work without a YAML file or clients; an actual connection must identify a missing required client. The CLI needs configuration and command tests in addition to SDK transfer coverage. Check option precedence, relative/absolute path handling, environment expansion, malformed YAML, credential/trust policy, overwrite defaults, recursive completion, JSON output and exit codes. Its package checks exercise the compiled executable outside the checkout, including help/version without YAML or clients and commands with only their selected protocol package.
 
 The same check installs the CLI into three isolated global prefixes: CLI alone, CLI with FTP and CLI with SFTP. It checks generated executable shims, help/version and optional-client resolution outside the source checkout.
 

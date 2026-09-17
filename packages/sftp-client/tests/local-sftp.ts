@@ -53,6 +53,10 @@ export async function createLocalSftp(options: {interactive?: 'single' | 'multip
             }
         },
     }, (client) => {
+        // Flush each protocol response without Linux delayed-ACK/Nagle stalls.
+        // The public server method is missing from the upstream Connection declaration.
+        (client as Connection & {setNoDelay(noDelay: boolean): void}).setNoDelay(true);
+
         observations.connections++;
         connections.add(client);
         client.on('error', () => {});

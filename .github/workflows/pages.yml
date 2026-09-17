@@ -31,7 +31,7 @@ jobs:
           cache: npm
           cache-dependency-path: docs/package-lock.json
       - name: Use the declared package manager
-        run: npm install --global npm@12.0.2
+        uses: ./.github/actions/setup-npm
       - name: Configure GitHub Pages
         id: pages
         uses: actions/configure-pages@v6
