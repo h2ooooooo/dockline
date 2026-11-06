@@ -55,7 +55,7 @@ const result = sections.join('\n').trimEnd() + '\n';
 const filename = path.join(repository, 'docs/reference/types.md');
 
 if (process.argv.includes('--check')) {
-    assert.equal(await readFile(filename, 'utf8'), result, 'API documentation drifted; run npm run docs:api after building');
+    assert.equal((await readFile(filename, 'utf8')).replaceAll('\r\n', '\n'), result, 'API documentation drifted; run npm run docs:api after building');
     console.log('Public API declaration reference matches the built packages.');
 } else {
     await mkdir(path.dirname(filename), {recursive: true});
