@@ -1207,4 +1207,3 @@ export interface Question {
 }
 export declare function milliseconds(value: string | number): number;
 ```
-

@@ -51,7 +51,7 @@ for (const directory of (await readdir(path.join(repository, 'packages'))).sort(
     }
 }
 
-const result = sections.join('\n') + '\n';
+const result = sections.join('\n').trimEnd() + '\n';
 const filename = path.join(repository, 'docs/reference/types.md');
 
 if (process.argv.includes('--check')) {
