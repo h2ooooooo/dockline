@@ -17,7 +17,7 @@ async function listen(server: Server): Promise<number> {
     return (server.address() as {port: number}).port;
 }
 
-async function fixture(encoding: 'utf8' | 'latin1') {
+async function fixture(encoding: 'utf8' | 'latin1', listingOverride?: string) {
     const sockets = new Set<Socket>();
     const dataServers: Server[] = [];
     const files = new Map<string, Buffer>();
@@ -59,7 +59,7 @@ async function fixture(encoding: 'utf8' | 'latin1') {
                 observedPaths.push(path);
                 data.end(files.get(path)!);
             } else {
-                const listing = [...files].map(([name, bytes]) =>
+                const listing = listingOverride ?? [...files].map(([name, bytes]) =>
                     `type=file;size=${bytes.length};modify=20260912000000; ${name}\r\n`).join('');
 
                 data.end(Buffer.from(listing, encoding));
@@ -210,5 +210,18 @@ describe('FTP filename encoding over a real loopback connection', () => {
             destination,
         ]);
         expect(files.size).toBe(0);
+    });
+
+    it('ignores inherited-object MLSD facts while returning the saved file metadata', async () => {
+        const listing = 'type=file;size=4;modify=20260912000000;constructor=ignored;__proto__=ignored; safe.txt\r\n';
+        const {connector} = await fixture('utf8', listing);
+        const entries = [];
+
+        for await (const entry of connector.list('', {deep: false})) {
+            entries.push(entry);
+        }
+
+        expect(entries).toHaveLength(1);
+        expect(entries[0]).toMatchObject({path: 'safe.txt', type: 'file', size: 4});
     });
 });

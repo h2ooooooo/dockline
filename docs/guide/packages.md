@@ -1,6 +1,8 @@
 # Packages and repository layout
 
-Dockline is one [Git repository](https://github.com/h2ooooooo/dockline) containing six independently versioned npm packages. Install the pieces your application uses. The repository root is a private workspace for development and is never the runtime package.
+Start with [installation](/guide/installation) and the [complete API program](/api/quick-start) before this reference. The import and missing-client snippets illustrate package boundaries; they are not additional connection programs or commands to run against a server.
+
+Dockline is one [Git repository](https://github.com/h2ooooooo/dockline) containing seven independently versioned npm packages. Install the packages you need. The repository root is a private workspace for development and is never the runtime package.
 
 ## Pick the right level
 
@@ -8,15 +10,16 @@ Dockline is one [Git repository](https://github.com/h2ooooooo/dockline) containi
 | --- | --- | --- |
 | `@jalsoedesign/dockline-core` | `Dockline`, configuration-based client selection, connection scopes and local file helpers | Depends on abstract. FTP and SFTP clients are optional peers. |
 | `@jalsoedesign/dockline-abstract` | Shared adapter/configuration contracts, errors, retry policy, streams, limits, progress, publication, checksums, traversal and pools | Has no FTP or SSH transport implementation. |
+| `@jalsoedesign/dockline-keys` | Independent key inspection, encrypted OpenSSH/PPK/PEM conversion and public-key formats | Depends on abstract for errors, sshpk and hash-wasm; no transport client. |
 | `@jalsoedesign/dockline-ftp-client` | `FtpConnector`, common-config factory, FTP/FTPS sessions, TLS and filename handling | Depends on abstract and `basic-ftp`; does not depend on core or SFTP. |
-| `@jalsoedesign/dockline-sftp-client` | `SftpConnector`, common-config factory, SSH authentication, trust and `KnownHostsStore` | Depends on abstract and `ssh2-sftp-client`; does not depend on core or FTP. |
-| `@jalsoedesign/dockline-ssh-client` | Scoped commands, sudo and file helpers | Depends on SFTP and `ssh2`; does not depend on core or FTP. |
+| `@jalsoedesign/dockline-sftp-client` | `SftpConnector`, common-config factory, SSH authentication, trust and `KnownHostsStore` | Depends on abstract, dockline-keys and `ssh2-sftp-client`; does not depend on core or FTP. |
+| `@jalsoedesign/dockline-ssh-client` | Scoped commands, sudo and file helpers | Depends on SFTP, dockline-keys and `ssh2`; does not depend on core or FTP. |
 | `@jalsoedesign/dockline-cli` | YAML-configured download, upload, list and remove commands; optional embedding API | Uses core and the selected client; does not bundle either transport. |
 
 Use **CLI plus a client** for terminal commands and YAML configuration. Use **core plus a client** for `Dockline.connect()`, `uploadFile()` and `downloadFile()`. Use a **direct client** for its adapter API without the convenience wrapper. Use **abstract** when building your own adapter or working only with shared errors and transfer tools.
 
 ```text
-your application
+API consumer
   |
   +-- @jalsoedesign/dockline-core
   |     `-- selects the installed client for the configured protocol
@@ -37,7 +40,9 @@ The optional [CLI](/guide/cli) uses core for transfers and contributes one execu
 
 `new Dockline(config)`, `Dockline.create(config)` and core's `createConnector(config)` remain synchronous. They validate the configuration and load the selected installed client without opening a network connection. If the selected client is absent, they throw `MissingClientPackageError`.
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {Dockline, MissingClientPackageError} from '@jalsoedesign/dockline-core';
 
 try {
@@ -59,6 +64,74 @@ try {
 }
 ```
 
+```js [JavaScript]
+import {Dockline, MissingClientPackageError} from '@jalsoedesign/dockline-core';
+
+try {
+    const remote = Dockline.create({
+        protocol: 'ftp',
+        host: 'ftp.example.com',
+        username: 'deploy',
+        password: process.env.FTP_PASSWORD,
+    });
+
+    console.log('FTP client is available; no connection has been opened.');
+    console.log(remote.toJSON());
+} catch (error) {
+    if (error instanceof MissingClientPackageError) {
+        console.error(error.protocol, error.packageName, error.installCommand);
+    } else {
+        throw error;
+    }
+}
+```
+
+```js [MJS]
+import {Dockline, MissingClientPackageError} from '@jalsoedesign/dockline-core';
+
+try {
+    const remote = Dockline.create({
+        protocol: 'ftp',
+        host: 'ftp.example.com',
+        username: 'deploy',
+        password: process.env.FTP_PASSWORD,
+    });
+
+    console.log('FTP client is available; no connection has been opened.');
+    console.log(remote.toJSON());
+} catch (error) {
+    if (error instanceof MissingClientPackageError) {
+        console.error(error.protocol, error.packageName, error.installCommand);
+    } else {
+        throw error;
+    }
+}
+```
+
+```js [CommonJS]
+const {Dockline, MissingClientPackageError} = require('@jalsoedesign/dockline-core');
+
+try {
+    const remote = Dockline.create({
+        protocol: 'ftp',
+        host: 'ftp.example.com',
+        username: 'deploy',
+        password: process.env.FTP_PASSWORD,
+    });
+
+    console.log('FTP client is available; no connection has been opened.');
+    console.log(remote.toJSON());
+} catch (error) {
+    if (error instanceof MissingClientPackageError) {
+        console.error(error.protocol, error.packageName, error.installCommand);
+    } else {
+        throw error;
+    }
+}
+```
+
+:::
+
 The error extends `ConnectorError`, has code `DOCKLINE_CLIENT_NOT_INSTALLED`, and provides the requested `protocol`, required `packageName` and suggested `installCommand`. For FTP, the package is `@jalsoedesign/dockline-ftp-client`; for SFTP, it is `@jalsoedesign/dockline-sftp-client`.
 
 The command is guidance for the application's developer. Dockline never runs it, installs a package or changes protocols. See [installation](/guide/installation) for npm commands covering each package combination. A present but broken client, including a missing dependency or an exception while loading, retains its original error instead of being mislabeled as an absent optional client.
@@ -67,12 +140,37 @@ The command is guidance for the application's developer. Dockline never runs it,
 
 ## Shared exports and concrete clients
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {Dockline, type FtpTransferConfig, ConnectorError} from '@jalsoedesign/dockline-core';
 import {ConnectorPool, type TransferAdapter} from '@jalsoedesign/dockline-abstract';
 import {FtpConnector} from '@jalsoedesign/dockline-ftp-client';
 import {SftpConnector, KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
 ```
+
+```js [JavaScript]
+import {Dockline, ConnectorError} from '@jalsoedesign/dockline-core';
+import {ConnectorPool} from '@jalsoedesign/dockline-abstract';
+import {FtpConnector} from '@jalsoedesign/dockline-ftp-client';
+import {SftpConnector, KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
+```
+
+```js [MJS]
+import {Dockline, ConnectorError} from '@jalsoedesign/dockline-core';
+import {ConnectorPool} from '@jalsoedesign/dockline-abstract';
+import {FtpConnector} from '@jalsoedesign/dockline-ftp-client';
+import {SftpConnector, KnownHostsStore} from '@jalsoedesign/dockline-sftp-client';
+```
+
+```js [CommonJS]
+const {Dockline, ConnectorError} = require('@jalsoedesign/dockline-core');
+const {ConnectorPool} = require('@jalsoedesign/dockline-abstract');
+const {FtpConnector} = require('@jalsoedesign/dockline-ftp-client');
+const {SftpConnector, KnownHostsStore} = require('@jalsoedesign/dockline-sftp-client');
+```
+
+:::
 
 Core re-exports the generic abstract API and common configuration types. Its `TransferAdapter` is a structural contract, not a union that imports both concrete clients. `remote.connector` implements that contract. Import a concrete class from its own client package when you need protocol-specific members.
 
@@ -114,22 +212,20 @@ Dockline/
 
 Each package has its own manifest, version, public entry point, source and generated `dist/` directory. Published dependency ranges describe npm packages rather than sibling filesystem paths. Local workspaces satisfy those ranges during development; packed-consumer checks install actual tarballs outside the checkout.
 
-The six packages currently have version `1.0.0`. They can be versioned independently, but a shared-contract change must keep dependent ranges and optional peer compatibility accurate. Nothing in this layout publishes a release automatically. See [compiler and package build](/development/compiler).
+Packages are independently versioned. Current versions and dependency minima live in their manifests; shared-contract changes must keep dependent ranges and optional peer compatibility accurate. See [compiler and package build](/development/compiler).
 
 ## Package links
 
-All packages belong to the [Dockline repository](https://github.com/h2ooooooo/dockline); the CLI source is in [packages/cli](https://github.com/h2ooooooo/dockline/tree/main/packages/cli). Each npm package has its own page.
+All packages belong to the [Dockline repository](https://github.com/h2ooooooo/dockline); the CLI source is in [`packages/cli`](https://github.com/h2ooooooo/dockline/tree/main/packages/cli). Each npm package has its own page.
 
 | Package | npm | GitHub source |
 | --- | --- | --- |
-| `@jalsoedesign/dockline-abstract` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-abstract) | [packages/abstract](https://github.com/h2ooooooo/dockline/tree/main/packages/abstract) |
-| `@jalsoedesign/dockline-ftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-ftp-client) | [packages/ftp-client](https://github.com/h2ooooooo/dockline/tree/main/packages/ftp-client) |
-| `@jalsoedesign/dockline-sftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-sftp-client) | [packages/sftp-client](https://github.com/h2ooooooo/dockline/tree/main/packages/sftp-client) |
-| `@jalsoedesign/dockline-core` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-core) | [packages/core](https://github.com/h2ooooooo/dockline/tree/main/packages/core) |
-| `@jalsoedesign/dockline-cli` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-cli) | [packages/cli](https://github.com/h2ooooooo/dockline/tree/main/packages/cli) |
-
-See [updates and releases](/development/releasing) for workspace versioning, publishing and documentation deployment.
+| `@jalsoedesign/dockline-abstract` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-abstract) | [`packages/abstract`](https://github.com/h2ooooooo/dockline/tree/main/packages/abstract) |
+| `@jalsoedesign/dockline-ftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-ftp-client) | [`packages/ftp-client`](https://github.com/h2ooooooo/dockline/tree/main/packages/ftp-client) |
+| `@jalsoedesign/dockline-sftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-sftp-client) | [`packages/sftp-client`](https://github.com/h2ooooooo/dockline/tree/main/packages/sftp-client) |
+| `@jalsoedesign/dockline-core` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-core) | [`packages/core`](https://github.com/h2ooooooo/dockline/tree/main/packages/core) |
+| `@jalsoedesign/dockline-cli` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-cli) | [`packages/cli`](https://github.com/h2ooooooo/dockline/tree/main/packages/cli) |
 
 ## SSH command client
 
-[`@jalsoedesign/dockline-ssh-client`](https://www.npmjs.com/package/@jalsoedesign/dockline-ssh-client) adds scoped SSH commands, sudo and SFTP helpers. [Guide](/ssh/quick-start) · [Source](https://github.com/h2ooooooo/dockline/tree/main/packages/ssh-client). This new workspace is pending its first publication. It depends on the SFTP client and ssh2; existing core, FTP, SFTP and CLI packages do not install it automatically.
+[`@jalsoedesign/dockline-ssh-client`](https://www.npmjs.com/package/@jalsoedesign/dockline-ssh-client) adds scoped SSH commands, sudo and SFTP helpers. [Guide](/ssh/quick-start) · [Source](https://github.com/h2ooooooo/dockline/tree/main/packages/ssh-client). It depends on the SFTP client and ssh2; existing core, FTP, SFTP and CLI packages do not install it automatically.

@@ -1,8 +1,12 @@
 # Connection pools
 
+This recipe starts after [connection setup](/sftp/quick-start). Supply `verifiedConnectionOptions` with direct-client fields and explicit trust hooks, a list of remote destination `paths`, an `openSource(path)` factory returning a fresh local readable, and an `AbortSignal`. Imports belong at file scope. Each pool callback receives a connected connector; the pool closes in `finally`. The snippet prints nothing and resolves only after all writes finish.
+
 ## One connection budget
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {ConnectorPool} from '@jalsoedesign/dockline-abstract';
 import {SftpConnector, type SftpConnectorConfig} from '@jalsoedesign/dockline-sftp-client';
 
@@ -24,6 +28,77 @@ try {
     await pool.close();
 }
 ```
+
+```js [JavaScript]
+import {ConnectorPool} from '@jalsoedesign/dockline-abstract';
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
+
+// Supply ordinary connection settings and explicit application trust hooks.
+const connection = verifiedConnectionOptions;
+
+const pool = new ConnectorPool({
+    create: () => new SftpConnector(connection),
+    maxConnections: 3,
+    serverMaxConnections: 3,
+    idleTimeoutMs: 30_000,
+});
+
+try {
+    await Promise.all(paths.map(path => pool.withConnection(async connector => {
+        await connector.write(path, () => openSource(path), {abortSignal});
+    }, {abortSignal})));
+} finally {
+    await pool.close();
+}
+```
+
+```js [MJS]
+import {ConnectorPool} from '@jalsoedesign/dockline-abstract';
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
+
+// Supply ordinary connection settings and explicit application trust hooks.
+const connection = verifiedConnectionOptions;
+
+const pool = new ConnectorPool({
+    create: () => new SftpConnector(connection),
+    maxConnections: 3,
+    serverMaxConnections: 3,
+    idleTimeoutMs: 30_000,
+});
+
+try {
+    await Promise.all(paths.map(path => pool.withConnection(async connector => {
+        await connector.write(path, () => openSource(path), {abortSignal});
+    }, {abortSignal})));
+} finally {
+    await pool.close();
+}
+```
+
+```js [CommonJS]
+const {ConnectorPool} = require('@jalsoedesign/dockline-abstract');
+const {SftpConnector} = require('@jalsoedesign/dockline-sftp-client');
+
+// Supply ordinary connection settings and explicit application trust hooks.
+const connection = verifiedConnectionOptions;
+
+const pool = new ConnectorPool({
+    create: () => new SftpConnector(connection),
+    maxConnections: 3,
+    serverMaxConnections: 3,
+    idleTimeoutMs: 30_000,
+});
+
+try {
+    await Promise.all(paths.map(path => pool.withConnection(async connector => {
+        await connector.write(path, () => openSource(path), {abortSignal});
+    }, {abortSignal})));
+} finally {
+    await pool.close();
+}
+```
+
+:::
 
 The pool creates independent authenticated sessions, not parallel commands on one FTP session. The default limit is three. A positive `serverMaxConnections` lowers that limit; zero means no additional server limit. Every lease counts, including folder listing, stat, checksums, read consumption and uploads. Connections created outside this pool cannot be counted by it; use one shared pool for a shared server quota.
 

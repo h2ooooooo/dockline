@@ -1,0 +1,53 @@
+{
+    "name": "@jalsoedesign/dockline-keys",
+    "version": "1.0.0",
+    "description": "SSH private/public key inspection, encrypted exports and OpenSSH, PPK and PEM conversion",
+    "type": "module",
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist",
+        "src",
+        "LICENSE",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "engines": {
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0",
+        "npm": ">=12.0.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/h2ooooooo/dockline.git",
+        "directory": "packages/keys"
+    },
+    "homepage": "https://h2ooooooo.github.io/dockline/",
+    "bugs": {
+        "url": "https://github.com/h2ooooooo/dockline/issues"
+    },
+    "scripts": {
+        "build": "node ../../scripts/build.mjs --package keys",
+        "test": "node ../../scripts/test-package.mjs keys",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "prepack": "npm run build"
+    },
+    "dependencies": {
+        "@jalsoedesign/dockline-abstract": "^1.1.0",
+        "sshpk": "1.18.0",
+        "hash-wasm": "^4.12.0"
+    },
+    "devDependencies": {
+        "@types/sshpk": "1.17.5"
+    }
+}

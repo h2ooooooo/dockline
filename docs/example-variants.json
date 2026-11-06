@@ -1,0 +1,321 @@
+{
+    "assets": [
+        {
+            "name": "connect",
+            "filename": "connect.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "connect",
+            "filename": "connect.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "connect",
+            "filename": "connect.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "connect",
+            "filename": "connect.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "ssh",
+            "filename": "ssh.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "ssh",
+            "filename": "ssh.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "ssh",
+            "filename": "ssh.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "ssh",
+            "filename": "ssh.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "inspect-key",
+            "filename": "inspect-key.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "inspect-key",
+            "filename": "inspect-key.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "inspect-key",
+            "filename": "inspect-key.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "inspect-key",
+            "filename": "inspect-key.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "convert-key",
+            "filename": "convert-key.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "convert-key",
+            "filename": "convert-key.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "convert-key",
+            "filename": "convert-key.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "convert-key",
+            "filename": "convert-key.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "convert-key-file",
+            "filename": "convert-key-file.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "convert-key-file",
+            "filename": "convert-key-file.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "convert-key-file",
+            "filename": "convert-key-file.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "convert-key-file",
+            "filename": "convert-key-file.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "transfer-ftp",
+            "filename": "transfer-ftp.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "transfer-ftp",
+            "filename": "transfer-ftp.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "transfer-ftp",
+            "filename": "transfer-ftp.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "transfer-ftp",
+            "filename": "transfer-ftp.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "transfer-sftp",
+            "filename": "transfer-sftp.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "transfer-sftp",
+            "filename": "transfer-sftp.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "transfer-sftp",
+            "filename": "transfer-sftp.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "transfer-sftp",
+            "filename": "transfer-sftp.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "describe-key",
+            "filename": "describe-key.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "describe-key",
+            "filename": "describe-key.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "describe-key",
+            "filename": "describe-key.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "describe-key",
+            "filename": "describe-key.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "extract-public-key",
+            "filename": "extract-public-key.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "extract-public-key",
+            "filename": "extract-public-key.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "extract-public-key",
+            "filename": "extract-public-key.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "extract-public-key",
+            "filename": "extract-public-key.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "change-passphrase",
+            "filename": "change-passphrase.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "change-passphrase",
+            "filename": "change-passphrase.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "change-passphrase",
+            "filename": "change-passphrase.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "change-passphrase",
+            "filename": "change-passphrase.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "upload",
+            "filename": "upload.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "upload",
+            "filename": "upload.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "upload",
+            "filename": "upload.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "upload",
+            "filename": "upload.cjs",
+            "language": "CommonJS"
+        },
+        {
+            "name": "embedded-cli",
+            "filename": "embedded-cli.ts",
+            "language": "TypeScript"
+        },
+        {
+            "name": "embedded-cli",
+            "filename": "embedded-cli.js",
+            "language": "JavaScript"
+        },
+        {
+            "name": "embedded-cli",
+            "filename": "embedded-cli.mjs",
+            "language": "MJS"
+        },
+        {
+            "name": "embedded-cli",
+            "filename": "embedded-cli.cjs",
+            "language": "CommonJS"
+        }
+    ],
+    "convertedPages": [
+        "api/files.md",
+        "ftp/quick-start.md",
+        "sftp/quick-start.md",
+        "guide/advanced-transfers.md",
+        "guide/cli-integration.md",
+        "guide/configuration.md",
+        "guide/ftp.md",
+        "guide/packages.md",
+        "guide/pools.md",
+        "guide/sftp.md",
+        "guide/trust.md",
+        "guide/usage.md"
+    ],
+    "publicSample": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICHSfk0iVuoJjZcokMlnUBsZMppVQ/KGDxV8Jb7lF8qo documentation@example",
+    "programs": [
+        {
+            "name": "transfer-ftp",
+            "page": "ftp/quick-start.md",
+            "args": ""
+        },
+        {
+            "name": "transfer-sftp",
+            "page": "sftp/quick-start.md",
+            "args": ""
+        },
+        {
+            "name": "describe-key",
+            "page": "keys/inspect.md",
+            "args": ""
+        },
+        {
+            "name": "extract-public-key",
+            "page": "keys/public-keys.md",
+            "args": ""
+        },
+        {
+            "name": "change-passphrase",
+            "page": "keys/encryption.md",
+            "args": ""
+        },
+        {
+            "name": "upload",
+            "page": "guide/cli-integration.md",
+            "args": "./hello.txt uploads/hello.txt"
+        },
+        {
+            "name": "embedded-cli",
+            "page": "guide/cli-integration.md",
+            "args": ""
+        },
+        {
+            "name": "connect",
+            "page": "api/quick-start.md",
+            "args": ""
+        },
+        {
+            "name": "ssh",
+            "page": "ssh/quick-start.md",
+            "args": ""
+        },
+        {
+            "name": "inspect-key",
+            "page": "keys/quick-start.md",
+            "args": ""
+        },
+        {
+            "name": "convert-key",
+            "page": "keys/convert.md",
+            "args": ""
+        },
+        {
+            "name": "convert-key-file",
+            "page": "keys/files.md",
+            "args": ""
+        }
+    ]
+}

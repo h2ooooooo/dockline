@@ -12,8 +12,10 @@ Source: [h2ooooooo/dockline](https://github.com/h2ooooooo/dockline). Node `^22.2
 | --- | --- |
 | `@jalsoedesign/dockline-core` | The `Dockline` API, connection scopes, local file helpers and shared exports. Install a matching client to connect. |
 | `@jalsoedesign/dockline-abstract` | Shared contracts, configuration types, errors, retries, streams, transfer helpers and pools; no FTP or SSH transport implementation. |
+| `@jalsoedesign/dockline-keys` | Independent key inspection, encrypted OpenSSH/PPK/PEM conversion and public-key formats. |
 | `@jalsoedesign/dockline-ftp-client` | FTP, explicit FTPS and implicit FTPS using `basic-ftp`. Usable directly without core. |
 | `@jalsoedesign/dockline-sftp-client` | SFTP, SSH authentication, host trust and managed known hosts. Usable directly without core. |
+| `@jalsoedesign/dockline-ssh-client` | Scoped SSH commands, sudo and SSH-specific SFTP file helpers. |
 | `@jalsoedesign/dockline-cli` | The `dockline` command: download, upload, list and remove using YAML settings. |
 
 The repository is an npm workspace. Install the individual packages for applications or the CLI for terminal use.
@@ -121,10 +123,15 @@ npm run docs:build
 npm run docs:dev
 ```
 
-See [dependencies](docs/development/dependencies.md) for the remaining development-only FTP test-server advisory and live audit commands. See [CLI integration](docs/guide/cli-integration.md) to use the SDK or packaged commands in your own tool.
+See [dependencies](docs/development/dependencies.md) for runtime/development dependency boundaries and current audit commands. See [CLI integration](docs/guide/cli-integration.md) to use the SDK or packaged commands in your own tool.
 
-See [updates and releases](https://h2ooooooo.github.io/dockline/development/releasing.html) for updating all packages, publishing to npm and deploying documentation.
 
 ## SSH command execution
 
 The optional [`@jalsoedesign/dockline-ssh-client`](https://github.com/h2ooooooo/dockline/tree/main/packages/ssh-client) workspace provides SSH commands, sudo scopes and SFTP helpers. See the [SSH guide](https://h2ooooooo.github.io/dockline/ssh/quick-start).
+
+Related libraries: [Portline ecosystem directory](https://h2ooooooo.github.io/portline/ecosystem).
+
+## Runnable examples
+
+[Run a local demo](docs/guide/local-demo.md) for one-command examples and captured output. Transfer demos start temporary loopback-only protocol servers.

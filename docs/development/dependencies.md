@@ -1,20 +1,22 @@
 # Dependencies and known boundaries
 
-The private root manifest defines the five npm workspaces and development tools. Each package manifest owns its runtime dependencies; the root lockfile resolves the complete development tree. Documentation has a separate manifest and lockfile. Distributable dependencies use package versions rather than another source checkout.
+The private root manifest defines the seven npm workspaces and development tools. Each package manifest owns its runtime dependencies; the root lockfile resolves the complete development tree. Documentation has a separate manifest and lockfile. Distributable dependencies use package versions rather than another source checkout.
 
 ## Runtime and public declarations
 
 | Package | Required dependencies | Optional peers |
 | --- | --- | --- |
-| `@jalsoedesign/dockline-abstract` | `@flystorage/file-storage` `1.2.2` for shared storage contracts | None |
-| `@jalsoedesign/dockline-core` | `@jalsoedesign/dockline-abstract` `^1.0.0` | `@jalsoedesign/dockline-ftp-client` and `@jalsoedesign/dockline-sftp-client` `^1.0.0`; neither is automatically installed |
-| `@jalsoedesign/dockline-ftp-client` | Abstract `^1.0.0`, storage contracts `1.2.2`, `basic-ftp` `6.2.1` | None |
-| `@jalsoedesign/dockline-sftp-client` | Abstract `^1.0.0`, storage contracts `1.2.2`, `ssh2-sftp-client` `12.1.1`, `@types/ssh2-sftp-client` `9.0.6`, `@types/ssh2` `1.15.6` | None |
-| `@jalsoedesign/dockline-cli` | `@jalsoedesign/dockline-core` `^1.0.0`, Commander `15.0.0`, YAML `2.9.1` | FTP and SFTP clients `^1.0.0` are optional peers; select the matching client explicitly |
+| `@jalsoedesign/dockline-abstract` | `@flystorage/file-storage` | None |
+| `@jalsoedesign/dockline-cli` | `@jalsoedesign/dockline-core`, `commander`, `yaml` | `@jalsoedesign/dockline-ftp-client`, `@jalsoedesign/dockline-sftp-client` |
+| `@jalsoedesign/dockline-core` | `@jalsoedesign/dockline-abstract` | `@jalsoedesign/dockline-ftp-client`, `@jalsoedesign/dockline-sftp-client` |
+| `@jalsoedesign/dockline-ftp-client` | `@jalsoedesign/dockline-abstract`, `@flystorage/file-storage`, `basic-ftp` | None |
+| `@jalsoedesign/dockline-keys` | `@jalsoedesign/dockline-abstract`, `sshpk`, `hash-wasm` | None |
+| `@jalsoedesign/dockline-sftp-client` | `@jalsoedesign/dockline-abstract`, `@flystorage/file-storage`, `@types/ssh2`, `@types/ssh2-sftp-client`, `ssh2-sftp-client`, `ssh2`, `@jalsoedesign/dockline-keys` | None |
+| `@jalsoedesign/dockline-ssh-client` | `@jalsoedesign/dockline-sftp-client`, `ssh2`, `@types/ssh2`, `@jalsoedesign/dockline-keys` | None |
 
 Commander `15.0.0` and YAML `2.9.1` are production dependencies only of `@jalsoedesign/dockline-cli`. Installing core, abstract or a direct protocol client does not add either CLI dependency.
 
-Abstract contains no FTP or SSH transport library. Core does not depend on either concrete client. An FTP-only application receives no SFTP/SSH runtime stack from these packages, and an SFTP-only application receives no FTP runtime stack. Direct clients do not depend on core or one another. The workspace development install contains all clients because it builds and tests all packages; that is different from a selected production installation.
+Abstract contains no FTP or SSH transport library. Core does not depend on either concrete client. An FTP-only application receives no SFTP/SSH runtime stack from these packages, and an SFTP-only application receives no FTP runtime stack. FTP and SFTP clients do not depend on core or one another. The SSH command client reuses SFTP for its file helpers and uses ssh2 for execution. Both SSH/SFTP delegate key parsing to dockline-keys; keys has no transport dependency. The workspace development install contains all clients because it builds and tests all packages; that is different from a selected production installation.
 
 The SFTP declaration packages are runtime dependencies of the SFTP client so production-only installations can compile its public types. Their versions do not need to match the runtime client major numerically; isolated declaration checks verify compatibility. Common configuration, SSH trust and interactive callback contracts live in abstract without importing concrete client declarations.
 
@@ -36,11 +38,9 @@ Root `allowScripts` permits the required locked esbuild install script while opt
 
 ## Dependency audits
 
-Production and documentation dependencies have no known findings in the initial release checks. The full development installation has two high package entries for one test-server advisory. Run the commands below for current advisory data.
+Audit results are time-specific. Run production, documentation and full development checks separately and retain their actual results. A clean result for one tree does not establish that every tree is clean.
 
-The full-root entries are `ftp-srv` and `ip`, one underlying advisory plus the affected parent. They belong to disposable test infrastructure. The full audit returns a nonzero status and is not represented as clean. Its suggested downgrade to an old FTP-server major is not a compatible repair.
-
-The clean options are a maintained upstream test-server release or, in a separate change, replacing only test infrastructure with an independently maintained server. The runtime clients do not depend on this test server. Keep generated audit output outside the source tree and rerun online audits after dependency changes.
+The FTP test server and its transitive dependencies belong to disposable development infrastructure, not the published transport runtime. Review that boundary when an advisory is reported. Do not apply an incompatible major downgrade automatically; validate any dependency or fixture replacement with the protocol tests. Keep generated audit reports outside public source.
 
 ```sh
 npm run audit:production
@@ -69,3 +69,18 @@ These correctness boundaries are independent of npm vulnerability counts. They r
 ## SSH client
 
 The optional SSH workspace uses `ssh2` for command channels and the existing Dockline SFTP client for file transfers. It shares the Node version requirement and introduces no patches or forks. Application-specific configuration and prompt interfaces are supplied by callbacks.
+
+## Verify unpublished dependencies
+
+Normal checkouts use `npm ci --ignore-scripts` and public npm dependency ranges. Before dependency versions are published, collect their verified packages with `npm run pack:local -- --output /path/to/artifacts`. Keep the package inventories beside the tarballs. No sibling checkout layout is required.
+
+```sh
+npm run release:lock -- --artifacts /path/to/artifacts
+npm run check:locks
+npm run test:locks
+npm run check:bootstrap -- --artifacts /path/to/artifacts
+```
+
+The lock command uses real package metadata and SHA-512 hashes from those artifacts, retaining canonical public npm URLs. The bootstrap check creates a disposable checkout, installs locked versions through a temporary read-only registry, and runs builds, lint, tests and available API/example checks. It does not change npm user configuration or relax remote-package restrictions. Node.js, the repository's declared npm version and the system `tar` command must be available.
+
+This verifies candidate payloads, not their availability on npm. Publish the exact verified tarballs in dependency order; if a package changes, repack it, regenerate downstream locks and repeat the checks. Once dependencies are available publicly, verify a fresh `npm ci --ignore-scripts` without bootstrap and compare registry integrity with the reviewed artifacts.

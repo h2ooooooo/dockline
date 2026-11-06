@@ -6,6 +6,9 @@ import styleConfig from './scripts/eslint/style.config.mjs';
 export default tseslint.config(
     {
         ignores: [
+            '**/.local-dev/**',
+            '**/.scratch/**',
+            '**/.site/**',
             '**/dist/**',
             '**/node_modules/**',
             '**/.turbo/**',

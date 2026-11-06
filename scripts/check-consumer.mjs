@@ -18,10 +18,12 @@ await mkdir(artifacts);
 
 async function command(label, args, cwd) {
     let output = '';
+    let stdout = '';
     const child = spawn(process.execPath, args, {cwd, windowsHide: true});
 
     child.stdout.on('data', chunk => {
         output += chunk;
+        stdout += chunk;
     });
     child.stderr.on('data', chunk => {
         output += chunk;
@@ -39,7 +41,7 @@ async function command(label, args, cwd) {
     assert.equal(code, 0, `${label}: ${output.slice(-7000)}`);
     console.log(`${label}: PASS`);
 
-    return output;
+    return stdout;
 }
 
 const packedOutput = JSON.parse(await command('pack', [
@@ -62,6 +64,7 @@ assert.deepEqual(Object.keys(tarballs).sort(), [
     '@jalsoedesign/dockline-cli',
     '@jalsoedesign/dockline-core',
     '@jalsoedesign/dockline-ftp-client',
+    '@jalsoedesign/dockline-keys',
     '@jalsoedesign/dockline-sftp-client',
     '@jalsoedesign/dockline-ssh-client',
 ]);
@@ -143,6 +146,21 @@ function configuredList(protocol) {
 
 const scenarios = [
     {
+        name: 'keys-only',
+        packages: ['abstract', 'keys'],
+        types: `import {convertPrivateKey, convertPublicKey, inspectKey, type PrivateKeyExportOptions} from '@jalsoedesign/dockline-keys';
+const options: PrivateKeyExportOptions = {format: 'ppk', ppkVersion: 3, outputPassphrase: 'synthetic'};
+void [options, convertPrivateKey, convertPublicKey, inspectKey];`,
+        runtime: `const {generateKeyPairSync} = await import('node:crypto');
+const keys = await import('@jalsoedesign/dockline-keys');
+assert.equal(typeof keys.convertPrivateKey, 'function');
+assert.equal(typeof require('@jalsoedesign/dockline-keys').inspectKey, 'function');
+for (const name of ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-sftp-client', '@jalsoedesign/dockline-ssh-client', 'ssh2', 'ssh2-sftp-client', 'basic-ftp']) absent(name);
+const original = generateKeyPairSync('ed25519').privateKey.export({format: 'pem', type: 'pkcs8'});
+const encrypted = await keys.convertPrivateKey(original, {format: 'ppk', outputPassphrase: 'synthetic', argon2: {memoryKiB: 1024, passes: 1}});
+assert.equal(await keys.fingerprintKey(encrypted, {inputPassphrase: 'synthetic'}), await keys.fingerprintKey(original));`,
+    },
+    {
         name: 'abstract-only',
         packages: ['abstract'],
         types: `import {ConnectorPool, ResourceLimitError, type TransferAdapter, type SftpTransferConfig} from '@jalsoedesign/dockline-abstract';
@@ -195,7 +213,10 @@ await client.disconnect();`,
 const config: SftpTransferConfig = {protocol: 'sftp', host: 'fixture.invalid', username: 'fixture', requireTrustPolicy: true, hasTrustPolicy: () => false, acceptTrustPolicy: () => false};
 const client: SftpConnector = createConnector(config);
 void [client, KnownHostsStore];`,
-        runtime: `const {SftpConnector, createConnector, AuthError} = await import('@jalsoedesign/dockline-sftp-client');
+        runtime: `const {SftpConnector, createConnector, AuthError, prepareSshPrivateKey, SshPrivateKeyError} = await import('@jalsoedesign/dockline-sftp-client');
+const keys = await import('@jalsoedesign/dockline-keys');
+assert.equal(prepareSshPrivateKey, keys.prepareSshPrivateKey);
+assert.equal(SshPrivateKeyError, keys.SshPrivateKeyError);
 const {AuthError: SharedAuthError} = await import('@jalsoedesign/dockline-abstract');
 assert.equal(AuthError, SharedAuthError);
 for (const name of ['@jalsoedesign/dockline-core', '@jalsoedesign/dockline-ftp-client', 'basic-ftp']) absent(name);
@@ -298,6 +319,7 @@ assert.equal(configuredList('ftp').code, 'DOCKLINE_CLIENT_NOT_INSTALLED');`,
 async function addDocumentationExamples(target, scenario) {
     const readmePackages = {
         'abstract-only': 'abstract',
+        'keys-only': 'keys',
         'core-only': 'core',
         'ftp-only': 'ftp-client',
         'sftp-only': 'sftp-client',
@@ -317,21 +339,25 @@ async function addDocumentationExamples(target, scenario) {
     }
 
     const protocols = scenario === 'core-ftp' ? ['ftp'] : scenario === 'core-sftp' ? ['sftp'] : [];
+    const documentation = JSON.parse(await readFile(path.join(root, 'docs/example-variants.json'), 'utf8'));
 
     for (const protocol of protocols) {
-        const filename = `docs/${protocol}/quick-start.md`;
-        const markdown = await readFile(path.join(root, filename), 'utf8');
-        const examples = [...markdown.matchAll(/```ts\r?\n([\s\S]*?)```/g)].map(match => match[1]);
+        const page = protocol + '/quick-start.md';
+        const programs = documentation.programs.filter(program => program.page === page);
 
-        assert.ok(examples.length > 1, `${filename} requires a complete example and everyday recipes`);
+        assert.ok(programs.length > 0, page + ' requires a complete documented program');
 
-        for (const [index, example] of examples.entries()) {
-            const source = index === 0 ? example : `${examples[0]}\n\nasync function documentedRecipe() {\n${example}\n}\n`;
+        for (const program of programs) {
+            const asset = documentation.assets.find(asset => asset.name === program.name && asset.filename.endsWith('.ts'));
 
-            await writeFile(path.join(target, `quick-start-${protocol}-${index + 1}.ts`), source);
+            assert.ok(asset && path.basename(asset.filename) === asset.filename, 'Missing TypeScript asset: ' + program.name);
+
+            const source = await readFile(path.join(root, 'docs/public/examples', asset.filename), 'utf8');
+
+            await writeFile(path.join(target, 'documented-' + asset.filename), source);
         }
 
-        console.log(`Prepared ${examples.length} ${protocol.toUpperCase()} documentation examples in ${scenario}`);
+        console.log('Prepared ' + programs.length + ' ' + protocol.toUpperCase() + ' documentation programs in ' + scenario);
     }
 
     if (scenario === 'all-clients') {
@@ -344,6 +370,10 @@ async function addDocumentationExamples(target, scenario) {
 }
 
 for (const scenario of scenarios) {
+    if (scenario.packages.includes('sftp-client') && !scenario.packages.includes('keys')) {
+        scenario.packages.push('keys');
+    }
+
     const target = path.join(directory, scenario.name);
 
     await mkdir(target);
@@ -374,7 +404,7 @@ for (const scenario of scenarios) {
         npmCli,
         'install',
         '--ignore-scripts',
-        '--offline=false',
+        `--offline=${process.env.npm_config_offline ?? 'false'}`,
         '--no-audit',
         '--no-fund',
     ], target);
@@ -394,6 +424,10 @@ for (const selection of [[], ['ftp-client'], ['sftp-client']]) {
     const prefix = path.join(target, 'prefix');
     const packages = ['abstract', 'core', 'cli', ...selection];
 
+    if (selection.includes('sftp-client')) {
+        packages.push('keys');
+    }
+
     await mkdir(target);
     await command(label + '-install', [
         npmCli,
@@ -402,7 +436,7 @@ for (const selection of [[], ['ftp-client'], ['sftp-client']]) {
         '--prefix',
         prefix,
         '--ignore-scripts',
-        '--offline=false',
+        `--offline=${process.env.npm_config_offline ?? 'false'}`,
         '--no-audit',
         '--no-fund',
         ...packages.map(name => tarballs['@jalsoedesign/dockline-' + name].slice(5)),

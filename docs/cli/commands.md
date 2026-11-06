@@ -122,4 +122,6 @@ The command field can be absent when command selection itself fails. Do not infe
 | `2` | Usage or configuration failure. |
 | `130` | Cancelled execution. |
 
-The executable handles cancellation and waits for disconnect and cleanup before exiting. When [embedding the CLI](/guide/cli-integration#embed-the-packaged-cli), your application owns its signal handling and supplies cancellation through the context.
+The executable handles cancellation and waits for disconnect and cleanup before exiting. When [embedding the CLI](/guide/cli-integration#embed-the-packaged-cli), handle signals and supply cancellation through the context.
+
+See [complete command inputs](/cli/help) and [output shapes and exit codes](/cli/output).

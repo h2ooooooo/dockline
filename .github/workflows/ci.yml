@@ -25,6 +25,8 @@ jobs:
         uses: ./.github/actions/setup-npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Validate portable dependency locks
+        run: npm run check:locks && npm run test:locks
       - name: Check repository contents
         run: npm run check:repository
       - name: Lint authored code and styles
@@ -33,14 +35,20 @@ jobs:
         run: npm run test:style
       - name: Check source and test types
         run: npm run typecheck
+      - name: Check documented APIs against declarations
+        run: npm run docs:api:check && npm run docs:imports:check
       - name: Exercise local protocol servers and SDK behavior
         run: npm test
       - name: Build declarations and ESM
         run: npm run build
-      - name: Verify all six publishable packages
+      - name: Verify publishable packages
         run: npm run check:packages
+      - name: Check publication safeguards
+        run: node --test scripts/publication-policy.test.mjs && npm run check:publication
       - name: Verify isolated package combinations and optional clients
         run: npm run check:consumer
+      - name: Execute documented language variants
+        run: npm run docs:examples:check
       - name: Check production dependencies
         run: npm run audit:production
 

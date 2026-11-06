@@ -1,8 +1,12 @@
 # FTP connection and transfer options
 
+This is advanced configuration reference. The snippets use a supplied `connection`, `suppliedPassword`, prompt/status callbacks and local stream factories; they are not standalone commands. Start with the [complete FTP program](/ftp/quick-start), keep imports at file scope and use a connected direct `FtpConnector` for these low-level methods. Disconnect in `finally`. Functions such as `askForPassword` and `updateConnectionStatus` are integration hooks to implement.
+
 FTP, explicit FTPS and implicit FTPS use `FtpConnector` from `@jalsoedesign/dockline-ftp-client`, backed by `basic-ftp`. This package is usable directly without core or the SFTP client. Its `createConnector(FtpTransferConfig)` factory also accepts the common configuration names. It accepts an ordinary configuration object and does not load configuration from another application. See the [Quick start FTP](/ftp/quick-start) for the convenience API.
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {FtpConnector, type FtpConnectorConfig} from '@jalsoedesign/dockline-ftp-client';
 
 const connection: FtpConnectorConfig = {
@@ -26,9 +30,83 @@ const connector = new FtpConnector({
 });
 ```
 
+```js [JavaScript]
+import {FtpConnector} from '@jalsoedesign/dockline-ftp-client';
+
+const connection = {
+    host: 'ftp.example.com',
+    port: 21,
+    user: 'deploy',
+    password: suppliedPassword,
+    secure: true,
+    passive: true,
+    initialPath: '/releases',
+};
+const connector = new FtpConnector({
+    ...connection,
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    timeoutMs: 30000,
+    keepalive: {intervalMs: 30000, maxMissed: 2},
+    onConnectionState(event) {
+        updateConnectionStatus(event.state);
+    },
+});
+```
+
+```js [MJS]
+import {FtpConnector} from '@jalsoedesign/dockline-ftp-client';
+
+const connection = {
+    host: 'ftp.example.com',
+    port: 21,
+    user: 'deploy',
+    password: suppliedPassword,
+    secure: true,
+    passive: true,
+    initialPath: '/releases',
+};
+const connector = new FtpConnector({
+    ...connection,
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    timeoutMs: 30000,
+    keepalive: {intervalMs: 30000, maxMissed: 2},
+    onConnectionState(event) {
+        updateConnectionStatus(event.state);
+    },
+});
+```
+
+```js [CommonJS]
+const {FtpConnector} = require('@jalsoedesign/dockline-ftp-client');
+
+const connection = {
+    host: 'ftp.example.com',
+    port: 21,
+    user: 'deploy',
+    password: suppliedPassword,
+    secure: true,
+    passive: true,
+    initialPath: '/releases',
+};
+const connector = new FtpConnector({
+    ...connection,
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    timeoutMs: 30000,
+    keepalive: {intervalMs: 30000, maxMissed: 2},
+    onConnectionState(event) {
+        updateConnectionStatus(event.state);
+    },
+});
+```
+
+:::
+
 ## Protocol and transport settings
 
-`secure: false` selects plain FTP, `secure: true` selects explicit TLS, and `secure: 'implicit'` selects implicit TLS. Supply the server's port explicitly: commonly 21 for FTP/explicit TLS and 990 for implicit TLS. `secureOptions` accepts Node TLS options such as a trusted private CA or `servername`; certificate validation remains enabled unless your application changes it.
+`secure: false` selects plain FTP, `secure: true` selects explicit TLS, and `secure: 'implicit'` selects implicit TLS. Supply the server's port explicitly: commonly 21 for FTP/explicit TLS and 990 for implicit TLS. `secureOptions` accepts Node TLS options such as a trusted private CA or `servername`; certificate validation remains enabled unless explicitly disabled.
 
 The low-level config uses `user`, `password`, `host`, `port`, `secure`, `passive` and `initialPath`. The convenience API normalizes common connection names; see [configuration](/guide/configuration). `initialPath` changes the working directory after authentication. It is a starting directory, not a path-containment guarantee.
 
@@ -40,7 +118,9 @@ Transfers have no size limit by default. Set `maxBytes` on the connector or an i
 
 Call `connect()` or any ordinary connector operation and catch a specific exception. No separate diagnostic connection or probing mode is required.
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {
     AuthError,
     CredentialProviderError,
@@ -71,6 +151,94 @@ try {
 }
 ```
 
+```js [JavaScript]
+import {
+    AuthError,
+    CredentialProviderError,
+    DirectoryAccessError,
+    NameResolutionError,
+    ConnectionRefusedError,
+    TlsTrustError,
+} from '@jalsoedesign/dockline-ftp-client';
+
+try {
+    await connector.connect();
+} catch (error) {
+    if (error instanceof CredentialProviderError) {
+        showCredentialProviderFailure();
+    } else if (error instanceof AuthError) {
+        showRejectedCredentials();
+    } else if (error instanceof TlsTrustError) {
+        showCertificateFailure();
+    } else if (error instanceof NameResolutionError) {
+        showUnknownHost();
+    } else if (error instanceof ConnectionRefusedError) {
+        showConnectionRefused();
+    } else if (error instanceof DirectoryAccessError) {
+        showInitialDirectoryFailure();
+    } else {
+        throw error;
+    }
+}
+```
+
+```js [MJS]
+import {
+    AuthError,
+    CredentialProviderError,
+    DirectoryAccessError,
+    NameResolutionError,
+    ConnectionRefusedError,
+    TlsTrustError,
+} from '@jalsoedesign/dockline-ftp-client';
+
+try {
+    await connector.connect();
+} catch (error) {
+    if (error instanceof CredentialProviderError) {
+        showCredentialProviderFailure();
+    } else if (error instanceof AuthError) {
+        showRejectedCredentials();
+    } else if (error instanceof TlsTrustError) {
+        showCertificateFailure();
+    } else if (error instanceof NameResolutionError) {
+        showUnknownHost();
+    } else if (error instanceof ConnectionRefusedError) {
+        showConnectionRefused();
+    } else if (error instanceof DirectoryAccessError) {
+        showInitialDirectoryFailure();
+    } else {
+        throw error;
+    }
+}
+```
+
+```js [CommonJS]
+const {AuthError, CredentialProviderError, DirectoryAccessError, NameResolutionError, ConnectionRefusedError, TlsTrustError} = require('@jalsoedesign/dockline-ftp-client');
+
+try {
+    await connector.connect();
+} catch (error) {
+    if (error instanceof CredentialProviderError) {
+        showCredentialProviderFailure();
+    } else if (error instanceof AuthError) {
+        showRejectedCredentials();
+    } else if (error instanceof TlsTrustError) {
+        showCertificateFailure();
+    } else if (error instanceof NameResolutionError) {
+        showUnknownHost();
+    } else if (error instanceof ConnectionRefusedError) {
+        showConnectionRefused();
+    } else if (error instanceof DirectoryAccessError) {
+        showInitialDirectoryFailure();
+    } else {
+        throw error;
+    }
+}
+```
+
+:::
+
 `CredentialProviderError` extends `AuthError`, so catch it first when the distinction matters. Errors expose a `stage` where available: `resolve`, `connect`, `trust`, `credentials`, `authenticate`, `directory`, or `ready`. The FTP handshake uses the dependency's public connection, TLS, login and setup methods so failures retain their stage. Implicit FTPS combines TCP and TLS negotiation; certificate error codes identify trust failures within that combined step. Other transport failures remain `ConnectorError` with their available code and stage.
 
 `OperationAbortedError`, `OperationTimeoutError`, `ConnectionClosedError` and unsupported-option errors retain their original classes. An inaccessible initial directory does not prove that the credentials or TLS handshake failed. A successful connection does not prove permission to change every remote path. Ambiguous FTP `550` responses are not converted into “file missing.”
@@ -79,7 +247,9 @@ Returned provider passwords are redacted from transport messages. Provider failu
 
 ## Resolve credentials in your own CLI, UI or vault
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const connector = new FtpConnector({
     ...connection,
     credentialProvider: async context => {
@@ -91,6 +261,47 @@ const connector = new FtpConnector({
     },
 });
 ```
+
+```js [JavaScript]
+const connector = new FtpConnector({
+    ...connection,
+    credentialProvider: async context => {
+        const password = await askForPassword(context.siteId, {
+            abortSignal: context.abortSignal,
+        });
+
+        return {type: 'password', password};
+    },
+});
+```
+
+```js [MJS]
+const connector = new FtpConnector({
+    ...connection,
+    credentialProvider: async context => {
+        const password = await askForPassword(context.siteId, {
+            abortSignal: context.abortSignal,
+        });
+
+        return {type: 'password', password};
+    },
+});
+```
+
+```js [CommonJS]
+const connector = new FtpConnector({
+    ...connection,
+    credentialProvider: async context => {
+        const password = await askForPassword(context.siteId, {
+            abortSignal: context.abortSignal,
+        });
+
+        return {type: 'password', password};
+    },
+});
+```
+
+:::
 
 The callback receives your optional `siteId`, host, port, `protocol: 'ftp'`, `purpose: 'connect' | 'reconnect'`, a one-based attempt number and an `AbortSignal`. Return `{type: 'password', password, username?}`. An omitted username keeps the configured username. Private-key and SSH-agent credential results are rejected for FTP.
 
@@ -120,16 +331,43 @@ One physical FTP connection serializes all operations, including listings and ke
 
 Permission, authentication and trust failures are not retried. A started one-shot upload, partially consumed read or uncertain mutation is not replayed. Use a source factory for an upload you deliberately permit to restart from the beginning:
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 await connector.write('release.zip', () => createReadStream(localPath), {
     autoReconnect: true,
     maxTransientRetries: 2,
 });
 ```
 
+```js [JavaScript]
+await connector.write('release.zip', () => createReadStream(localPath), {
+    autoReconnect: true,
+    maxTransientRetries: 2,
+});
+```
+
+```js [MJS]
+await connector.write('release.zip', () => createReadStream(localPath), {
+    autoReconnect: true,
+    maxTransientRetries: 2,
+});
+```
+
+```js [CommonJS]
+await connector.write('release.zip', () => createReadStream(localPath), {
+    autoReconnect: true,
+    maxTransientRetries: 2,
+});
+```
+
+:::
+
 ## Transfer progress and bandwidth
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
 
 const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
@@ -144,6 +382,53 @@ await connector.write('release.zip', () => createReadStream(localPath), {
 });
 ```
 
+```js [JavaScript]
+import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
+
+const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
+
+await connector.write('release.zip', () => createReadStream(localPath), {
+    bandwidth,
+    totalBytes: localFileSize,
+    progressIntervalMs: 100,
+    onProgress(event) {
+        renderTransfer(event);
+    },
+});
+```
+
+```js [MJS]
+import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
+
+const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
+
+await connector.write('release.zip', () => createReadStream(localPath), {
+    bandwidth,
+    totalBytes: localFileSize,
+    progressIntervalMs: 100,
+    onProgress(event) {
+        renderTransfer(event);
+    },
+});
+```
+
+```js [CommonJS]
+const {BandwidthBudget} = require('@jalsoedesign/dockline-abstract');
+
+const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
+
+await connector.write('release.zip', () => createReadStream(localPath), {
+    bandwidth,
+    totalBytes: localFileSize,
+    progressIntervalMs: 100,
+    onProgress(event) {
+        renderTransfer(event);
+    },
+});
+```
+
+:::
+
 `bandwidth` accepts a bytes-per-second number or a shared `BandwidthBudget`. One shared instance enforces an aggregate budget separately for uploads and downloads. Stream backpressure is preserved; file contents are not buffered into one complete file for progress or throttling. Deliberate throttling still counts against `timeoutMs`, so increase the operation deadline for slow transfers.
 
 Progress events contain `direction`, optional `path`, one-based `attempt`, `stage`, `bytesTransferred`, optional `totalBytes`, `elapsedMs` and average `bytesPerSecond`. Stages are `starting`, `transferring`, `completed`, `failed` and `cancelled`. Byte counts start again for each attempt and increase within that attempt. Unknown totals remain absent; the connector does not invent percentages or make a metadata request solely to report progress. Callback delivery defaults to a 100 ms interval; `0` reports every counted chunk. Terminal events bypass that interval.
@@ -152,12 +437,37 @@ For a download, consume the returned stream fully. `completed` is emitted only a
 
 ## Filename encoding
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const connector = new FtpConnector({
     ...connection,
     filenameEncoding: {charset: 'latin1', onUnrepresentable: 'reject'},
 });
 ```
+
+```js [JavaScript]
+const connector = new FtpConnector({
+    ...connection,
+    filenameEncoding: {charset: 'latin1', onUnrepresentable: 'reject'},
+});
+```
+
+```js [MJS]
+const connector = new FtpConnector({
+    ...connection,
+    filenameEncoding: {charset: 'latin1', onUnrepresentable: 'reject'},
+});
+```
+
+```js [CommonJS]
+const connector = new FtpConnector({
+    ...connection,
+    filenameEncoding: {charset: 'latin1', onUnrepresentable: 'reject'},
+});
+```
+
+:::
 
 Supported values are UTF-8 (`utf8` or `utf-8`), ASCII (`ascii`) and ISO-8859-1 (`latin1` or `iso-8859-1`). Matching is case-insensitive. UTF-8 is the default. Legacy encodings must be selected explicitly; the connector does not guess an encoding.
 
@@ -177,7 +487,9 @@ Publication uses an exclusively created staging directory, writes its owned cont
 
 `copyFileWithStrategy()` uses the shared explicit copy strategy and reports the strategy used. FTP has no native copy implementation. The client-streamed strategy spools through a temporary local file with no default size limit, then publishes using the same physical connection; it does not open a hidden extra connection. `copyFile()` is the compatible void-returning wrapper and accepts the same strategy options. A streaming checksum is likewise opt-in because it reads the full remote file.
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const checksum = await connector.checksumDetails('release.zip', {
     algorithm: 'sha256',
     strategy: 'server-or-stream',
@@ -186,6 +498,38 @@ const checksum = await connector.checksumDetails('release.zip', {
 
 console.log(checksum.strategy, checksum.digest);
 ```
+
+```js [JavaScript]
+const checksum = await connector.checksumDetails('release.zip', {
+    algorithm: 'sha256',
+    strategy: 'server-or-stream',
+    maxBytes: 512 * 1024 * 1024,
+});
+
+console.log(checksum.strategy, checksum.digest);
+```
+
+```js [MJS]
+const checksum = await connector.checksumDetails('release.zip', {
+    algorithm: 'sha256',
+    strategy: 'server-or-stream',
+    maxBytes: 512 * 1024 * 1024,
+});
+
+console.log(checksum.strategy, checksum.digest);
+```
+
+```js [CommonJS]
+const checksum = await connector.checksumDetails('release.zip', {
+    algorithm: 'sha256',
+    strategy: 'server-or-stream',
+    maxBytes: 512 * 1024 * 1024,
+});
+
+console.log(checksum.strategy, checksum.digest);
+```
+
+:::
 
 The default checksum strategy is `server-only`. FTP server hashes require `FEAT HASH` to advertise SHA-256 or SHA-512. The connector serializes algorithm selection and `HASH` on the same connection and rejects malformed, mismatched-algorithm and partial-range replies. Only reviewed complete-file reply forms are accepted; arbitrary extensions are not guessed. `server-or-stream` falls back only for unsupported hashing, not for permission failures or malformed results. The compatible `checksum()` wrapper accepts `algo` or `algorithm` and `hex`, `base64` or `base64url` output encoding.
 

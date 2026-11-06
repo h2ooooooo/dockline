@@ -6,7 +6,12 @@ const {Server, utils} = ssh2;
 const {sftp} = utils;
 
 /** Isolated SSH/SFTP fixture: public test credentials, generated keys, in-memory files. */
-export async function createLocalSftp(options: {interactive?: 'single' | 'multiple'; userKey?: {private: string; public: string}} = {}) {
+export async function createLocalSftp(options: {
+    interactive?: 'single' | 'multiple';
+    userKey?: {private: string; public: string};
+    mkdirBarrier?: {path: string; participants: number};
+    deniedDirectories?: string[];
+} = {}) {
     const hostKey = generateKeyPairSync('rsa', {
         modulusLength: 2048,
         privateKeyEncoding: {type: 'pkcs1', format: 'pem'},
@@ -38,12 +43,15 @@ export async function createLocalSftp(options: {interactive?: 'single' | 'multip
     ]);
     const directories = new Set(['/']);
     const connections = new Set<Connection>();
+    const pendingMkdir: (() => void)[] = [];
+    let mkdirBarrierReleased = false;
     const observations = {
         passwords: 0,
         connections: 0,
         openHandles: 0,
         keyboardRounds: 0,
         keepalives: 0,
+        mkdirCollisions: 0,
     };
     const server = new Server({
         hostKeys: [hostKey.privateKey],
@@ -261,14 +269,30 @@ export async function createLocalSftp(options: {interactive?: 'single' | 'multip
                 }
             });
             channel.on('MKDIR', (id, key) => {
-                if (directories.has(key)) {
-                    status(id, sftp.STATUS_CODE.FAILURE);
+                const create = () => {
+                    if (options.deniedDirectories?.includes(key)) {
+                        status(id, sftp.STATUS_CODE.PERMISSION_DENIED);
+                    } else if (directories.has(key) || files.has(key) || key === '/link') {
+                        observations.mkdirCollisions++;
+                        status(id, sftp.STATUS_CODE.FAILURE);
+                    } else if (!directories.has(path.posix.dirname(key))) {
+                        status(id, sftp.STATUS_CODE.NO_SUCH_FILE);
+                    } else {
+                        directories.add(key);
+                        status(id, sftp.STATUS_CODE.OK);
+                    }
+                };
 
-                    return;
+                if (!mkdirBarrierReleased && options.mkdirBarrier?.path === key) {
+                    pendingMkdir.push(create);
+
+                    if (pendingMkdir.length === options.mkdirBarrier.participants) {
+                        mkdirBarrierReleased = true;
+                        pendingMkdir.splice(0).forEach(callback => callback());
+                    }
+                } else {
+                    create();
                 }
-
-                directories.add(key);
-                status(id, sftp.STATUS_CODE.OK);
             });
             channel.on('REMOVE', (id, key) => {
                 status(id, files.delete(key) ? sftp.STATUS_CODE.OK : sftp.STATUS_CODE.NO_SUCH_FILE);
@@ -310,6 +334,7 @@ export async function createLocalSftp(options: {interactive?: 'single' | 'multip
         fingerprint,
         publicKey: parsedHostKey.getPublicSSH(),
         files,
+        directories,
         userKey,
         observations,
         dropConnections: () => {

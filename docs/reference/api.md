@@ -1,6 +1,6 @@
 # Public API
 
-This catalogue describes the `@jalsoedesign/dockline-*` packages. The generated declarations are the authority for exact TypeScript overloads. Start with [Quick start FTP](../ftp/quick-start.md) or [Quick start SFTP](../sftp/quick-start.md) for complete configuration and file-transfer examples.
+This catalogue describes the `@jalsoedesign/dockline-*` packages. The generated [public declarations](/reference/types) are the authority for exact TypeScript overloads. Start with [Quick start FTP](../ftp/quick-start.md) or [Quick start SFTP](../sftp/quick-start.md) for complete configuration and file-transfer examples.
 
 ## Package entry points
 
@@ -11,6 +11,8 @@ This catalogue describes the `@jalsoedesign/dockline-*` packages. The generated 
 | `@jalsoedesign/dockline-ftp-client` | `FtpConnector`, `createConnector(FtpTransferConfig)`, low-level/common FTP configuration, filename helpers and relevant shared exports. |
 | `@jalsoedesign/dockline-sftp-client` | `SftpConnector`, `createConnector(SftpTransferConfig)`, SFTP configuration/authentication/trust types, managed known hosts and relevant shared exports. |
 | `@jalsoedesign/dockline-cli` | Embeddable command runner/program, YAML loader and CLI context/config types; also installs the `dockline` executable. |
+| `@jalsoedesign/dockline-ssh-client` | `SshClient`, `SshSession`, scoped SSH execution/sudo and SSH option/result types; see [SSH](/ssh/quick-start). |
+| `@jalsoedesign/dockline-keys` | Key inspection, fingerprints, private/public conversion and encrypted exports; see [key utilities](/guide/keys). |
 | Each package's `/package.json` | Metadata for that package. |
 
 Core depends only on abstract and declares the two clients as optional peers. Install the selected client explicitly. Core does not re-export concrete clients, `KnownHostsStore` or old `/ftp`, `/sftp`, `/core` subpaths. Use [package entry points](/guide/packages) instead of generated implementation paths.
@@ -43,7 +45,6 @@ Default ports are 21 for FTP/explicit FTPS, 990 for implicit FTPS and 22 for SFT
 An absent selected client causes `MissingClientPackageError`, with code `DOCKLINE_CLIENT_NOT_INSTALLED` and fields `protocol`, `packageName` and `installCommand`. It extends `ConnectorError`. Synchronous constructors throw it; asynchronous connection helpers reject with it. A broken installed client's original error propagates. Dockline never installs a client or substitutes another protocol. See [client loading](/guide/packages#when-a-client-is-missing).
 
 If both an operation and its cleanup fail, scoped connection helpers preserve both errors in an `AggregateError`. A cleanup failure after a successful callback is still reported. Consume returned streams and iterators inside the callback before its connection closes.
-
 
 ## Dockline instance methods
 
@@ -162,9 +163,9 @@ Import concrete adapters and their factories from `@jalsoedesign/dockline-ftp-cl
 
 `FtpConnectorConfig` uses `host`, required `port`, `user`, `password`, `secure: boolean | 'implicit'`, `initialPath`, `passive`, optional `secureOptions` and `filenameEncoding`, plus shared connection/operation fields. `FtpUploadSource` aliases `TransferContents`.
 
-`SftpConnectorConfig` uses `host`, required `port`, `username`, `initialPath`; optional password, privateKey, privateKeyPath, passphrase, agent, keyboardInteractive, UTF-8 filename settings, hostVerifier, readyTimeout and explicit trust hooks. `agentForward` only accepts false. See [FTP](../guide/ftp.md) and [SFTP](../guide/sftp.md) for full configuration and supported combinations.
+`SftpConnectorConfig` uses `host`, required `port`, `username`, `initialPath`; optional `password`, `privateKey`, `privateKeyPath`, `passphrase`, `agent`, `keyboardInteractive`, UTF-8 filename settings, `hostVerifier`, `readyTimeout` and explicit trust hooks. `agentForward` only accepts `false`. See [FTP](../guide/ftp.md) and [SFTP](../guide/sftp.md) for full configuration and supported combinations.
 
-Both adapters expose connect/disconnect, read/write, shallow/deep list, stat, fileExists/directoryExists, createDirectory/deleteDirectory/deleteFile, fileSize/lastModified, moveFile, renameFile, exclusive directory creation, empty-directory removal, publication policy validation, publication/copy/checksum/walk helpers, capabilities and serverFeatures. The direct `deleteDirectory` operation is recursive; the ordinary SDK deliberately exposes file deletion only. Direct adapter paths use their `initialPath` behavior and are not the SDK's relative-path validator.
+Both adapters expose `connect`/`disconnect`, `read`/`write`, shallow/deep `list`, `stat`, `fileExists`/`directoryExists`, `createDirectory`/`deleteDirectory`/`deleteFile`, `fileSize`/`lastModified`, `moveFile`, `renameFile`, exclusive directory creation, empty-directory removal, publication policy validation, `publishFile`/`copyFile`/`checksum`/`walk` helpers, `capabilities` and `serverFeatures`. The direct `deleteDirectory` operation is recursive; the ordinary SDK deliberately exposes file deletion only. Direct adapter paths use their `initialPath` behavior and are not the SDK's relative-path validator.
 
 | Adapter member | Distinction |
 | --- | --- |
@@ -190,7 +191,7 @@ Common authentication/trust contracts are defined in abstract and re-exported th
 | `SftpKeyboardInteractiveChallenge` | Name, instructions, language, readonly prompt/echo list and abort signal. |
 | `SftpKeyboardInteractive` | String for one prompt, or callback returning the ordered response array, synchronously or asynchronously. |
 | `KnownHostsStoreOptions` | `file` and optional `lockTimeoutMs`. |
-| `KnownHostEntry` | Readonly host, port, keyType, serialized publicKey and fingerprint. |
+| `KnownHostEntry` | Readonly `host`, `port`, `keyType`, serialized `publicKey` and `fingerprint`. |
 | `KnownHostInspection` | `status: unknown \| match \| changed` and previous fingerprint or null. |
 | `KnownHostApproval` | Explicit `approved: true` and previously inspected fingerprint or null. |
 

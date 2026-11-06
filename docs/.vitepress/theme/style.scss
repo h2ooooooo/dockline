@@ -48,7 +48,7 @@
 .VPHero {
     .name,
     .text {
-        letter-spacing: -0.055em;
+        letter-spacing: -0.035em;
     }
 
     .tagline {
@@ -81,4 +81,26 @@
 :focus-visible {
     outline: 2px solid var(--vp-c-brand-1);
     outline-offset: 4px;
+}
+
+/* Terminal captures retain the CLI's ANSI color choices. */
+.vp-doc pre.cli-output {
+    overflow-x: auto;
+    padding: 20px 24px;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    background: #111417;
+    color: #f0f3f6;
+    font-family: var(--vp-font-family-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    tab-size: 4;
+    white-space: pre;
+}
+
+.vp-doc pre.cli-output code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
 }

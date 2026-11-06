@@ -5,6 +5,9 @@
             "path": "./packages/abstract"
         },
         {
+            "path": "./packages/keys"
+        },
+        {
             "path": "./packages/ftp-client"
         },
         {

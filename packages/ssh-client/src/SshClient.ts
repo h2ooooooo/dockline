@@ -8,7 +8,8 @@ import {createReadStream, createWriteStream} from 'node:fs';
 import {Readable} from 'node:stream';
 import {pipeline} from 'node:stream/promises';
 import path from 'node:path';
-import {SftpConnector, prepareSshPrivateKey} from '@jalsoedesign/dockline-sftp-client';
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
+import {preparePrivateKey} from '@jalsoedesign/dockline-keys';
 import {homedir} from 'node:os';
 import {milliseconds, type SshOptions, type Question} from './types.js';
 
@@ -287,7 +288,7 @@ export class SshClient {
         try {
             this.services.signal.throwIfAborted();
 
-            const privateKey = await prepareSshPrivateKey(
+            const privateKey = await preparePrivateKey(
                 config.privateKeyPath ? await readFile(config.privateKeyPath) : undefined, config.passphrase);
 
             this.services.signal.throwIfAborted();

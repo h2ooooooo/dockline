@@ -63,3 +63,8 @@ See the [SSH package source](https://github.com/h2ooooooo/dockline/tree/main/pac
 ### PuTTY key files
 
 `privateKeyPath` accepts PPK v3 keys directly, including encrypted keys when `passphrase` is supplied. SSH commands and SFTP transfers share the same in-memory reader. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).
+
+
+## Shared key utilities
+
+SSH/SFTP private-key handling now uses `@jalsoedesign/dockline-keys`. It supports modern OpenSSH, PPK v2/v3, PKCS#8 and traditional PEM, including encrypted inputs. The independent package also supplies bidirectional conversion, encrypted exports, public-key extraction and fingerprints without requiring a transport client. Existing SFTP key helper/error exports remain compatible. See [key utilities](https://h2ooooooo.github.io/dockline/guide/keys).

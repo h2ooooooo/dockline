@@ -48,7 +48,6 @@ An absent selected client causes `MissingClientPackageError` with the protocol, 
 
 Applications can bypass core and construct a direct client with its established low-level configuration or its exported common-config factory. Abstract provides contracts for independent adapters, but core's protocol union currently selects only its two supported client packages; there is no arbitrary provider registry.
 
-
 ## Connection ownership
 
 Creating a `Dockline` instance validates configuration without immediately connecting. `connect` opens a session, and operations can use the adapters' initial connection behavior. A scoped `withConnection` call connects before invoking its callback and disconnects afterward, including failed work. If operation and cleanup both fail, both errors are retained.

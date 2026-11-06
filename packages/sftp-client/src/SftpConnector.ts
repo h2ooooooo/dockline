@@ -8,10 +8,11 @@ import type {
     ChecksumOptions, MimeTypeOptions,
 } from '@flystorage/file-storage';
 import {Readable} from 'node:stream';
+import {posix} from 'node:path';
 import {pipeline} from 'node:stream/promises';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {prepareSshPrivateKey} from './PrivateKey.js';
+import {preparePrivateKey} from '@jalsoedesign/dockline-keys';
 import {
     ConnectorError, AuthError, NotFoundError, PermissionError, NotSupportedError,
     HostTrustError, OperationAbortedError, OperationTimeoutError, ConnectionClosedError,
@@ -428,7 +429,7 @@ export class SftpConnector implements TransferAdapter {
             };
         }
 
-        authentication.privateKey = await prepareSshPrivateKey(authentication.privateKey, authentication.passphrase);
+        authentication.privateKey = await preparePrivateKey(authentication.privateKey, authentication.passphrase);
 
         if (abortSignal.aborted) {
             throw new OperationAbortedError('SFTP key preparation was cancelled');
@@ -935,8 +936,92 @@ export class SftpConnector implements TransferAdapter {
     }
 
     async createDirectory(path: string, options: OperationOptions<CreateDirectoryOptions> = {}): Promise<void> {
-        await this.run(options, false, async (client) => {
-            await client.mkdir(this.wrapPath(path), true);
+        await this.run(options, false, async (client, attempt) => {
+            const checkActive = () => {
+                if (attempt.error) {
+                    throw attempt.error;
+                }
+
+                this.checkAborted(options);
+            };
+            const directoryExists = async (directory: string): Promise<boolean> => {
+                checkActive();
+
+                let stats: SftpClient.FileStats;
+
+                try {
+                    // The community declaration omits this documented runtime method.
+                    stats = await (client as SftpClient & {
+                        lstat(path: string): Promise<SftpClient.FileStats>;
+                    }).lstat(directory);
+                } catch (error) {
+                    checkActive();
+
+                    if (this.wrapError(error) instanceof NotFoundError) {
+                        return false;
+                    }
+
+                    throw error;
+                }
+
+                checkActive();
+
+                if (stats.isSymbolicLink) {
+                    throw new NotSupportedError('Cannot create a directory through a symbolic link: ' + directory);
+                }
+
+                if (!stats.isDirectory) {
+                    throw new ConnectorError('Path already exists and is not a directory: ' + directory);
+                }
+
+                return true;
+            };
+            const ensureDirectory = async (directory: string): Promise<void> => {
+                if (await directoryExists(directory)) {
+                    return;
+                }
+
+                const parent = posix.dirname(directory);
+
+                if (parent === directory) {
+                    throw new NotFoundError('Directory root is unavailable: ' + directory);
+                }
+
+                await ensureDirectory(parent);
+                checkActive();
+
+                try {
+                    await client.mkdir(directory, false);
+                } catch (error) {
+                    checkActive();
+
+                    if (isTransientError(this.wrapError(error))) {
+                        throw error;
+                    }
+
+                    // Another session may have won mkdir. Verify this exact component,
+                    // retaining the mkdir error if the directory cannot be confirmed.
+                    let exists = false;
+
+                    try {
+                        exists = await directoryExists(directory);
+                    } catch {
+                        checkActive();
+                    }
+
+                    if (!exists) {
+                        throw error;
+                    }
+
+                    return;
+                }
+
+                if (!await directoryExists(directory)) {
+                    throw new ConnectorError('Created directory could not be verified: ' + directory);
+                }
+            };
+
+            await ensureDirectory(posix.normalize(this.wrapPath(path)).replace(/\/$/, '') || '/');
         });
     }
 

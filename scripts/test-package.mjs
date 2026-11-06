@@ -9,6 +9,7 @@ const name = process.argv[2];
 
 if (![
     'abstract',
+    'keys',
     'ftp-client',
     'sftp-client',
     'ssh-client',

@@ -13,24 +13,24 @@ Install the matching client explicitly using the [installation guide](/guide/ins
 | Class | Parent | Meaning and stable fields |
 | --- | --- | --- |
 | `ConnectorError` | Error | Base with optional `cause`, `code` and `stage`. |
-| `AuthError` | ConnectorError | Authentication rejected; stage `authenticate`. |
-| `CredentialProviderError` | AuthError | Provider failed; stage `credentials`, code `CREDENTIAL_PROVIDER_FAILED`. |
-| `HostTrustError` | ConnectorError | Host identity rejected; stage `trust`, code `HOST_TRUST_REJECTED`. |
-| `TlsTrustError` | HostTrustError | TLS certificate trust failed; inherits the host-trust stage and code. |
-| `NameResolutionError` | ConnectorError | DNS failure; stage `resolve`, default code `ENOTFOUND`; the classifier preserves `EAI_AGAIN`. |
-| `ConnectionRefusedError` | ConnectorError | Connection refused; stage `connect`, code `ECONNREFUSED`. |
-| `DirectoryAccessError` | ConnectorError | Initial-directory setup failed; stage `directory`, optional underlying status code. |
-| `NotFoundError` | ConnectorError | Confirmed missing resource where the dependency preserves that distinction; see the dependency boundaries below. |
-| `PermissionError` | ConnectorError | Requested access was denied. |
-| `UnsupportedProtocolError` | ConnectorError | No connector supports the selected protocol. |
-| `NotSupportedError` | ConnectorError | Unsupported operation, strategy, option or protocol guarantee. |
-| `OperationAbortedError` | ConnectorError | Cancellation; code `ABORT_ERR`. |
-| `OperationTimeoutError` | ConnectorError | Deadline expired; code `ETIMEDOUT`. |
-| `ConnectionClosedError` | ConnectorError | Session closed; code `ECONNRESET`. |
-| `ResourceLimitError` | ConnectorError | An explicitly configured transfer/checksum/copy byte budget was exceeded. |
-| `IntegrityError` | ConnectorError | Digest, full-file hash response or observed file-size verification failed. |
-| `PoolClosedError` | ConnectorError | Acquisition/use is incompatible with a closed pool or revoked lease. |
-| `PublicationError` | ConnectorError | Composed publication failed; inspect the explicit remote `state` before recovery. |
+| `AuthError` | `ConnectorError` | Authentication rejected; stage `authenticate`. |
+| `CredentialProviderError` | `AuthError` | Provider failed; stage `credentials`, code `CREDENTIAL_PROVIDER_FAILED`. |
+| `HostTrustError` | `ConnectorError` | Host identity rejected; stage `trust`, code `HOST_TRUST_REJECTED`. |
+| `TlsTrustError` | `HostTrustError` | TLS certificate trust failed; inherits the host-trust stage and code. |
+| `NameResolutionError` | `ConnectorError` | DNS failure; stage `resolve`, default code `ENOTFOUND`; the classifier preserves `EAI_AGAIN`. |
+| `ConnectionRefusedError` | `ConnectorError` | Connection refused; stage `connect`, code `ECONNREFUSED`. |
+| `DirectoryAccessError` | `ConnectorError` | Initial-directory setup failed; stage `directory`, optional underlying status code. |
+| `NotFoundError` | `ConnectorError` | Confirmed missing resource where the dependency preserves that distinction; see the dependency boundaries below. |
+| `PermissionError` | `ConnectorError` | Requested access was denied. |
+| `UnsupportedProtocolError` | `ConnectorError` | No connector supports the selected protocol. |
+| `NotSupportedError` | `ConnectorError` | Unsupported operation, strategy, option or protocol guarantee. |
+| `OperationAbortedError` | `ConnectorError` | Cancellation; code `ABORT_ERR`. |
+| `OperationTimeoutError` | `ConnectorError` | Deadline expired; code `ETIMEDOUT`. |
+| `ConnectionClosedError` | `ConnectorError` | Session closed; code `ECONNRESET`. |
+| `ResourceLimitError` | `ConnectorError` | An explicitly configured transfer/checksum/copy byte budget was exceeded. |
+| `IntegrityError` | `ConnectorError` | Digest, full-file hash response or observed file-size verification failed. |
+| `PoolClosedError` | `ConnectorError` | Acquisition/use is incompatible with a closed pool or revoked lease. |
+| `PublicationError` | `ConnectorError` | Composed publication failed; inspect the explicit remote `state` before recovery. |
 
 `ConnectionStage` is `'resolve' | 'connect' | 'trust' | 'authenticate' | 'directory' | 'credentials' | 'ready'`. It is optional when the transport cannot identify a stage. Catch specific subclasses before their parents. SFTP's deprecated `KeyAuthError` is an alias of `AuthError`.
 
@@ -76,7 +76,7 @@ The installed `ssh2-sftp-client` can convert a generic status 4 `lstat` failure 
 
 FTP ambiguous `550` and `553` responses remain errors. A successful parent listing without a matching item can establish absence, but a failed listing cannot.
 
-An optional external Flystorage wrapper can introduce its own error-with-cause boundary. Its default Windows path normalizer also has traversal/separator limitations; do not treat wrapping or a configured root as a security sandbox. Dockline's low-level connectors do not apply that external wrapper automatically. Explicitly validate application paths and choose a verified normalizer if your application adds the wrapper.
+An optional external Flystorage wrapper can introduce its own error-with-cause boundary. Its default Windows path normalizer also has traversal/separator limitations; do not treat wrapping or a configured root as a security sandbox. Dockline's low-level connectors do not apply that external wrapper automatically. Explicitly validate application paths and choose a verified normalizer when adding the wrapper.
 
 These are documented behavior limits, separate from npm advisory counts.
 

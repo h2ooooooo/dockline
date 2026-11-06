@@ -1,44 +1,185 @@
-# SSH commands
+# Run your first SSH command
 
-`@jalsoedesign/dockline-ssh-client` provides scoped SSH command execution and SFTP transfers. It is independently installable; core, FTP and SFTP consumers do not need to install it.
+Execute one command and inspect the result. An SSH login needs command-execution permission; an SFTP-only account may not have it.
+
+## Install
 
 ```sh
 npm install @jalsoedesign/dockline-ssh-client
 ```
 
-This new workspace must be published before that registry command is available. Repository users can build it with `npm run build --workspace @jalsoedesign/dockline-ssh-client`.
+## Set your connection details
 
-```ts
+Use your real account and independently verified host fingerprint. These are the same variables as the SFTP quick start.
+
+::: code-group
+
+```powershell [PowerShell]
+$env:SFTP_HOST = "files.example.com"
+$env:SFTP_USERNAME = "deploy"
+$env:SFTP_PASSWORD = "your-password"
+$env:SFTP_SHA256 = "SHA256:your-verified-server-fingerprint"
+```
+
+```sh [macOS / Linux]
+export SFTP_HOST="files.example.com"
+export SFTP_USERNAME="deploy"
+export SFTP_PASSWORD="your-password"
+export SFTP_SHA256="SHA256:your-verified-server-fingerprint"
+```
+
+:::
+
+## Save your SSH example
+
+::: code-group
+
+```ts [TypeScript]
+// ssh.ts
 import {SshClient} from '@jalsoedesign/dockline-ssh-client';
 
+const {SFTP_HOST, SFTP_USERNAME, SFTP_PASSWORD, SFTP_SHA256} = process.env;
+
+if (!SFTP_HOST || !SFTP_USERNAME || !SFTP_PASSWORD || !SFTP_SHA256) {
+    throw new Error('Set the four connection variables first.');
+}
+
 const client = new SshClient({
-    host: 'server.example.com',
+    host: SFTP_HOST,
     port: 22,
-    username: 'deployer',
-    privateKeyPath: '/home/me/.ssh/deployer',
-    hostFingerprint: process.env.SSH_HOST_FINGERPRINT,
+    username: SFTP_USERNAME,
+    password: SFTP_PASSWORD,
+    hostFingerprint: SFTP_SHA256,
 });
 
-await client.withConnection(async server => {
-    const result = await server.exec('uptime');
+await client.withConnection(async session => {
+    const result = await session.exec('whoami');
 
-    console.log(result.stdout);
-
-    await server.download({
-        sourceFile: '/var/backups/export.sql',
-        destinationFile: './backups/export.sql',
-    });
-
-    await server.exec('systemctl', ['restart', 'website'], {
-        sudo: true,
-        timeout: '1m',
-    });
+    process.stdout.write(result.stdout);
+    console.log('Exit code:', result.code);
 });
 ```
 
-Without an explicit fingerprint or a supplied `trust(host, port, fingerprint)` callback, connections reject unknown hosts. The application owns trust persistence and any prompt UI. Supply optional `ask`, `log`, `signal` and `directory` callbacks/settings as the constructor's second argument. `ask` receives an input/password challenge and returns its answer. No CLI prompt implementation is bundled.
+```js [JavaScript]
+// ssh.js
+import {SshClient} from '@jalsoedesign/dockline-ssh-client';
 
-`withConnection` authenticates and closes its connection in `finally`. Passwords, private-key passphrases, explicit SSH agents and keyboard-interactive authentication are supported. Agent forwarding is not enabled. An SFTP account does not necessarily have command-execution permission.
+const {SFTP_HOST, SFTP_USERNAME, SFTP_PASSWORD, SFTP_SHA256} = process.env;
+
+if (!SFTP_HOST || !SFTP_USERNAME || !SFTP_PASSWORD || !SFTP_SHA256) {
+    throw new Error('Set the four connection variables first.');
+}
+
+const client = new SshClient({
+    host: SFTP_HOST,
+    port: 22,
+    username: SFTP_USERNAME,
+    password: SFTP_PASSWORD,
+    hostFingerprint: SFTP_SHA256,
+});
+
+await client.withConnection(async session => {
+    const result = await session.exec('whoami');
+
+    process.stdout.write(result.stdout);
+    console.log('Exit code:', result.code);
+});
+```
+
+```js [MJS]
+// ssh.mjs
+import {SshClient} from '@jalsoedesign/dockline-ssh-client';
+
+const {SFTP_HOST, SFTP_USERNAME, SFTP_PASSWORD, SFTP_SHA256} = process.env;
+
+if (!SFTP_HOST || !SFTP_USERNAME || !SFTP_PASSWORD || !SFTP_SHA256) {
+    throw new Error('Set the four connection variables first.');
+}
+
+const client = new SshClient({
+    host: SFTP_HOST,
+    port: 22,
+    username: SFTP_USERNAME,
+    password: SFTP_PASSWORD,
+    hostFingerprint: SFTP_SHA256,
+});
+
+await client.withConnection(async session => {
+    const result = await session.exec('whoami');
+
+    process.stdout.write(result.stdout);
+    console.log('Exit code:', result.code);
+});
+```
+
+```js [CommonJS]
+// ssh.cjs
+const {SshClient} = require('@jalsoedesign/dockline-ssh-client');
+
+async function main() {
+    const {SFTP_HOST, SFTP_USERNAME, SFTP_PASSWORD, SFTP_SHA256} = process.env;
+
+    if (!SFTP_HOST || !SFTP_USERNAME || !SFTP_PASSWORD || !SFTP_SHA256) {
+        throw new Error('Set the four connection variables first.');
+    }
+
+    const client = new SshClient({
+        host: SFTP_HOST,
+        port: 22,
+        username: SFTP_USERNAME,
+        password: SFTP_PASSWORD,
+        hostFingerprint: SFTP_SHA256,
+    });
+
+    await client.withConnection(async session => {
+        const result = await session.exec('whoami');
+
+        process.stdout.write(result.stdout);
+        console.log('Exit code:', result.code);
+    });
+}
+
+main().catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+});
+```
+
+:::
+
+## Run
+
+::: code-group
+
+```sh [TypeScript]
+npm install --save-dev typescript tsx @types/node
+npm pkg set type=module
+npx tsx ssh.ts
+```
+
+```sh [JavaScript]
+npm pkg set type=module
+node ssh.js
+```
+
+```sh [MJS]
+node ssh.mjs
+```
+
+```sh [CommonJS]
+node ssh.cjs
+```
+
+:::
+
+Example output for an account named deploy:
+
+```text
+deploy
+Exit code: 0
+```
+
+The username depends on your server. The SDK returns stdout/stderr/code; the example prints them explicitly. Nonzero command exits reject unless `allowFailure` is selected. This first example performs no service restart or file transfer.
 
 ## Command API
 
@@ -58,6 +199,14 @@ Cancellation requests command termination and closes channels. The remote server
 
 See the [SSH package source](https://github.com/h2ooooooo/dockline/tree/main/packages/ssh-client).
 
-## PuTTY PPK v3
+## PuTTY PPK v2 and v3
 
-`privateKeyPath` can point directly to a `.ppk` v3 file. For an encrypted key, supply `passphrase` through your application or secret provider. SSH commands and the session's SFTP transfers share Dockline's in-memory key reader; the source key file is not changed. See [supported formats, error reasons and resource limits](/guide/sftp#putty-ppk-keys). Host fingerprints must still be verified independently.
+`privateKeyPath` can point directly to a PuTTY `.ppk` **v2 or v3** file, either unencrypted or encrypted. For an encrypted key, supply `passphrase` directly or through a secret provider. SSH commands and the session's SFTP transfers share Dockline's in-memory key reader; the source key file is not changed. For key inspection, conversion and encrypted exports without a connection, use [Dockline Keys](/keys/). See [supported formats, error reasons and resource limits](/guide/sftp#putty-ppk-keys). Host fingerprints must still be verified independently.
+
+## File-helper differences
+
+`SshSession.download` stages a temporary local file and renames it over the destination on completion. Unlike the generic Dockline SDK download default, this SSH-specific helper has no overwrite policy option and can replace an existing destination. Use the generic SDK/adapters when explicit overwrite or publication policies are required. Each SSH file helper opens and closes its own SFTP connector; it does not reuse the exec channel as an SFTP channel.
+
+## Local test without an SSH account
+
+See the [controlled local SSH fixture](/guide/local-demo#ssh), which recognizes `whoami` without executing received text in an operating-system shell.

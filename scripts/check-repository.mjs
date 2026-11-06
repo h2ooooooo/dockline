@@ -40,7 +40,17 @@ for (const filename of files) {
     assert.ok(!localSettings.test(filename) || filename.endsWith('.env.example'), `Local settings included: ${filename}`);
     assert.ok(!/\.(tgz|log|tsbuildinfo)$/.test(filename), `Generated artifact included: ${filename}`);
 
-    const contents = await readFile(path.join(root, filename));
+    const contents = await readFile(path.join(root, filename)).catch(error => {
+        if (error.code === 'ENOENT') {
+            return undefined;
+        }
+
+        throw error;
+    });
+
+    if (!contents) {
+        continue;
+    }
 
     assert.ok(contents.length <= 2 * 1024 * 1024, `Review unexpectedly large repository file: ${filename}`);
 

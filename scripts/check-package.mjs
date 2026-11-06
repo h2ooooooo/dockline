@@ -8,6 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const npmCli = process.env.npm_execpath;
 const workspaces = [
     'abstract',
+    'keys',
     'core',
     'ftp-client',
     'sftp-client',

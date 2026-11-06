@@ -1,12 +1,12 @@
 # Choose your quick start
 
-Choose the protocol your server uses. Each guide starts with a complete connection, uploads a local file, downloads it again and closes the connection. Then it shows listing, file information, folders, text, rename and delete operations.
+Start with [API documentation](/api/), [CLI documentation](/cli/) or [Keys documentation](/keys/).
 
-| Your server | Start here | More detail |
-| --- | --- | --- |
-| FTP or FTP over TLS (FTPS) | [Quick start FTP](/ftp/quick-start) | [Connection settings and FTPS](/guide/ftp) |
-| SSH File Transfer Protocol (SFTP) | [Quick start SFTP](/sftp/quick-start) | [Authentication](/guide/sftp) · [Host trust](/guide/trust) |
+| First result | Start here |
+| --- | --- |
+| List an SFTP directory from Node.js | [API quick start](/api/quick-start) |
+| Transfer a file from the terminal | [CLI quick start](/cli/quick-start) |
+| Inspect a key without connecting | [Keys quick start](/keys/quick-start) |
+| Work without a server account | [Local demos](/api/local-demo) |
 
-FTP and SFTP have separate sections in the navigation. Both use `Dockline.connect`, `downloadFile` and `uploadFile`; the connection settings select the protocol. SFTP uses SSH, while FTPS adds TLS to FTP.
-
-Install [core plus the matching protocol client](/guide/installation) first; both clients are optional and must be selected explicitly. For options that apply to both protocols, see [configuration](/guide/configuration), [everyday usage](/guide/usage) and [using Dockline in your own CLI](/guide/cli).
+The server examples require explicit connection details. The local demos create their own disposable loopback servers.

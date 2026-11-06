@@ -1,10 +1,14 @@
 # Transfer tools
 
+These are contextual recipes for an already connected direct `FtpConnector` or `SftpConnector`. Start with the [SFTP setup](/sftp/quick-start), then define `const connector = remote.connector` inside the connected block, or construct a direct client using the [connection options](/guide/sftp). `openFreshArchive` and `openFreshRelease` must return a new readable for each call; supply `archiveSize`, `independentlyComputedDigest` and `updateTransfer` explicitly. Import statements belong at file scope. These recipes return results or invoke callbacks; they do not print success automatically.
+
 The low-level `FtpConnector` and `SftpConnector` share progress, bandwidth, checksums, publication, copy and traversal contracts. These are direct connector APIs; an external Flystorage wrapper does not automatically expose the additional methods. Existing `read`, `write` and `moveFile` remain available.
 
 ## Progress and bandwidth
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
 
 const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
@@ -19,15 +23,64 @@ await connector.write('archive.zip', openFreshArchive, {
 });
 ```
 
+```js [JavaScript]
+import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
+
+const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
+
+await connector.write('archive.zip', openFreshArchive, {
+    bandwidth,
+    totalBytes: archiveSize,
+    progressIntervalMs: 100,
+    onProgress(event) {
+        updateTransfer(event.bytesTransferred, event.totalBytes, event.stage);
+    },
+});
+```
+
+```js [MJS]
+import {BandwidthBudget} from '@jalsoedesign/dockline-abstract';
+
+const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
+
+await connector.write('archive.zip', openFreshArchive, {
+    bandwidth,
+    totalBytes: archiveSize,
+    progressIntervalMs: 100,
+    onProgress(event) {
+        updateTransfer(event.bytesTransferred, event.totalBytes, event.stage);
+    },
+});
+```
+
+```js [CommonJS]
+const {BandwidthBudget} = require('@jalsoedesign/dockline-abstract');
+
+const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
+
+await connector.write('archive.zip', openFreshArchive, {
+    bandwidth,
+    totalBytes: archiveSize,
+    progressIntervalMs: 100,
+    onProgress(event) {
+        updateTransfer(event.bytesTransferred, event.totalBytes, event.stage);
+    },
+});
+```
+
+:::
+
 `totalBytes` is an optional caller-supplied hint; the library does not invent a percentage for an unknown-length stream. Events contain direction, path, one-based attempt, transferred bytes, optional total, elapsed milliseconds and average bytes per second. Stages are `starting`, `transferring`, `completed`, `failed` and `cancelled`. Each retry starts a new byte count. `completed` requires the complete protocol operation; read completion also requires consumption. Counted bytes describe passage through the connector's stream boundary, not durable storage on the server.
 
 Progress defaults to no callback and a 100 ms notification interval when a callback is supplied. Start and final events are always reported. Observer exceptions and rejected observer promises are ignored; they cannot turn a successful write into an automatic replay.
 
-`bandwidth` is either bytes per second for this transfer or a shared `BandwidthBudget`. One shared instance limits the aggregate of all uploads and, separately, all downloads. The scheduler uses FIFO byte quanta. Its default quantum is at most 16 KiB or one tenth of a second's configured rate; `burstBytes` can explicitly select 1–1,048,576 bytes. Rates are averaged over time and incur scheduling overhead. The monitor releases a source chunk after accounting for its bytes, so emitted data can be bursty at the source chunk size; burstBytes is a scheduling quantum, not a strict output-packet cap. Backpressure still applies. Intentional throttling consumes the operation's deadline, so select a suitable `timeoutMs`. There is no background scheduler when bandwidth limiting is unused.
+`bandwidth` is either bytes per second for this transfer or a shared `BandwidthBudget`. One shared instance limits the aggregate of all uploads and, separately, all downloads. The scheduler uses FIFO byte quanta. Its default quantum is at most 16 KiB or one tenth of a second's configured rate; `burstBytes` can explicitly select 1–1,048,576 bytes. Rates are averaged over time and incur scheduling overhead. The monitor releases a source chunk after accounting for its bytes, so emitted data can be bursty at the source chunk size; `burstBytes` is a scheduling quantum, not a strict output-packet cap. Backpressure still applies. Intentional throttling consumes the operation's deadline, so select a suitable `timeoutMs`. There is no background scheduler when bandwidth limiting is unused.
 
 ## Checksums
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const result = await connector.checksumDetails('archive.zip', {
     algorithm: 'sha256',
     strategy: 'server-or-stream',
@@ -38,6 +91,41 @@ const result = await connector.checksumDetails('archive.zip', {
 console.log(result.algorithm, result.strategy, result.digest);
 ```
 
+```js [JavaScript]
+const result = await connector.checksumDetails('archive.zip', {
+    algorithm: 'sha256',
+    strategy: 'server-or-stream',
+    maxBytes: 500_000_000,
+    abortSignal,
+});
+
+console.log(result.algorithm, result.strategy, result.digest);
+```
+
+```js [MJS]
+const result = await connector.checksumDetails('archive.zip', {
+    algorithm: 'sha256',
+    strategy: 'server-or-stream',
+    maxBytes: 500_000_000,
+    abortSignal,
+});
+
+console.log(result.algorithm, result.strategy, result.digest);
+```
+
+```js [CommonJS]
+const result = await connector.checksumDetails('archive.zip', {
+    algorithm: 'sha256',
+    strategy: 'server-or-stream',
+    maxBytes: 500_000_000,
+    abortSignal,
+});
+
+console.log(result.algorithm, result.strategy, result.digest);
+```
+
+:::
+
 The default is SHA-256 and **server-only**: it never downloads a file without explicit permission. `stream` always reads and hashes the file; `server-or-stream` falls back only when server hashing is unsupported. Authentication, permission, timeout or malformed-digest errors do not trigger another strategy. SHA-256 and SHA-512 are supported; other algorithms fail explicitly.
 
 FTP uses advertised HASH support. SFTP currently has no server checksum implementation and requires an explicit stream strategy. A streamed hash checks the byte count against available initial metadata and has no size limit by default. Set `maxBytes` on the connection or call to cap the bytes read; `Infinity` explicitly removes a configured cap. This does not provide a transactional snapshot of a changing file or independent evidence against a malicious server.
@@ -46,7 +134,9 @@ FTP uses advertised HASH support. SFTP currently has no server checksum implemen
 
 ## Publication and overwrite behavior
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const result = await connector.publishFile('release.zip', openFreshRelease, {
     overwrite: 'replace',
     requireAtomicRename: true, // Requires the SFTP POSIX rename extension.
@@ -54,6 +144,35 @@ const result = await connector.publishFile('release.zip', openFreshRelease, {
     abortSignal,
 });
 ```
+
+```js [JavaScript]
+const result = await connector.publishFile('release.zip', openFreshRelease, {
+    overwrite: 'replace',
+    requireAtomicRename: true, // Requires the SFTP POSIX rename extension.
+    verify: {algorithm: 'sha256', expectedDigest: independentlyComputedDigest},
+    abortSignal,
+});
+```
+
+```js [MJS]
+const result = await connector.publishFile('release.zip', openFreshRelease, {
+    overwrite: 'replace',
+    requireAtomicRename: true, // Requires the SFTP POSIX rename extension.
+    verify: {algorithm: 'sha256', expectedDigest: independentlyComputedDigest},
+    abortSignal,
+});
+```
+
+```js [CommonJS]
+const result = await connector.publishFile('release.zip', openFreshRelease, {
+    overwrite: 'replace',
+    requireAtomicRename: true, // Requires the SFTP POSIX rename extension.
+    verify: {algorithm: 'sha256', expectedDigest: independentlyComputedDigest},
+    abortSignal,
+});
+```
+
+:::
 
 Publication creates an exclusively owned temporary directory next to the destination, uploads its `contents` file, optionally verifies it, and finally renames it. Upload and verification size are unlimited by default. A configured `maxBytes` applies to both; an explicit `verify.maxBytes` overrides it for verification, while `undefined` inherits and `Infinity` removes that verification limit. An existing temporary directory never grants ownership. Successful publication returns the destination, whether the actual rename was atomic, whether verification ran, and cleanup status.
 
@@ -73,7 +192,9 @@ The documented default `auto` selects `client-streamed`: download through a priv
 
 ## Bounded traversal
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const traversal = connector.walk('.', {
     maxDepth: 5,
     maxEntries: 10_000,
@@ -87,6 +208,53 @@ for await (const entry of traversal.entries) {
 
 console.log(await traversal.result);
 ```
+
+```js [JavaScript]
+const traversal = connector.walk('.', {
+    maxDepth: 5,
+    maxEntries: 10_000,
+    filter: entry => !entry.path.endsWith('/node_modules'),
+    abortSignal,
+});
+
+for await (const entry of traversal.entries) {
+    showEntry(entry);
+}
+
+console.log(await traversal.result);
+```
+
+```js [MJS]
+const traversal = connector.walk('.', {
+    maxDepth: 5,
+    maxEntries: 10_000,
+    filter: entry => !entry.path.endsWith('/node_modules'),
+    abortSignal,
+});
+
+for await (const entry of traversal.entries) {
+    showEntry(entry);
+}
+
+console.log(await traversal.result);
+```
+
+```js [CommonJS]
+const traversal = connector.walk('.', {
+    maxDepth: 5,
+    maxEntries: 10_000,
+    filter: entry => !entry.path.endsWith('/node_modules'),
+    abortSignal,
+});
+
+for await (const entry of traversal.entries) {
+    showEntry(entry);
+}
+
+console.log(await traversal.result);
+```
+
+:::
 
 Root depth is zero; direct children have depth one. Defaults are depth 32 and 100,000 examined entries. Filtered entries count toward the entry budget and filtered directories are pruned before descent. No reported symbolic link or unsupported special entry is followed. A depth budget of zero performs no listing and reports an incomplete traversal.
 

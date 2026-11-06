@@ -78,3 +78,13 @@ See [Quick start SFTP](https://h2ooooooo.github.io/dockline/sftp/quick-start.htm
 ### PuTTY key files
 
 PuTTY PPK v3 keys are accepted directly through `privateKeyPath`, `privateKey` or a credential provider, with `passphrase` for encrypted keys. RSA, DSA, Ed25519 and ECDSA keys are supported, including Argon2d/i/id encryption. Conversion and integrity verification happen in memory; no decrypted key file is written. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).
+
+
+## Concurrent directory creation
+
+`createDirectory()` creates missing parents and tolerates another session creating the same directory concurrently. When mkdir reports a collision, Dockline rechecks that exact path and proceeds only if it is a directory. Files, symbolic-link collisions, unverified results and genuine permission failures still fail. The complete parent chain shares one operation timeout and cancellation signal. `createDirectoryExclusive()` still requires a newly created directory and does not accept an existing one.
+
+
+## Shared key utilities
+
+SSH/SFTP private-key handling now uses `@jalsoedesign/dockline-keys`. It supports modern OpenSSH, PPK v2/v3, PKCS#8 and traditional PEM, including encrypted inputs. The independent package also supplies bidirectional conversion, encrypted exports, public-key extraction and fingerprints without requiring a transport client. Existing SFTP key helper/error exports remain compatible. See [key utilities](https://h2ooooooo.github.io/dockline/guide/keys).

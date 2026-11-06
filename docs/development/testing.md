@@ -21,7 +21,7 @@ npm run audit:production
 npm run audit:docs
 ```
 
-Run `npm run audit:dependencies` separately to include the known development-only test-server finding; see [dependencies](./dependencies.md). The CI workflow under `.github/workflows/ci.yml` records the automated gate. Do not hide developer findings with an audit threshold or present production-only checks as a complete audit.
+Run `npm run audit:dependencies` separately to include development-only protocol fixtures; see [dependencies](./dependencies.md). The CI workflow under `.github/workflows/ci.yml` records the automated gate. Do not hide developer findings with an audit threshold or present production-only checks as a complete audit.
 
 `npm test` builds the workspaces and runs Vitest over `packages/*/tests/`. `npm run typecheck` builds dependencies and checks each package's source and test types. `npm run test:style` runs the local formatting-rule regressions. For focused work use `npm test -- packages/core/tests/path/to/file.test.ts` with an actual test filename. Check each package's `tests/` directory for its focused suites.
 
@@ -97,3 +97,7 @@ Markdown pages cover package selection/layout, installation, protocol quick star
 Update the relevant Markdown page whenever an exported method, default, guarantee, supported dependency or limitation changes. Document implemented behavior before ideas. Keep source examples aligned with the public package imports, and compile important examples through the isolated consumer or dedicated tests.
 
 `npm run docs:build` checks Markdown rendering and internal page links. When navigation, search or theme changes, inspect the built site as well. The docs build does not replace package type checking or protocol tests. Rebuild/reload preview after output changes. Keep local audit output and generated verification records outside the source repository.
+
+## Keep API examples current
+
+After building, run `npm run docs:api` to regenerate the public declaration reference, `npm run docs:api:check` to detect drift, and `npm run docs:imports:check` to validate documented named imports against installed declarations. Optional integration examples can be checked completely with `npm run docs:imports:check -- --consumer /path/to/isolated-consumer` after installing their adapter packages there. These checks do not fetch another checkout. Runnable local demos and isolated consumers exercise behavior beyond import names.

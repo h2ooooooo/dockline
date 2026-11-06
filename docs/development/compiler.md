@@ -1,6 +1,6 @@
 # Compiler and package build
 
-Dockline is a TypeScript monorepo that emits six ESM packages. The root is private and coordinates the workspaces; it is not a distributable SDK package. Builds use the compiler installed in this repository.
+Dockline is a TypeScript monorepo that emits seven ESM packages. The root is private and coordinates the workspaces; it is not a distributable SDK package. Builds use the compiler installed in this repository.
 
 ## Build from source
 
@@ -17,7 +17,7 @@ The root is a private workspace. Applications should use [npm package installati
 
 ## Source and output
 
-The packages live under `packages/abstract`, `packages/core`, `packages/ftp-client`, `packages/sftp-client` and `packages/cli`. Each owns `src/`, `tests/`, its package manifest and generated `dist/`. Shared compiler settings target ES2022 with `NodeNext` modules and module resolution, strict checking, JavaScript source maps, declarations and declaration maps. Source imports use `.js` specifiers for relative emitted modules and package names across workspace boundaries.
+The packages live under `packages/abstract`, `packages/core`, `packages/ftp-client`, `packages/sftp-client`, `packages/ssh-client`, `packages/keys` and `packages/cli`. Each owns `src/`, `tests/`, its package manifest and generated `dist/`. Shared compiler settings target ES2022 with `NodeNext` modules and module resolution, strict checking, JavaScript source maps, declarations and declaration maps. Source imports use `.js` specifiers for relative emitted modules and package names across workspace boundaries.
 
 Abstract builds before its dependents. Core builds against abstract's structural contracts; its source and declarations do not statically import concrete clients. Each client builds against abstract and its own transport dependencies. Test type checking includes each package's source and tests without emitting test output.
 
@@ -27,7 +27,7 @@ The isolated consumer check compiles public declarations with `skipLibCheck: fal
 
 | Command | Result |
 | --- | --- |
-| `npm ci` | Installs the root lockfile and links the six local workspaces. |
+| `npm ci` | Installs the root lockfile and links the local workspaces. |
 | `npm run build` | Builds all packages in dependency order with the local compiler. |
 | `npm run dev` | Runs the declared workspace development/watch workflow. |
 | `npm run typecheck` | Checks package source and test types. |

@@ -703,3 +703,75 @@ describe('SFTP trust policy', () => {
         expect(state.clients[0].client.destroy).toHaveBeenCalled();
     });
 });
+
+describe('SFTP directory collision verification', () => {
+    const directory = {isDirectory: true, isFile: false, isSymbolicLink: false};
+    const missing = () => Object.assign(new Error('No such file'), {code: 2});
+
+    it.each(['missing', 'file', 'link', 'unreadable'])('preserves mkdir permission errors when the result is %s', async kind => {
+        const denied = Object.assign(new Error('mkdir permission denied'), {code: 3});
+        let attempted = false;
+
+        state.configure = client => {
+            client.lstat.mockImplementation(async (path: string) => {
+                if (path === '/') {
+                    return directory;
+                }
+
+                if (!attempted || kind === 'missing') {
+                    throw missing();
+                }
+
+                if (kind === 'unreadable') {
+                    throw Object.assign(new Error('lstat permission denied'), {code: 3});
+                }
+
+                return {
+                    ...directory,
+                    isDirectory: false,
+                    isFile: kind === 'file',
+                    isSymbolicLink: kind === 'link',
+                };
+            });
+            client.mkdir.mockImplementation(async () => {
+                attempted = true;
+                throw denied;
+            });
+        };
+
+        await expect(connector({autoReconnect: true}).createDirectory('/blocked/child'))
+            .rejects.toMatchObject({name: 'PermissionError', message: 'mkdir permission denied'});
+        expect(state.clients[0].mkdir).toHaveBeenCalledTimes(1);
+    });
+
+    it.each(['abort', 'timeout'])('does not create parents after a late metadata response following %s', async reason => {
+        let rejectMetadata!: (error: Error) => void;
+        const metadata = new Promise((_, reject) => {
+            rejectMetadata = reject;
+        });
+        const controller = new AbortController();
+
+        state.configure = client => client.lstat.mockImplementation(() => metadata);
+
+        const client = connector();
+        const pending = client.createDirectory('/parent/child', {
+            abortSignal: controller.signal,
+            timeoutMs: reason === 'timeout' ? 30 : 1000,
+        });
+        const rejected = expect(pending).rejects.toBeInstanceOf(
+            reason === 'abort' ? OperationAbortedError : OperationTimeoutError,
+        );
+
+        await vi.waitFor(() => expect(state.clients[0].lstat).toHaveBeenCalled(), {interval: 1});
+
+        if (reason === 'abort') {
+            controller.abort();
+        }
+
+        await rejected;
+        rejectMetadata(missing());
+        await new Promise(resolve => setImmediate(resolve));
+        expect(state.clients[0].lstat).toHaveBeenCalledTimes(1);
+        expect(state.clients[0].mkdir).not.toHaveBeenCalled();
+    });
+});

@@ -1,3 +1,4 @@
+import {convertPrivateKey} from '@jalsoedesign/dockline-keys';
 import {describe, it, expect} from 'vitest';
 import ssh2, {type Connection} from 'ssh2';
 import {generateKeyPairSync, createHash} from 'node:crypto';
@@ -206,5 +207,36 @@ it('authenticates SSH commands with an encrypted PPK v3 key', async () => {
         expect(result.stdout).toBe("'whoami'");
     } finally {
         await server.close();
+    }
+});
+
+it.each(['pkcs8', 'ppk2'] as const)('authenticates SSH commands with a new encrypted %s export', async format => {
+    const reference = await readFile(new URL('../../sftp-client/tests/fixtures/ppk/rsa-reference.openssh', import.meta.url));
+    const server = await endpoint(ssh2.utils.parseKey(reference));
+    const directory = await mkdtemp(path.join(tmpdir(), 'dockline-ssh-export-'));
+    const filename = path.join(directory, 'private-key');
+
+    try {
+        await writeFile(filename, await convertPrivateKey(reference, {
+            format: format === 'ppk2' ? 'ppk' : 'pkcs8',
+            ppkVersion: 2,
+            outputPassphrase: 'synthetic-secret',
+        }), {mode: 0o600});
+
+        const client = new SshClient({
+            ...server.config,
+            password: undefined,
+            privateKeyPath: filename,
+            passphrase: 'synthetic-secret',
+        });
+        const result = await client.withConnection(session => session.exec('whoami'));
+
+        expect(result.code).toBe(0);
+    } finally {
+        await server.close();
+
+        if (path.dirname(directory) === tmpdir() && path.basename(directory).startsWith('dockline-ssh-export-')) {
+            await rm(directory, {recursive: true, force: true});
+        }
     }
 });

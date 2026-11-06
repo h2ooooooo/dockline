@@ -1,8 +1,10 @@
 # SFTP and SSH options
 
+This is advanced configuration reference. Start with the [complete SFTP program](/sftp/quick-start). The snippets below illustrate direct client configuration; `applicationVault`, `applicationUi`, trust callbacks and selected agent paths are explicit integration hooks, not built-in Dockline services. Supply them before use. Constructing a connector prints nothing; perform an operation or call `connect()`, consume streams, and disconnect in `finally`.
+
 Start with [Quick start SFTP](/sftp/quick-start) to connect, download and upload a file. This page covers the detailed authentication and transport settings.
 
-The low-level `SftpConnector` in `@jalsoedesign/dockline-sftp-client` uses `ssh2-sftp-client` and its SSH transport. It is usable directly without core or the FTP client and also exports `createConnector(SftpTransferConfig)` for common configuration. It exposes authentication, trust and keepalive options without choosing a CLI, UI or credential vault for your application.
+The low-level `SftpConnector` in `@jalsoedesign/dockline-sftp-client` uses `ssh2-sftp-client` and its SSH transport. It is usable directly without core or the FTP client and also exports `createConnector(SftpTransferConfig)` for common configuration. It exposes authentication, trust and keepalive options without choosing a CLI, UI or credential vault.
 
 ## Connection ownership and paths
 
@@ -16,7 +18,9 @@ Transfers have no size limit by default. Set `maxBytes` on the connector or an i
 
 Password, private-key contents, private-key paths and passphrases remain supported. An optional credential provider resolves authentication material at each connection attempt, including explicit reconnections and permitted transient connection retries:
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
 
 const connector = new SftpConnector({
@@ -36,13 +40,75 @@ const connector = new SftpConnector({
 });
 ```
 
+```js [JavaScript]
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
+
+const connector = new SftpConnector({
+    host: 'sftp.example.com',
+    port: 22,
+    username: 'deploy',
+    initialPath: '/releases',
+    siteId: 'production',
+    credentialProvider: async ({siteId, purpose, attempt, abortSignal}) => {
+        const password = await applicationVault.getPassword(siteId, {abortSignal});
+
+        return {type: 'password', password};
+    },
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+```js [MJS]
+import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
+
+const connector = new SftpConnector({
+    host: 'sftp.example.com',
+    port: 22,
+    username: 'deploy',
+    initialPath: '/releases',
+    siteId: 'production',
+    credentialProvider: async ({siteId, purpose, attempt, abortSignal}) => {
+        const password = await applicationVault.getPassword(siteId, {abortSignal});
+
+        return {type: 'password', password};
+    },
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+```js [CommonJS]
+const {SftpConnector} = require('@jalsoedesign/dockline-sftp-client');
+
+const connector = new SftpConnector({
+    host: 'sftp.example.com',
+    port: 22,
+    username: 'deploy',
+    initialPath: '/releases',
+    siteId: 'production',
+    credentialProvider: async ({siteId, purpose, attempt, abortSignal}) => {
+        const password = await applicationVault.getPassword(siteId, {abortSignal});
+
+        return {type: 'password', password};
+    },
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+:::
+
 The provider receives only `siteId`, host, port, protocol, connection purpose, one-based attempt number and the attempt's abort signal. Its result is one of:
 
-```ts
-{type: 'password', username?: string, password: string}
-{type: 'private-key', username?: string, privateKey: string | Buffer, passphrase?: string}
-{type: 'agent', username?: string, socketPath: string}
-```
+| Result type | Required fields | Optional fields |
+| --- | --- | --- |
+| `password` | `type: 'password'`, `password: string` | `username: string` |
+| `private-key` | `type: 'private-key'`, `privateKey: string \| Buffer` | `username: string`, `passphrase: string` |
+| `agent` | `type: 'agent'`, `socketPath: string` | `username: string` |
 
 A provider takes precedence over static password, key and agent configuration. Each result selects that authentication method; a rejected agent does not fall back to an unrelated stored password. Applications own credential caching and must decide whether asking again during reconnection is appropriate. Set `maxTransientRetries: 0` to allow only one initial attempt. A provider rejection becomes `CredentialProviderError` with `stage: 'credentials'`; its original message and cause are not exposed.
 
@@ -52,7 +118,9 @@ The connection deadline includes waiting for the provider. Cancellation prevents
 
 Choose the agent explicitly. The connector does not inspect the environment or discover agents automatically:
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const connector = new SftpConnector({
     ...connection,
     agent: selectedAgentSocket,
@@ -63,9 +131,44 @@ const connector = new SftpConnector({
 });
 ```
 
+```js [JavaScript]
+const connector = new SftpConnector({
+    ...connection,
+    agent: selectedAgentSocket,
+    agentForward: false,
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+```js [MJS]
+const connector = new SftpConnector({
+    ...connection,
+    agent: selectedAgentSocket,
+    agentForward: false,
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+```js [CommonJS]
+const connector = new SftpConnector({
+    ...connection,
+    agent: selectedAgentSocket,
+    agentForward: false,
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+:::
+
 | Platform / agent | `agent` value |
 | --- | --- |
-| POSIX OpenSSH agent | The selected Unix socket path, often supplied by your application from `SSH_AUTH_SOCK` |
+| POSIX OpenSSH agent | The selected Unix socket path, often read from `SSH_AUTH_SOCK` |
 | Windows OpenSSH agent | The selected named pipe, commonly `\\.\pipe\openssh-ssh-agent` |
 | Windows Pageant | `'pageant'` |
 | Windows Cygwin agent | The actual Cygwin socket file path |
@@ -78,7 +181,9 @@ Agent forwarding is unsupported. The TypeScript option accepts only `false`; pas
 
 For a server that asks one known question, a regular string is enough:
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const connector = new SftpConnector({
     ...connection,
     keyboardInteractive: 'the-current-one-time-code',
@@ -88,9 +193,43 @@ const connector = new SftpConnector({
 });
 ```
 
+```js [JavaScript]
+const connector = new SftpConnector({
+    ...connection,
+    keyboardInteractive: 'the-current-one-time-code',
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+```js [MJS]
+const connector = new SftpConnector({
+    ...connection,
+    keyboardInteractive: 'the-current-one-time-code',
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+```js [CommonJS]
+const connector = new SftpConnector({
+    ...connection,
+    keyboardInteractive: 'the-current-one-time-code',
+    requireTrustPolicy: true,
+    hasTrustPolicy: applicationTrustLookup,
+    acceptTrustPolicy: applicationTrustPrompt,
+});
+```
+
+:::
+
 The string answers each single-prompt round. A zero-prompt round receives an empty answer array. If a round contains multiple prompts, a string is rejected; the library cannot safely guess which field should receive a password or one-time code. For changing codes, multiple prompts or several rounds, use a callback:
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const connector = new SftpConnector({
     ...connection,
     keyboardInteractive: async ({name, instructions, prompts, abortSignal}) => {
@@ -101,15 +240,62 @@ const connector = new SftpConnector({
             abortSignal,
         });
     },
-    ...trustOptions,
+...trustOptions,
 });
 ```
+
+```js [JavaScript]
+const connector = new SftpConnector({
+    ...connection,
+    keyboardInteractive: async ({name, instructions, prompts, abortSignal}) => {
+        return applicationUi.answerSshPrompts({
+            title: name,
+            instructions,
+            prompts,
+            abortSignal,
+        });
+    },
+...trustOptions,
+});
+```
+
+```js [MJS]
+const connector = new SftpConnector({
+    ...connection,
+    keyboardInteractive: async ({name, instructions, prompts, abortSignal}) => {
+        return applicationUi.answerSshPrompts({
+            title: name,
+            instructions,
+            prompts,
+            abortSignal,
+        });
+    },
+...trustOptions,
+});
+```
+
+```js [CommonJS]
+const connector = new SftpConnector({
+    ...connection,
+    keyboardInteractive: async ({name, instructions, prompts, abortSignal}) => {
+        return applicationUi.answerSshPrompts({
+            title: name,
+            instructions,
+            prompts,
+            abortSignal,
+        });
+    },
+...trustOptions,
+});
+```
+
+:::
 
 Return exactly one string per prompt, in the original order. Each prompt includes `prompt` text and its `echo` flag; `false` means the application should mask the answer. The challenge also includes the language, and can be delivered more than once during a connection. Prompt text is supplied by the server and should be presented as plain text by your UI.
 
 When `keyboardInteractive` is configured, it explicitly selects interactive authentication. Authentication prompts follow host verification. Answers and callback error messages are excluded from surfaced authentication errors. The deadline and abort signal cover pending UI input, late answers are discarded, and an attempt that already displayed a challenge is never silently retried. An explicit later `connect()` can ask again.
 
-Your application chooses the prompt UI and supplies the handler; the connector does not open a built-in terminal prompt.
+Choose the prompt UI and supply the handler; the connector does not open a built-in terminal prompt.
 
 ## Remembering host decisions
 
@@ -117,10 +303,12 @@ See [host trust](/guide/trust) for explicit lookup and approval hooks, fixed ver
 
 ## Keepalives and lifecycle observation
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const connector = new SftpConnector({
     ...connection,
-    ...trustOptions,
+...trustOptions,
     keepalive: {intervalMs: 30000, maxMissed: 3},
     autoReconnect: true,
     maxTransientRetries: 3,
@@ -130,6 +318,47 @@ const connector = new SftpConnector({
 });
 ```
 
+```js [JavaScript]
+const connector = new SftpConnector({
+    ...connection,
+...trustOptions,
+    keepalive: {intervalMs: 30000, maxMissed: 3},
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    onConnectionState: ({state, attempt, error}) => {
+        applicationUi.showConnectionState(state, {attempt, error});
+    },
+});
+```
+
+```js [MJS]
+const connector = new SftpConnector({
+    ...connection,
+...trustOptions,
+    keepalive: {intervalMs: 30000, maxMissed: 3},
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    onConnectionState: ({state, attempt, error}) => {
+        applicationUi.showConnectionState(state, {attempt, error});
+    },
+});
+```
+
+```js [CommonJS]
+const connector = new SftpConnector({
+    ...connection,
+...trustOptions,
+    keepalive: {intervalMs: 30000, maxMissed: 3},
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    onConnectionState: ({state, attempt, error}) => {
+        applicationUi.showConnectionState(state, {attempt, error});
+    },
+});
+```
+
+:::
+
 SFTP uses SSH-level keepalive packets. They are disabled by default (`intervalMs: 0`), and the default missed-response threshold is 3 when enabled. The transport owns the timer and stops it when the session closes. State events report `connecting`, `reconnecting`, `ready`, `disconnected` and `failed`; observer exceptions do not change a network outcome.
 
 Keepalive failure uses the existing connection-loss and operation-retry rules. It does not start a background reconnect loop, replay partially consumed downloads or retry an uncertain mutation. Upload retry still requires a factory that produces a fresh stream, enabled reconnection, a transient failure and a remaining retry budget.
@@ -138,7 +367,7 @@ Keepalive failure uses the existing connection-loss and operation-retry rules. I
 
 SFTP supports only UTF-8 filenames. `filenameEncoding: {charset: 'utf-8', onUnrepresentable: 'reject'}` is accepted; non-UTF-8 options and names containing unpaired Unicode surrogates are rejected. File contents are always raw bytes.
 
-Read and write calls accept shared progress and bandwidth options. Upload completion follows the destination stream's protocol completion; download completion waits for both the remote stream to close successfully and the consumer to drain the monitored stream. Unknown totals remain unknown. Use `totalBytes` when your application already knows the length. A deliberate bandwidth limit counts against the operation's total timeout.
+Read and write calls accept shared progress and bandwidth options. Upload completion follows the destination stream's protocol completion; download completion waits for both the remote stream to close successfully and the consumer to drain the monitored stream. Unknown totals remain unknown. Use `totalBytes` when the length is already known. A deliberate bandwidth limit counts against the operation's total timeout.
 
 The connector also exposes `publishFile`, `checksumDetails`, `copyFile`, `copyFileWithStrategy`, `walk` and `capabilities`. `copyFileWithStrategy` returns the selected strategy, byte count and publication result; the compatible `copyFile` method resolves without a result. Checksums default to server-only and therefore require an explicit `strategy: 'stream'` or `'server-or-stream'` for this SFTP adapter. Copying defaults to the client-streamed strategy using a private temporary file with no default size limit; it does not create an extra SSH connection. Standard rename provides no-replace semantics, while replacement requires the server's `posix-rename@openssh.com` extension. Atomic no-replace publication is rejected before staging. Empty-directory cleanup never recursively deletes unexpected contents.
 
@@ -152,13 +381,15 @@ Capability reports expose an `inventory` state: `not-requested`, `advertised` or
 
 ## PuTTY PPK keys
 
-`privateKeyPath` accepts PuTTY PPK v3 files directly, including encrypted keys. Supply `passphrase` for an encrypted file; the application is responsible for collecting or retrieving it. The same reader is used for direct private-key contents and keys returned by a credential provider.
+`privateKeyPath` accepts PuTTY PPK v2 and v3 files directly, including encrypted keys. Supply `passphrase` for an encrypted file; the application is responsible for collecting or retrieving it. The same reader is used for direct private-key contents and keys returned by a credential provider.
 
-Supported v3 algorithms are RSA, DSA, Ed25519 and ECDSA (nistp256, nistp384 and nistp521). AES-256-CBC encryption supports Argon2d, Argon2i and Argon2id. Existing OpenSSH, PEM and PPK v2 support continues through the SSH transport; PPK v2 support is limited to RSA and DSA. Server algorithm policies still apply, so recognizing an older key algorithm does not guarantee the server will accept it.
+dockline-keys handles RSA, DSA, Ed25519 and ECDSA (nistp256, nistp384 and nistp521) in supported PPK v2/v3, modern OpenSSH, PKCS#8 and traditional PEM formats. PPK v3 supports Argon2d, Argon2i and Argon2id imports. Unsupported key/format combinations are refused. Server algorithm policy still determines whether a parsed key can authenticate.
 
 Dockline verifies the PPK integrity MAC and the public/private key relationship, then converts the key in memory. It does not rewrite the original key or create a decrypted key file. Host trust remains a separate required application decision.
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const connector = new SftpConnector({
     host: 'sftp.example.com',
     port: 22,
@@ -166,14 +397,60 @@ const connector = new SftpConnector({
     initialPath: '',
     privateKeyPath: './keys/deployer.ppk',
     passphrase: process.env.DEPLOY_KEY_PASSPHRASE,
-    ...trustOptions,
+...trustOptions,
 });
 ```
 
+```js [JavaScript]
+const connector = new SftpConnector({
+    host: 'sftp.example.com',
+    port: 22,
+    username: 'deployer',
+    initialPath: '',
+    privateKeyPath: './keys/deployer.ppk',
+    passphrase: process.env.DEPLOY_KEY_PASSPHRASE,
+...trustOptions,
+});
+```
+
+```js [MJS]
+const connector = new SftpConnector({
+    host: 'sftp.example.com',
+    port: 22,
+    username: 'deployer',
+    initialPath: '',
+    privateKeyPath: './keys/deployer.ppk',
+    passphrase: process.env.DEPLOY_KEY_PASSPHRASE,
+...trustOptions,
+});
+```
+
+```js [CommonJS]
+const connector = new SftpConnector({
+    host: 'sftp.example.com',
+    port: 22,
+    username: 'deployer',
+    initialPath: '',
+    privateKeyPath: './keys/deployer.ppk',
+    passphrase: process.env.DEPLOY_KEY_PASSPHRASE,
+...trustOptions,
+});
+```
+
+:::
+
 `SshPrivateKeyError` extends `CredentialProviderError` and exposes a `reason`: `passphrase-required`, `integrity`, `format`, `unsupported` or `resource-limit`. An integrity failure can mean a wrong passphrase or a changed key; it cannot reliably distinguish between them. These failures are not transient connection errors and are not automatically retried.
 
-For custom SSH integrations, `prepareSshPrivateKey(key, passphrase)` is exported from `@jalsoedesign/dockline-sftp-client`. It accepts a string, Buffer or undefined; existing formats pass through unchanged. Applications normally use the connector directly.
+For custom integrations, use `preparePrivateKey(key, passphrase)` from `@jalsoedesign/dockline-keys` to normalize any supported private format. The older `prepareSshPrivateKey` export from keys/SFTP retains its compatibility behavior: it converts PPK v3 and passes other inputs through unchanged. SSH/SFTP transports use the general normalizer; applications normally need neither helper.
 
 Key parsing is limited to 1 MiB per PPK file, 256 MiB Argon2 memory, 100 passes and 16 lanes. These limits apply to key processing, not transfer sizes. Argon2 derivation cannot be interrupted mid-calculation; cancellation is checked before authentication. Files with custom parameters beyond those bounds are rejected with `resource-limit`.
 
 The format reader follows [PuTTY's PPK specification](https://www.puttyssh.org/0.80/htmldoc/AppendixC.html) and [OpenSSH's private-key format](https://github.com/openssh/openssh-portable/blob/master/PROTOCOL.key).
+
+## Concurrent directory creation
+
+`createDirectory()` creates missing parents and tolerates another session creating the same directory concurrently. When mkdir reports a collision, Dockline rechecks that exact path and proceeds only if it is a directory. Files, symbolic-link collisions, unverified results and genuine permission failures still fail. The complete parent chain shares one operation timeout and cancellation signal. `createDirectoryExclusive()` still requires a newly created directory and does not accept an existing one.
+
+## Shared key utilities
+
+SSH/SFTP private-key handling now uses `@jalsoedesign/dockline-keys`. It supports modern OpenSSH, PPK v2/v3, PKCS#8 and traditional PEM, including encrypted inputs. The independent package also supplies bidirectional conversion, encrypted exports, public-key extraction and fingerprints without requiring a transport client. Existing SFTP key helper/error exports remain compatible. See [key utilities](https://h2ooooooo.github.io/dockline/guide/keys).

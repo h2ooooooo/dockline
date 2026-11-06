@@ -20,5 +20,13 @@ known-hosts.json
 known-hosts.json.lock
 docs/.vitepress/cache/
 docs/.vitepress/dist/
+/docs/.test-connect.mjs
+/docs/.test-inspect.mjs
 docs/public/audits/
 docs/public/verification/
+
+.local-dev/
+
+local-packages.json
+
+.site/

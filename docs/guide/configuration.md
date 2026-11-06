@@ -1,6 +1,10 @@
 # Configuration
 
-`TransferConfig` is the union of `FtpTransferConfig` and `SftpTransferConfig`, defined in `@jalsoedesign/dockline-abstract` and re-exported by `@jalsoedesign/dockline-core`. Choose the protocol explicitly and install its [matching client](/guide/packages); all connection values come from your application. The concrete client factories accept these common configuration types too.
+Define `const controller = new AbortController()` before the examples that use cancellation.
+
+The examples below modify the `connection` configuration from the [complete API program](/api/quick-start). Keep its imports and verified host configuration. They are fragments, not separate files: connect the configured instance, finish its operations, and disconnect in `finally`. `remote` refers to that connected instance.
+
+`TransferConfig` is the union of `FtpTransferConfig` and `SftpTransferConfig`, defined in `@jalsoedesign/dockline-abstract` and re-exported by `@jalsoedesign/dockline-core`. Choose the protocol explicitly and install its [matching client](/guide/packages); supply all connection values explicitly. The concrete client factories accept these common configuration types too.
 
 | Field | Behavior |
 | --- | --- |
@@ -20,7 +24,9 @@
 
 Global operation options are supplied with the connection. Per-call values override them without changing the saved defaults:
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const remote = Dockline.create({
     ...connection,
     autoReconnect: true,
@@ -28,6 +34,7 @@ const remote = Dockline.create({
     timeoutMs: 30000,
 });
 
+// Upload local file './large.zip' to 'large.zip' on the server.
 await remote.uploadFile('./large.zip', 'large.zip', {
     timeoutMs: 120000,
     maxTransientRetries: 1,
@@ -35,13 +42,65 @@ await remote.uploadFile('./large.zip', 'large.zip', {
 });
 ```
 
+```js [JavaScript]
+const remote = Dockline.create({
+    ...connection,
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    timeoutMs: 30000,
+});
+
+// Upload local file './large.zip' to 'large.zip' on the server.
+await remote.uploadFile('./large.zip', 'large.zip', {
+    timeoutMs: 120000,
+    maxTransientRetries: 1,
+    abortSignal: controller.signal,
+});
+```
+
+```js [MJS]
+const remote = Dockline.create({
+    ...connection,
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    timeoutMs: 30000,
+});
+
+// Upload local file './large.zip' to 'large.zip' on the server.
+await remote.uploadFile('./large.zip', 'large.zip', {
+    timeoutMs: 120000,
+    maxTransientRetries: 1,
+    abortSignal: controller.signal,
+});
+```
+
+```js [CommonJS]
+const remote = Dockline.create({
+    ...connection,
+    autoReconnect: true,
+    maxTransientRetries: 3,
+    timeoutMs: 30000,
+});
+
+// Upload local file './large.zip' to 'large.zip' on the server.
+await remote.uploadFile('./large.zip', 'large.zip', {
+    timeoutMs: 120000,
+    maxTransientRetries: 1,
+    abortSignal: controller.signal,
+});
+```
+
+:::
+
 These are bounded retries of eligible operations, not a guarantee of eventual delivery. Authentication, permissions, host trust, missing files and cancellation are not retried. Consumed reads and uncertain mutations are not blindly replayed. Upload retry needs a fresh source factory; `uploadFile` creates one from the local file. Keep that file unchanged until the call finishes.
 
 ## File size limits
 
 File size is unlimited by default for both protocols. An optional `maxBytes` on a Dockline configuration or direct connector configuration becomes the default for each transfer. The same option on a call overrides it. It applies to raw reads/writes, local uploads/downloads, streamed checksums and client-streamed copies.
 
-```ts
+::: code-group
+
+```ts [TypeScript]
 const limitedRemote = Dockline.create({
     ...connection,
     maxBytes: 512 * 1024 * 1024,
@@ -51,6 +110,41 @@ await limitedRemote.downloadFile('report.pdf', './report.pdf');
 await limitedRemote.downloadFile('archive.zip', './archive.zip', {maxBytes: Infinity});
 await limitedRemote.uploadFile('./small.txt', 'small.txt', {maxBytes: 1024 * 1024});
 ```
+
+```js [JavaScript]
+const limitedRemote = Dockline.create({
+    ...connection,
+    maxBytes: 512 * 1024 * 1024,
+});
+
+await limitedRemote.downloadFile('report.pdf', './report.pdf');
+await limitedRemote.downloadFile('archive.zip', './archive.zip', {maxBytes: Infinity});
+await limitedRemote.uploadFile('./small.txt', 'small.txt', {maxBytes: 1024 * 1024});
+```
+
+```js [MJS]
+const limitedRemote = Dockline.create({
+    ...connection,
+    maxBytes: 512 * 1024 * 1024,
+});
+
+await limitedRemote.downloadFile('report.pdf', './report.pdf');
+await limitedRemote.downloadFile('archive.zip', './archive.zip', {maxBytes: Infinity});
+await limitedRemote.uploadFile('./small.txt', 'small.txt', {maxBytes: 1024 * 1024});
+```
+
+```js [CommonJS]
+const limitedRemote = Dockline.create({
+    ...connection,
+    maxBytes: 512 * 1024 * 1024,
+});
+
+await limitedRemote.downloadFile('report.pdf', './report.pdf');
+await limitedRemote.downloadFile('archive.zip', './archive.zip', {maxBytes: Infinity});
+await limitedRemote.uploadFile('./small.txt', 'small.txt', {maxBytes: 1024 * 1024});
+```
+
+:::
 
 The first call inherits the 512 MiB limit. The second explicitly removes it, and the third selects a 1 MiB limit for that upload. Omitting `maxBytes` or passing `undefined` inherits the connection value; it does not remove a configured limit.
 
