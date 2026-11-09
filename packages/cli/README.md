@@ -11,7 +11,7 @@ Install the CLI and selected protocol clients from npm. For development, use [bu
 ### Global terminal command
 
 ```sh
-npm i -g @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-ftp-client@rc @jalsoedesign/dockline-sftp-client@rc
+npm i -g @jalsoedesign/dockline-cli @jalsoedesign/dockline-ftp-client @jalsoedesign/dockline-sftp-client
 dockline --help
 ```
 
@@ -20,7 +20,7 @@ Keep only the FTP or SFTP client if one protocol is enough. The `dockline` comma
 ### Local project dependency
 
 ```sh
-npm i @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-sftp-client@rc
+npm i @jalsoedesign/dockline-cli @jalsoedesign/dockline-sftp-client
 npm exec -- dockline --help
 ```
 

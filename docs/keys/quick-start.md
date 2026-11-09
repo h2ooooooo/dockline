@@ -5,7 +5,7 @@ Install one package and inspect a public key in memory. This example needs no ke
 ## Install
 
 ```sh
-npm install @jalsoedesign/dockline-keys@rc
+npm install @jalsoedesign/dockline-keys
 ```
 
 ## Save the example

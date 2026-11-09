@@ -5,7 +5,7 @@
 `@jalsoedesign/dockline-ssh-client` provides scoped SSH command execution and SFTP transfers. It is independently installable; core, FTP and SFTP consumers do not need to install it.
 
 ```sh
-npm install @jalsoedesign/dockline-ssh-client@rc
+npm install @jalsoedesign/dockline-ssh-client
 ```
 
 For a repository build, use `npm run build --workspace @jalsoedesign/dockline-ssh-client`.

@@ -1,6 +1,6 @@
 {
     "name": "@jalsoedesign/dockline-cli",
-    "version": "1.1.0-rc.1",
+    "version": "1.1.0",
     "description": "Dockline command-line transfer client for FTP, FTPS and SFTP",
     "type": "module",
     "license": "MIT",
@@ -23,7 +23,7 @@
     ],
     "publishConfig": {
         "access": "public",
-        "tag": "rc"
+        "tag": "latest"
     },
     "engines": {
         "node": "^22.22.2 || ^24.15.0 || >=26.0.0",
@@ -45,13 +45,13 @@
         "prepack": "npm run build"
     },
     "dependencies": {
-        "@jalsoedesign/dockline-core": "^1.1.0-rc.1",
+        "@jalsoedesign/dockline-core": "^1.1.0",
         "commander": "15.0.0",
         "yaml": "2.9.1"
     },
     "peerDependencies": {
-        "@jalsoedesign/dockline-ftp-client": "^1.1.0-rc.1",
-        "@jalsoedesign/dockline-sftp-client": "^1.1.0-rc.1"
+        "@jalsoedesign/dockline-ftp-client": "^1.1.0",
+        "@jalsoedesign/dockline-sftp-client": "^1.1.0"
     },
     "peerDependenciesMeta": {
         "@jalsoedesign/dockline-ftp-client": {

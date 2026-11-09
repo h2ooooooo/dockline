@@ -13,7 +13,7 @@ For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dock
 After publication, the registry command will be:
 
 ```sh
-npm install @jalsoedesign/dockline-abstract@rc
+npm install @jalsoedesign/dockline-abstract
 ```
 
 ## Validate configuration without loading a client

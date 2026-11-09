@@ -27,7 +27,7 @@ To contribute to Dockline, follow [build from source](docs/development/compiler.
 ### Global CLI
 
 ```sh
-npm i -g @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-ftp-client@rc @jalsoedesign/dockline-sftp-client@rc
+npm i -g @jalsoedesign/dockline-cli @jalsoedesign/dockline-ftp-client @jalsoedesign/dockline-sftp-client
 dockline --help
 ```
 
@@ -36,14 +36,14 @@ Install only the client packages needed for the protocols you use. FTP and both 
 ### Local CLI
 
 ```sh
-npm i @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-sftp-client@rc
+npm i @jalsoedesign/dockline-cli @jalsoedesign/dockline-sftp-client
 npm exec -- dockline --help
 ```
 
 ### TypeScript or JavaScript SDK
 
 ```sh
-npm i @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc
+npm i @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
 ```
 
 Use `@jalsoedesign/dockline-ftp-client` for FTP/FTPS, or install both clients. See [installation](docs/guide/installation.md) for direct adapters, shared tools and source builds.
@@ -142,4 +142,4 @@ Related libraries: [Portline ecosystem directory](https://h2ooooooo.github.io/po
 
 [Run a local demo](docs/guide/local-demo.md) for one-command examples and captured output. Transfer demos start temporary loopback-only protocol servers.
 
-See [First release candidate](RELEASE_RC.md) for RC versions and installation commands.
+See [Stable release](RELEASE.md) for versions, installation commands and the compatibility policy.

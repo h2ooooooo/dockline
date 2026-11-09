@@ -12,9 +12,9 @@ Install the native reader selected from the [ecosystem directory](https://h2oooo
 
 | Operation | Install beside the selected reader |
 | --- | --- |
-| FTP or FTPS files | `npm install @jalsoedesign/portline-dockline@rc @jalsoedesign/dockline-ftp-client@rc` |
-| SFTP files | `npm install @jalsoedesign/portline-dockline@rc @jalsoedesign/dockline-sftp-client@rc` |
-| SSH commands | `npm install @jalsoedesign/portline-dockline@rc @jalsoedesign/dockline-ssh-client@rc` |
+| FTP or FTPS files | `npm install @jalsoedesign/portline-dockline @jalsoedesign/dockline-ftp-client` |
+| SFTP files | `npm install @jalsoedesign/portline-dockline @jalsoedesign/dockline-sftp-client` |
+| SSH commands | `npm install @jalsoedesign/portline-dockline @jalsoedesign/dockline-ssh-client` |
 
 Reading profiles does not require these execution packages. The bridge requires Dockline core and abstract contracts, but its FTP, SFTP and SSH clients are optional peers. Installing a handler never supplies missing credentials or approves a host.
 

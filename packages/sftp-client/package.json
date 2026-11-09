@@ -1,6 +1,6 @@
 {
     "name": "@jalsoedesign/dockline-sftp-client",
-    "version": "1.1.0-rc.1",
+    "version": "1.1.0",
     "description": "SFTP transfer client and host trust utilities for Dockline",
     "type": "module",
     "license": "MIT",
@@ -22,7 +22,7 @@
     ],
     "publishConfig": {
         "access": "public",
-        "tag": "rc"
+        "tag": "latest"
     },
     "engines": {
         "node": "^22.22.2 || ^24.15.0 || >=26.0.0",
@@ -44,12 +44,12 @@
         "prepack": "npm run build"
     },
     "dependencies": {
-        "@jalsoedesign/dockline-abstract": "^1.1.0-rc.1",
+        "@jalsoedesign/dockline-abstract": "^1.1.0",
         "@flystorage/file-storage": "1.2.2",
         "@types/ssh2": "1.15.6",
         "@types/ssh2-sftp-client": "9.0.6",
         "ssh2-sftp-client": "12.1.1",
         "ssh2": "^1.17.0",
-        "@jalsoedesign/dockline-keys": "^1.0.0-rc.1"
+        "@jalsoedesign/dockline-keys": "^1.0.0"
     }
 }

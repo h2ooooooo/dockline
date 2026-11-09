@@ -3,7 +3,7 @@
 **Inspect and convert SSH keys independently of a transfer client.** Dockline Keys reads PuTTY PPK v2/v3, OpenSSH and supported PEM formats, extracts public keys and creates encrypted exports. Use it on its own for key operations, without opening a server connection.
 
 ```sh
-npm install @jalsoedesign/dockline-keys@rc
+npm install @jalsoedesign/dockline-keys
 ```
 
 ## Get a first result

@@ -1,5 +1,7 @@
 # First release candidate
 
+Historical prerelease notes. See [Stable release](RELEASE.md) for the current stable versions.
+
 This release uses the `rc` npm tag. Existing stable `latest` tags remain unchanged. Install this candidate explicitly:
 
 ```sh

@@ -90,3 +90,9 @@ npm run check:bootstrap -- --artifacts /path/to/artifacts
 The lock command uses real package metadata and SHA-512 hashes from those artifacts, retaining canonical public npm URLs. The bootstrap check creates a disposable checkout, installs locked versions through a temporary read-only registry, and runs builds, lint, tests and available API/example checks. It does not change npm user configuration or relax remote-package restrictions. Node.js, the repository's declared npm version and the system `tar` command must be available.
 
 This verifies candidate payloads, not their availability on npm. Publish the exact verified tarballs in dependency order; if a package changes, repack it, regenerate downstream locks and repeat the checks. Once dependencies are available publicly, verify a fresh `npm ci --ignore-scripts` without bootstrap and compare registry integrity with the reviewed artifacts.
+
+## Stable releases and compatibility
+
+Keep dependencies and optional peers between the published family packages on stable caret ranges, such as `^1.0.0`. Preserve existing public APIs and supported behavior throughout a major version. Release compatible fixes as patch versions and compatible additions as minor versions. Breaking changes require a new major version. Raise a dependency minimum only when the implementation needs a newer supported API or fix.
+
+Caret ranges permit compatible updates. Consumers can use `npm update` to refresh their lockfiles within those ranges; `npm ci` continues to reproduce the versions already locked.

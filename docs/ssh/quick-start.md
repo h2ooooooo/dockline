@@ -5,7 +5,7 @@ Execute one command and inspect the result. An SSH login needs command-execution
 ## Install
 
 ```sh
-npm install @jalsoedesign/dockline-ssh-client@rc
+npm install @jalsoedesign/dockline-ssh-client
 ```
 
 ## Set your connection details

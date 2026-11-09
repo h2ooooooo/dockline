@@ -5,7 +5,7 @@
 The shared Dockline SDK. Install only the protocol clients your application uses. For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dockline/development/compiler.html#build-from-source).
 
 ```sh
-npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc
+npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
 ```
 
 For FTP/FTPS, select `@jalsoedesign/dockline-ftp-client` instead. Core depends on `@jalsoedesign/dockline-abstract`; protocol clients are optional peers and are never installed automatically.

@@ -6,10 +6,10 @@ Use Node `^22.22.2 || ^24.15.0 || >=26.0.0` and npm `>=12.0.2`. Packages are ESM
 
 | Your task | Install | Start using it |
 | --- | --- | --- |
-| SFTP file operations in code | `npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc` | [API quick start](/api/quick-start) |
-| FTP/FTPS file operations in code | `npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-ftp-client@rc` | [FTP/FTPS walkthrough](/ftp/quick-start) |
-| SSH commands | `npm install @jalsoedesign/dockline-ssh-client@rc` | [SSH quick start](/ssh/quick-start) |
-| Key inspection/conversion | `npm install @jalsoedesign/dockline-keys@rc` | [Key utilities](/keys/) |
+| SFTP file operations in code | `npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client` | [API quick start](/api/quick-start) |
+| FTP/FTPS file operations in code | `npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-ftp-client` | [FTP/FTPS walkthrough](/ftp/quick-start) |
+| SSH commands | `npm install @jalsoedesign/dockline-ssh-client` | [SSH quick start](/ssh/quick-start) |
+| Key inspection/conversion | `npm install @jalsoedesign/dockline-keys` | [Key utilities](/keys/) |
 
 For terminal commands use the separate [CLI quick start](/cli/quick-start). Install its chosen client beside the CLI, either both globally or both locally.
 

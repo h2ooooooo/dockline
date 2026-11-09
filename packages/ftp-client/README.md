@@ -13,13 +13,13 @@ For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dock
 Choose the installation matching your API:
 
 ```sh
-npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-ftp-client@rc
+npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-ftp-client
 ```
 
 For only the direct client:
 
 ```sh
-npm install @jalsoedesign/dockline-ftp-client@rc
+npm install @jalsoedesign/dockline-ftp-client
 ```
 
 ## Use the client directly

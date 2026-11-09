@@ -1,6 +1,6 @@
 {
     "name": "@jalsoedesign/dockline-keys",
-    "version": "1.0.0-rc.1",
+    "version": "1.0.0",
     "description": "SSH private/public key inspection, encrypted exports and OpenSSH, PPK and PEM conversion",
     "type": "module",
     "license": "MIT",
@@ -22,7 +22,7 @@
     ],
     "publishConfig": {
         "access": "public",
-        "tag": "rc"
+        "tag": "latest"
     },
     "engines": {
         "node": "^22.22.2 || ^24.15.0 || >=26.0.0",
@@ -44,7 +44,7 @@
         "prepack": "npm run build"
     },
     "dependencies": {
-        "@jalsoedesign/dockline-abstract": "^1.1.0-rc.1",
+        "@jalsoedesign/dockline-abstract": "^1.1.0",
         "sshpk": "1.18.0",
         "hash-wasm": "^4.12.0"
     },

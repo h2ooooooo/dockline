@@ -5,7 +5,7 @@ Install Dockline, save a connection file and run a directory listing. Then uploa
 ## Install
 
 ```sh
-npm install --global @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-sftp-client@rc
+npm install --global @jalsoedesign/dockline-cli @jalsoedesign/dockline-sftp-client
 dockline --help
 ```
 

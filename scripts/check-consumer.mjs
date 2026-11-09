@@ -184,7 +184,7 @@ for (const protocol of ['ftp', 'ftps', 'ftps-implicit', 'sftp']) {
         assert.equal(error.code, 'DOCKLINE_CLIENT_NOT_INSTALLED');
         assert.equal(error.protocol, protocol);
         assert.equal(error.packageName, packageName);
-        assert.equal(error.installCommand, 'npm install ' + packageName + '@1.1.0-rc.1');
+        assert.equal(error.installCommand, 'npm install ' + packageName);
         return true;
     });
 }
