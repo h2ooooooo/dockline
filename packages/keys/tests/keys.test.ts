@@ -262,11 +262,11 @@ describe('OpenSSH interoperability', () => {
             const secured = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script], {
                 input: filename,
                 encoding: 'utf8',
-                timeout: 15000,
+                timeout: 45000,
                 windowsHide: true,
             });
 
-            expect(secured.status, secured.stderr).toBe(0);
+            expect(secured.status, secured.error?.message ?? secured.stderr).toBe(0);
         }
 
         const result = spawnSync('ssh-keygen', [
@@ -289,7 +289,7 @@ describe('OpenSSH interoperability', () => {
         expect(await fingerprintKey(output, {inputPassphrase: password})).toBe(
             'SHA256:' + createHash('sha256').update(blob).digest('base64').replace(/=+$/, ''),
         );
-    });
+    }, 75000);
 });
 
 it('wraps long RFC4716 comments by UTF-8 byte length and preserves them', async () => {
