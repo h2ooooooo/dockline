@@ -13,7 +13,7 @@ For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dock
 After publication, the registry command will be:
 
 ```sh
-npm install @jalsoedesign/dockline-abstract
+npm install @jalsoedesign/dockline-abstract@rc
 ```
 
 ## Validate configuration without loading a client
@@ -43,3 +43,9 @@ const bandwidth = new BandwidthBudget({bytesPerSecond: 2_000_000});
 Transfer size is unlimited unless a connection or call explicitly supplies `maxBytes`. Shared errors retain one runtime identity when clients resolve the same abstract installation. Pooling and transfer helpers operate on a caller-supplied adapter; unsupported guarantees remain explicit.
 
 See [packages](https://h2ooooooo.github.io/dockline/guide/packages.html), [API](https://h2ooooooo.github.io/dockline/reference/api.html), [advanced transfers](https://h2ooooooo.github.io/dockline/guide/advanced-transfers.html) and [connection pools](https://h2ooooooo.github.io/dockline/guide/pools.html).
+
+## Saved application profiles
+
+Dockline abstract describes transport configuration, adapters and execution options. Saved application profiles use the separate Portline contracts. The optional `@jalsoedesign/portline-dockline` package converts between those layers; neither abstract package contains application readers or protocol transports.
+
+[Shared profile integration](https://h2ooooooo.github.io/dockline/guide/saved-profiles)

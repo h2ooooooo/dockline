@@ -4,6 +4,10 @@ These are integration recipes, not standalone programs. Begin with the [complete
 
 Authentication proves your account to the server; host verification decides which server receives that authentication. Provide a remembered decision, a CLI or UI approval flow, or a fixed verifier.
 
+## Saved-profile and SSH trust
+
+The [shared Portline bridge](/guide/saved-profiles) requires host verification for SSH/SFTP and never treats native credentials as host approval. Native trust parsing stays with the reader; runtime callbacks and durable approval storage remain caller-owned. Direct `SshClient` also rejects by default without an explicit fingerprint or accepted trust callback; its callback receives host, port and fingerprint. The direct SFTP policy below has a separate opt-in requirement flag.
+
 ## Explicit policy hooks
 
 For low-level `SftpConnector`, `requireTrustPolicy` is opt-in. When set to `true`, both `hasTrustPolicy` and `acceptTrustPolicy` must be functions, or connection fails before network access. The lookup runs before the acceptance hook; returning `true` accepts an unchanged exact challenge without prompting. A changed key observed by the same connector still requires explicit acceptance. Otherwise the acceptance hook must explicitly return `true`. Neither hook creates a terminal prompt automatically.

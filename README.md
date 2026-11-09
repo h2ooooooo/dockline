@@ -27,7 +27,7 @@ To contribute to Dockline, follow [build from source](docs/development/compiler.
 ### Global CLI
 
 ```sh
-npm i -g @jalsoedesign/dockline-cli @jalsoedesign/dockline-ftp-client @jalsoedesign/dockline-sftp-client
+npm i -g @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-ftp-client@rc @jalsoedesign/dockline-sftp-client@rc
 dockline --help
 ```
 
@@ -36,14 +36,14 @@ Install only the client packages needed for the protocols you use. FTP and both 
 ### Local CLI
 
 ```sh
-npm i @jalsoedesign/dockline-cli @jalsoedesign/dockline-sftp-client
+npm i @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-sftp-client@rc
 npm exec -- dockline --help
 ```
 
 ### TypeScript or JavaScript SDK
 
 ```sh
-npm i @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
+npm i @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc
 ```
 
 Use `@jalsoedesign/dockline-ftp-client` for FTP/FTPS, or install both clients. See [installation](docs/guide/installation.md) for direct adapters, shared tools and source builds.
@@ -96,6 +96,12 @@ The local source and remote root must exist. Uploads replace by default. Downloa
 
 Core loads only the installed client for the selected protocol when a connector is created. If that client is absent, it throws `MissingClientPackageError` with the protocol, package name and installation command. It does not install packages or fall back to another protocol. See [package loading](docs/guide/packages.md#when-a-client-is-missing).
 
+## Saved application profiles
+
+Native readers for FileZilla, WinSCP, PuTTY/KiTTY, OpenSSH, JetBrains and HeidiSQL expose Portline connection definitions. The optional `@jalsoedesign/portline-dockline` integration converts them for shared file or SSH execution. Dockline clients remain independently usable and do not depend on native readers or Portline.
+
+Use the [saved-profile guide](docs/guide/saved-profiles.md) for installation, credential/trust ownership, optional handler errors and supported scope. The main `Dockline` factory selects FTP/FTPS/SFTP; use `SshClient` or the bridge's `withSsh` for commands. Installing the SSH package does not add `protocol: 'ssh'` to the transfer factory.
+
 ## More control
 
 - Common `protocol`, `host`, `username`, `port` and `root` fields.
@@ -135,3 +141,5 @@ Related libraries: [Portline ecosystem directory](https://h2ooooooo.github.io/po
 ## Runnable examples
 
 [Run a local demo](docs/guide/local-demo.md) for one-command examples and captured output. Transfer demos start temporary loopback-only protocol servers.
+
+See [First release candidate](RELEASE_RC.md) for RC versions and installation commands.

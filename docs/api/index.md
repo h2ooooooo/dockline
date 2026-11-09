@@ -18,6 +18,7 @@ Use Node.js to transfer files over FTP, FTPS or SFTP, or run commands over SSH. 
 | Upload, download, list, rename and remove files | [Everyday file operations](/api/files) |
 | Transfer a file over FTP or FTPS | [FTP walkthrough](/ftp/quick-start) |
 | Transfer a file over SFTP | [SFTP walkthrough](/sftp/quick-start) |
+| Connect a saved application profile through the common bridge | [Saved-profile integration](/guide/saved-profiles) |
 | Run a remote command and read its exit status | [SSH walkthrough](/ssh/quick-start) |
 | Build or embed a terminal command | [CLI integration](/guide/cli-integration) |
 | Inspect or convert keys without a connection | [Keys documentation](/keys/) |

@@ -13,13 +13,13 @@ For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dock
 Choose the installation matching your API:
 
 ```sh
-npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
+npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc
 ```
 
 For only the direct client:
 
 ```sh
-npm install @jalsoedesign/dockline-sftp-client
+npm install @jalsoedesign/dockline-sftp-client@rc
 ```
 
 ## Use the client directly
@@ -77,7 +77,7 @@ See [Quick start SFTP](https://h2ooooooo.github.io/dockline/sftp/quick-start.htm
 
 ### PuTTY key files
 
-PuTTY PPK v3 keys are accepted directly through `privateKeyPath`, `privateKey` or a credential provider, with `passphrase` for encrypted keys. RSA, DSA, Ed25519 and ECDSA keys are supported, including Argon2d/i/id encryption. Conversion and integrity verification happen in memory; no decrypted key file is written. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).
+PuTTY PPK v2/v3 keys are accepted directly through `privateKeyPath`, `privateKey` or a credential provider, with `passphrase` for encrypted keys. RSA, DSA, Ed25519 and ECDSA keys are supported, including Argon2d/i/id encryption. Conversion and integrity verification happen in memory; no decrypted key file is written. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).
 
 
 ## Concurrent directory creation
@@ -88,3 +88,9 @@ PuTTY PPK v3 keys are accepted directly through `privateKeyPath`, `privateKey` o
 ## Shared key utilities
 
 SSH/SFTP private-key handling now uses `@jalsoedesign/dockline-keys`. It supports modern OpenSSH, PPK v2/v3, PKCS#8 and traditional PEM, including encrypted inputs. The independent package also supplies bidirectional conversion, encrypted exports, public-key extraction and fingerprints without requiring a transport client. Existing SFTP key helper/error exports remain compatible. See [key utilities](https://h2ooooooo.github.io/dockline/guide/keys).
+
+## Saved application profiles
+
+For saved profiles from application readers, the optional shared `@jalsoedesign/portline-dockline` bridge supplies common conversion and required host verification. Native credential decoding and trusted-key file parsing remain reader responsibilities. This direct SFTP adapter does not execute SSH commands; use the SSH client or bridge `withSsh` for that capability.
+
+[Shared profile integration](https://h2ooooooo.github.io/dockline/guide/saved-profiles)

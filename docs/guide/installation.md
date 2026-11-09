@@ -6,10 +6,10 @@ Use Node `^22.22.2 || ^24.15.0 || >=26.0.0` and npm `>=12.0.2`. Packages are ESM
 
 | Your task | Install | Start using it |
 | --- | --- | --- |
-| SFTP file operations in code | `npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client` | [API quick start](/api/quick-start) |
-| FTP/FTPS file operations in code | `npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-ftp-client` | [FTP/FTPS walkthrough](/ftp/quick-start) |
-| SSH commands | `npm install @jalsoedesign/dockline-ssh-client` | [SSH quick start](/ssh/quick-start) |
-| Key inspection/conversion | `npm install @jalsoedesign/dockline-keys` | [Key utilities](/keys/) |
+| SFTP file operations in code | `npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc` | [API quick start](/api/quick-start) |
+| FTP/FTPS file operations in code | `npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-ftp-client@rc` | [FTP/FTPS walkthrough](/ftp/quick-start) |
+| SSH commands | `npm install @jalsoedesign/dockline-ssh-client@rc` | [SSH quick start](/ssh/quick-start) |
+| Key inspection/conversion | `npm install @jalsoedesign/dockline-keys@rc` | [Key utilities](/keys/) |
 
 For terminal commands use the separate [CLI quick start](/cli/quick-start). Install its chosen client beside the CLI, either both globally or both locally.
 
@@ -20,6 +20,12 @@ Core supplies the common file methods; the SFTP client supplies the transport. I
 ## FTP and FTPS
 
 The FTP client handles plaintext FTP, explicit FTPS and implicit FTPS. Select the server's protocol explicitly. [The walkthrough](/ftp/quick-start) explains the ports and certificate verification.
+
+## Saved application settings
+
+Install the selected native reader, `@jalsoedesign/portline-dockline` and the required Dockline protocol client. Metadata-only readers do not need transport dependencies. The [saved-profile integration guide](/guide/saved-profiles) separates native parsing, credential/trust providers, shared conversion and network execution.
+
+The main Dockline factory handles FTP/FTPS/SFTP. SSH commands use the independently installed `SshClient` API or the shared bridge's `withSsh`; they are not another `TransferConfig` protocol.
 
 ## TypeScript
 

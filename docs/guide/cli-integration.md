@@ -1,6 +1,6 @@
 # CLI integration
 
-Use `@jalsoedesign/dockline-core` directly to handle argument parsing, credential lookup and host approval. Use the optional `@jalsoedesign/dockline-cli` package when you want to embed Dockline's existing command surface. The [ready-to-use CLI](/guide/cli) is available separately; SDK users do not need to install it.
+Build a custom command around `@jalsoedesign/dockline-core` when argument parsing, credential lookup and host approval belong to the caller. For saved application settings, prepare connections through the [shared Portline bridge](/guide/saved-profiles). Use the optional `@jalsoedesign/dockline-cli` package when you want to embed Dockline's existing command surface. The [ready-to-use CLI](/guide/cli) is available separately; SDK users do not need to install it.
 
 ## A small command
 

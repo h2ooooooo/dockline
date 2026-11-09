@@ -5,7 +5,7 @@
 The shared Dockline SDK. Install only the protocol clients your application uses. For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dockline/development/compiler.html#build-from-source).
 
 ```sh
-npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
+npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc
 ```
 
 For FTP/FTPS, select `@jalsoedesign/dockline-ftp-client` instead. Core depends on `@jalsoedesign/dockline-abstract`; protocol clients are optional peers and are never installed automatically.
@@ -34,3 +34,9 @@ Supply the host identity, credentials and independently verified server fingerpr
 The supported Node versions can load these synchronous ESM client packages with `createRequire`. Core does not statically import either client and its declarations require neither transport library.
 
 See the [repository documentation](https://github.com/h2ooooooo/dockline/tree/main/docs), [SFTP quick start](https://h2ooooooo.github.io/dockline/sftp/quick-start.html) and [FTP quick start](https://h2ooooooo.github.io/dockline/ftp/quick-start.html).
+
+## Saved application profiles
+
+The main factory accepts FTP, explicit/implicit FTPS and SFTP configuration. SSH command sessions use the separate SSH client; installing it does not add a new transfer protocol. For saved application settings, use the optional shared `@jalsoedesign/portline-dockline` bridge. Native readers normalize settings through Portline; core does not parse those settings or depend on Portline.
+
+[Shared profile integration](https://h2ooooooo.github.io/dockline/guide/saved-profiles)

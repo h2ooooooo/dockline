@@ -13,6 +13,7 @@ async function main() {
         username: SFTP_USERNAME,
         password: SFTP_PASSWORD,
         hostFingerprint: SFTP_SHA256,
+        readyTimeout: 30000,
     });
 
     await client.withConnection(async session => {

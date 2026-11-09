@@ -26,6 +26,12 @@ Connect over FTP, FTPS or SFTP to upload, download and manage files. Use the sep
 
 [Explore the API](/api/) · [Install](/guide/installation) · [First connection](/api/quick-start) · [Try a local server](/api/local-demo)
 
+## Connect saved profiles
+
+Read an existing application's connection settings through its native reader, then execute the normalized definition with the optional shared Portline–Dockline bridge. The same integration supports file or SSH operations without application-specific connector packages.
+
+[Saved-profile integration](/guide/saved-profiles) · [Reader ecosystem](https://h2ooooooo.github.io/portline/ecosystem)
+
 ## CLI documentation
 
 Transfer files directly from a terminal. Configure a connection once, then upload, download, list or remove files. Each command guide shows its input, output and defaults.

@@ -19,6 +19,16 @@ Core depends only on abstract and declares the two clients as optional peers. In
 
 Shared constructors originate in abstract. Re-exports share their identity when packages resolve one installed abstract copy; separately installed copies have ordinary JavaScript class-identity differences.
 
+## Saved application settings
+
+Native settings are read by independent application readers and normalized through Portline. The optional `@jalsoedesign/portline-dockline` package exposes `createDocklineBridge`, `toConfig`, `toSshConfig`, `createFileAdapter`, `withFiles` and `withSsh`. These are not Dockline core exports. See [shared profile execution](/guide/saved-profiles) and the [Portline package](https://github.com/h2ooooooo/portline/tree/main/packages/portline-dockline) for that API.
+
+## SSH command sessions
+
+`SshClient(config, services?)` and `SshSession` are exported from `@jalsoedesign/dockline-ssh-client`. `withConnection(callback)` or `withConnection(overrides, callback)` owns authentication and cleanup. Sessions expose `exec`, `shell`, `asUser`, `upload` and `download`; only the explicit shared-bridge command interface is narrower.
+
+Connection `readyTimeout` is a positive integer through `2147483647`, defaulting to `60000` ms. Services accept a grouped `keyboardInteractive` handler preserving name/instructions/language, prompt order and cancellation. The existing `ask` prompt fallback remains supported. These options are detailed in [SSH configuration](/ssh/configuration). A server can permit SFTP without permitting commands; unsupported forwarding and terminal semantics are explicit limitations.
+
 ## Dockline configuration and construction
 
 | Export | Contract |

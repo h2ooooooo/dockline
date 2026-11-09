@@ -5,7 +5,7 @@ const githubPages = process.env.DOCKLINE_GITHUB_PAGES === 'true';
 
 export default defineConfig({
     title: 'Dockline',
-    description: 'One transfer API for FTP, FTPS and SFTP, with controls for demanding applications.',
+    description: 'FTP, FTPS and SFTP transfers, SSH commands and key utilities, with optional shared saved-profile integration.',
     lang: 'en-US',
     base: process.env.DOCKLINE_DOCS_BASE ?? '/',
     appearance: false,

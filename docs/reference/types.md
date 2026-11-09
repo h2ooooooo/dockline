@@ -1123,6 +1123,7 @@ export type { SshOptions, Question } from './types.js';
 
 ```ts
 import ssh2 from 'ssh2';
+import { type SftpKeyboardInteractive } from '@jalsoedesign/dockline-sftp-client';
 import { type SshOptions, type Question } from './types.js';
 export interface ResolvedSsh extends SshOptions {
     host: string;
@@ -1150,6 +1151,8 @@ export interface FileTransfer {
 export interface SshServices {
     resolve(options: SshOptions): Promise<ResolvedSsh>;
     ask(question: Question): Promise<string | boolean>;
+    /** Preserve server challenge context and prompt grouping for SSH and SFTP authentication. */
+    keyboardInteractive?: SftpKeyboardInteractive;
     trust(host: string, port: number, fingerprint: string): Promise<boolean>;
     log(message: string): void;
     signal: AbortSignal;
@@ -1194,6 +1197,8 @@ export interface SshOptions {
     agent?: string;
     keyboardInteractive?: boolean;
     hostFingerprint?: string;
+    /** Positive handshake/authentication deadline in milliseconds; defaults to 60000. */
+    readyTimeout?: number;
     sudo?: {
         password?: 'prompt' | 'none';
         passwordEnv?: string;

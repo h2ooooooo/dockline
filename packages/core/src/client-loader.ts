@@ -9,7 +9,10 @@ export class MissingClientPackageError extends ConnectorError {
     public readonly installCommand: string;
 
     public constructor(public readonly protocol: TransferProtocol, public readonly packageName: ClientPackageName) {
-        const installCommand = `npm install ${packageName}`;
+        const manifest = require('../package.json') as {peerDependencies: Record<string, string>};
+        const range = manifest.peerDependencies[packageName];
+        const specification = range?.includes('-') ? `${packageName}@${range.replace(/^\^/, '')}` : packageName;
+        const installCommand = `npm install ${specification}`;
 
         super(`The ${protocol} protocol requires ${packageName}. Install it with: ${installCommand}`, undefined,
             'DOCKLINE_CLIENT_NOT_INSTALLED');

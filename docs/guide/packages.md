@@ -36,6 +36,12 @@ Installing `@jalsoedesign/dockline-core` alone does not install FTP, SFTP or the
 
 The optional [CLI](/guide/cli) uses core for transfers and contributes one executable, `dockline`. Installing the SDK or a direct client does not require the CLI. YAML parsing, command flags, terminal output and interactive host approval belong to the CLI package rather than the transfer engine.
 
+## Saved profiles are a separate optional layer
+
+`@jalsoedesign/portline-dockline` is published from the Portline repository, not as an eighth Dockline package. It accepts complete normalized profiles from native readers and dynamically selects the installed FTP, SFTP or SSH client. Dockline's own core/client packages have no Portline or native-reader dependency. See [saved-profile integration](/guide/saved-profiles).
+
+The transfer factory accepts only FTP/FTPS/SFTP. `SshClient` provides command sessions separately; installing it does not modify the factory's protocol union. The shared bridge chooses between file and command operations explicitly.
+
 ## When a client is missing
 
 `new Dockline(config)`, `Dockline.create(config)` and core's `createConnector(config)` remain synchronous. They validate the configuration and load the selected installed client without opening a network connection. If the selected client is absent, they throw `MissingClientPackageError`.
@@ -138,6 +144,8 @@ The command is guidance for the application's developer. Dockline never runs it,
 
 `Dockline.connect()` and `Dockline.withConnection()` return promises. A missing client rejects that promise before authentication. Client installation and host authentication are separate: finding a package does not open a connection or approve a host key.
 
+The shared bridge reports a missing FTP, SFTP or SSH handler as `ProfileExecutionError` with code `MISSING_HANDLER` and an installation command. That error belongs to `@jalsoedesign/portline-dockline`; it is distinct from core's `MissingClientPackageError`. Direct imports of an absent SSH package produce Node's module-loading error. None of these layers automatically installs a client.
+
 ## Shared exports and concrete clients
 
 ::: code-group
@@ -201,6 +209,14 @@ Dockline/
       src/
       tests/
       package.json
+    keys/
+      src/
+      tests/
+      package.json
+    ssh-client/
+      src/
+      tests/
+      package.json
     cli/
       src/
       tests/
@@ -224,6 +240,8 @@ All packages belong to the [Dockline repository](https://github.com/h2ooooooo/do
 | `@jalsoedesign/dockline-ftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-ftp-client) | [`packages/ftp-client`](https://github.com/h2ooooooo/dockline/tree/main/packages/ftp-client) |
 | `@jalsoedesign/dockline-sftp-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-sftp-client) | [`packages/sftp-client`](https://github.com/h2ooooooo/dockline/tree/main/packages/sftp-client) |
 | `@jalsoedesign/dockline-core` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-core) | [`packages/core`](https://github.com/h2ooooooo/dockline/tree/main/packages/core) |
+| `@jalsoedesign/dockline-keys` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-keys) | [`packages/keys`](https://github.com/h2ooooooo/dockline/tree/main/packages/keys) |
+| `@jalsoedesign/dockline-ssh-client` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-ssh-client) | [`packages/ssh-client`](https://github.com/h2ooooooo/dockline/tree/main/packages/ssh-client) |
 | `@jalsoedesign/dockline-cli` | [npm](https://www.npmjs.com/package/@jalsoedesign/dockline-cli) | [`packages/cli`](https://github.com/h2ooooooo/dockline/tree/main/packages/cli) |
 
 ## SSH command client

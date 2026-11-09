@@ -13,13 +13,13 @@ For a source build, follow the [compiler guide](https://h2ooooooo.github.io/dock
 Choose the installation matching your API:
 
 ```sh
-npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-ftp-client
+npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-ftp-client@rc
 ```
 
 For only the direct client:
 
 ```sh
-npm install @jalsoedesign/dockline-ftp-client
+npm install @jalsoedesign/dockline-ftp-client@rc
 ```
 
 ## Use the client directly
@@ -59,3 +59,9 @@ The adapter provides listing, metadata, streamed reads/writes, directories, dele
 FTP cannot guarantee portable no-replace or atomic rename. Publication and rename require explicit replacement permission where documented. Unsupported guarantees fail instead of being silently weakened.
 
 See [Quick start FTP](https://h2ooooooo.github.io/dockline/ftp/quick-start.html) for connecting, local-to-remote uploads, remote-to-local downloads and everyday operations through core. Read [FTP options](https://h2ooooooo.github.io/dockline/guide/ftp.html), [API](https://h2ooooooo.github.io/dockline/reference/api.html) and [errors](https://h2ooooooo.github.io/dockline/guide/errors.html) for direct-client details.
+
+## Saved application profiles
+
+For saved FileZilla, WinSCP or JetBrains settings, use their native reader with the optional shared `@jalsoedesign/portline-dockline` bridge. It preserves supported saved FTP/TLS/passive/encoding policy and selects this installed client. Direct FTP construction remains independent of readers and Portline.
+
+[Shared profile integration](https://h2ooooooo.github.io/dockline/guide/saved-profiles)

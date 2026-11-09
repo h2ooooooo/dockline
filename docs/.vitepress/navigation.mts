@@ -15,6 +15,7 @@ const api: DefaultTheme.SidebarItem[] = [
             {text: 'Install and choose packages', link: '/guide/installation'},
             {text: 'Connect and list your server', link: '/api/quick-start'},
             {text: 'Try a local server instead', link: '/api/local-demo'},
+            {text: 'Connect saved application profiles', link: '/guide/saved-profiles'},
             {text: 'Example languages and modules', link: '/guide/code-examples'},
         ],
     },
@@ -25,6 +26,7 @@ const api: DefaultTheme.SidebarItem[] = [
             {text: 'FTP and FTPS', link: '/ftp/quick-start'},
             {text: 'SFTP transfers', link: '/sftp/quick-start'},
             {text: 'SSH commands', link: '/ssh/quick-start'},
+            {text: 'SSH options and grouped challenges', link: '/ssh/configuration'},
         ],
     },
     {

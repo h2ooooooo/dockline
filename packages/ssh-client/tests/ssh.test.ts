@@ -1,14 +1,15 @@
 import {convertPrivateKey} from '@jalsoedesign/dockline-keys';
-import {describe, it, expect} from 'vitest';
+import {describe, it, expect, vi} from 'vitest';
 import ssh2, {type Connection} from 'ssh2';
 import {generateKeyPairSync, createHash} from 'node:crypto';
 import {mkdtemp, readFile, writeFile, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import {createServer, type Socket} from 'node:net';
 import {SshClient, quotePosix} from '../src/index.js';
 import {createLocalSftp} from '../../sftp-client/tests/local-sftp.js';
 
-async function endpoint(userKey?: ReturnType<typeof ssh2.utils.parseKey>) {
+async function endpoint(userKey?: ReturnType<typeof ssh2.utils.parseKey>, interactive = false) {
     const keys = generateKeyPairSync('rsa', {modulusLength: 2048, privateKeyEncoding: {type: 'pkcs1', format: 'pem'}, publicKeyEncoding: {type: 'spki', format: 'pem'}});
     const parsed = ssh2.utils.parseKey(keys.privateKey);
 
@@ -24,7 +25,16 @@ async function endpoint(userKey?: ReturnType<typeof ssh2.utils.parseKey>) {
         client.on('error', () => {});
         client.on('close', () => clients.delete(client));
         client.on('authentication', context => {
-            if (context.method === 'password' && context.username === 'fixture' && context.password === 'test') {
+            if (interactive && context.method === 'keyboard-interactive') {
+                context.prompt([{prompt: 'User:', echo: true}, {prompt: 'Code:', echo: false}],
+                    'Two factors', 'Use both factors', answers => {
+                        if (answers[0] === 'fixture' && answers[1] === '123456') {
+                            context.accept();
+                        } else {
+                            context.reject();
+                        }
+                    });
+            } else if (context.method === 'password' && context.username === 'fixture' && context.password === 'test') {
                 context.accept();
             } else if (
                 context.method === 'publickey' &&
@@ -239,4 +249,89 @@ it.each(['pkcs8', 'ppk2'] as const)('authenticates SSH commands with a new encry
             await rm(directory, {recursive: true, force: true});
         }
     }
+});
+
+it('preserves grouped keyboard-interactive prompts and server context', async () => {
+    const server = await endpoint(undefined, true);
+    const handler = vi.fn(async () => ['fixture', '123456']);
+    const ask = vi.fn(async () => 'unexpected fallback');
+    const client = new SshClient({
+        ...server.config,
+        password: undefined,
+        keyboardInteractive: true,
+    }, {keyboardInteractive: handler, ask});
+
+    try {
+        const result = await client.withConnection(session => session.exec('whoami'));
+
+        expect(result.code).toBe(0);
+        expect(handler).toHaveBeenCalledOnce();
+        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
+            name: 'Two factors',
+            instructions: 'Use both factors',
+            language: '',
+            prompts: [{prompt: 'User:', echo: true}, {prompt: 'Code:', echo: false}],
+            abortSignal: expect.any(AbortSignal),
+        }));
+        expect(ask).not.toHaveBeenCalled();
+    } finally {
+        await server.close();
+    }
+});
+
+it.each(['one answer', async () => ['one answer']])(
+    'rejects keyboard-interactive answers that cannot satisfy grouped prompts', async handler => {
+        const server = await endpoint(undefined, true);
+        const client = new SshClient({
+            ...server.config,
+            password: undefined,
+            keyboardInteractive: true,
+        }, {keyboardInteractive: handler});
+
+        try {
+            await expect(client.withConnection(async () => {})).rejects.toThrow(/single prompt|one string answer/);
+            expect(server.commands).toEqual([]);
+        } finally {
+            await server.close();
+        }
+    },
+);
+
+it('honors the configured SSH authentication deadline', async () => {
+    const sockets = new Set<Socket>();
+    const server = createServer(socket => {
+        sockets.add(socket);
+        socket.on('error', () => {});
+        socket.on('close', () => sockets.delete(socket));
+    });
+
+    await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+
+    const client = new SshClient({
+        host: '127.0.0.1',
+        port: (server.address() as {port: number}).port,
+        username: 'fixture',
+        readyTimeout: 40,
+    });
+
+    try {
+        await expect(client.withConnection(async () => {})).rejects.toThrow(/timed out/i);
+    } finally {
+        for (const socket of sockets) {
+            socket.destroy();
+        }
+
+        await new Promise<void>(resolve => server.close(() => resolve()));
+    }
+});
+
+it.each([0, -1, Number.NaN, 2147483648])('rejects an invalid SSH readyTimeout: %s', async readyTimeout => {
+    const client = new SshClient({
+        host: '127.0.0.1',
+        port: 22,
+        username: 'fixture',
+        readyTimeout,
+    });
+
+    await expect(client.withConnection(async () => {})).rejects.toThrow('readyTimeout must be a positive integer');
 });

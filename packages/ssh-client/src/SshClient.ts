@@ -8,7 +8,7 @@ import {createReadStream, createWriteStream} from 'node:fs';
 import {Readable} from 'node:stream';
 import {pipeline} from 'node:stream/promises';
 import path from 'node:path';
-import {SftpConnector} from '@jalsoedesign/dockline-sftp-client';
+import {SftpConnector, type SftpKeyboardInteractive, type SftpKeyboardInteractiveChallenge} from '@jalsoedesign/dockline-sftp-client';
 import {preparePrivateKey} from '@jalsoedesign/dockline-keys';
 import {homedir} from 'node:os';
 import {milliseconds, type SshOptions, type Question} from './types.js';
@@ -41,10 +41,50 @@ export interface FileTransfer {
 export interface SshServices {
     resolve(options: SshOptions): Promise<ResolvedSsh>;
     ask(question: Question): Promise<string | boolean>;
+    /** Preserve server challenge context and prompt grouping for SSH and SFTP authentication. */
+    keyboardInteractive?: SftpKeyboardInteractive;
     trust(host: string, port: number, fingerprint: string): Promise<boolean>;
     log(message: string): void;
     signal: AbortSignal;
     directory: string;
+}
+
+async function answerKeyboardInteractive(
+    challenge: SftpKeyboardInteractiveChallenge,
+    services: SshServices,
+): Promise<string[]> {
+    services.signal.throwIfAborted();
+
+    const handler = services.keyboardInteractive;
+    let answers: readonly string[];
+
+    if (typeof handler === 'string') {
+        if (challenge.prompts.length !== 1) {
+            throw new Error('A keyboard-interactive string can answer only a single prompt.');
+        }
+
+        answers = [handler];
+    } else if (handler) {
+        answers = await handler(challenge);
+    } else {
+        answers = await Promise.all(challenge.prompts.map((prompt, index) => services.ask({
+            id: 'ssh-challenge:' + index,
+            message: prompt.prompt,
+            type: prompt.echo ? 'input' : 'password',
+        }).then(String)));
+    }
+
+    services.signal.throwIfAborted();
+
+    if (
+        !Array.isArray(answers) ||
+        answers.length !== challenge.prompts.length ||
+        answers.some(answer => typeof answer !== 'string')
+    ) {
+        throw new Error('Keyboard-interactive authentication requires one string answer per prompt.');
+    }
+
+    return [...answers];
 }
 
 export function quotePosix(value: string): string {
@@ -194,7 +234,8 @@ export class SshSession {
             initialPath: '',
             abortSignal: signal,
             hostVerifier: (key: Buffer) => this.services.trust(this.config.host, this.config.port, 'SHA256:' + createHash('sha256').update(key).digest('base64').replace(/=+$/, '')),
-            keyboardInteractive: this.config.keyboardInteractive ? async challenge => Promise.all(challenge.prompts.map((prompt, index) => this.services.ask({id: `ssh-challenge:${index}`, message: prompt.prompt, type: prompt.echo ? 'input' : 'password'}).then(String))) : undefined,
+            keyboardInteractive: this.config.keyboardInteractive ?
+                challenge => answerKeyboardInteractive(challenge, this.services) : undefined,
         });
 
         try {
@@ -248,6 +289,7 @@ export class SshClient {
                 throw new Error('This operation requires a credential prompt callback.');
             }),
             trust: options.trust ?? (async () => false),
+            keyboardInteractive: options.keyboardInteractive,
             resolve: async overrides => {
                 const changed = (overrides.host && overrides.host !== config.host) || (overrides.port &&
                     overrides.port !== config.port) || (overrides.username && overrides.username !== config.username);
@@ -275,6 +317,12 @@ export class SshClient {
     ): Promise<T> {
         const config = await this.services.resolve(typeof options === 'function' ? {} : options);
         const action = typeof options === 'function' ? options : callback!;
+        const readyTimeout = config.readyTimeout ?? 60000;
+
+        if (!Number.isSafeInteger(readyTimeout) || readyTimeout < 1 || readyTimeout > 2147483647) {
+            throw new RangeError('SSH readyTimeout must be a positive integer no greater than 2147483647.');
+        }
+
         const services: SshServices = {
             ...this.services,
             trust: config.hostFingerprint ?
@@ -296,8 +344,14 @@ export class SshClient {
                 client.once('ready', resolve);
                 client.on('error', reject);
                 client.once('close', () => reject(new Error('SSH connection closed during authentication.')));
-                client.on('keyboard-interactive', (_name, _instructions, _language, prompts, finish) => {
-                    void Promise.all(prompts.map((prompt, index) => this.services.ask({id: `ssh-challenge:${index}`, message: prompt.prompt, type: prompt.echo ? 'input' : 'password'}))).then(answers => finish(answers.map(String)), reject);
+                client.on('keyboard-interactive', (name, instructions, language, prompts, finish) => {
+                    void answerKeyboardInteractive({
+                        name,
+                        instructions,
+                        language,
+                        prompts: prompts.map(prompt => ({prompt: prompt.prompt, echo: Boolean(prompt.echo)})),
+                        abortSignal: services.signal,
+                    }, services).then(finish, reject);
                 });
                 void (async () => {
                     client.connect({
@@ -309,7 +363,7 @@ export class SshClient {
                         passphrase: config.passphrase,
                         agent: config.agent,
                         tryKeyboard: config.keyboardInteractive,
-                        readyTimeout: 60000,
+                        readyTimeout,
                         hostVerifier: (key: Buffer, verify: (accepted: boolean) => void) => {
                             const fingerprint = 'SHA256:' + createHash('sha256').update(key).digest('base64').replace(/=+$/, '');
 

@@ -11,7 +11,7 @@ Install the CLI and selected protocol clients from npm. For development, use [bu
 ### Global terminal command
 
 ```sh
-npm i -g @jalsoedesign/dockline-cli @jalsoedesign/dockline-ftp-client @jalsoedesign/dockline-sftp-client
+npm i -g @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-ftp-client@rc @jalsoedesign/dockline-sftp-client@rc
 dockline --help
 ```
 
@@ -20,7 +20,7 @@ Keep only the FTP or SFTP client if one protocol is enough. The `dockline` comma
 ### Local project dependency
 
 ```sh
-npm i @jalsoedesign/dockline-cli @jalsoedesign/dockline-sftp-client
+npm i @jalsoedesign/dockline-cli@rc @jalsoedesign/dockline-sftp-client@rc
 npm exec -- dockline --help
 ```
 
@@ -68,3 +68,9 @@ SFTP uses managed host trust by default: interactive unknown-host approval can b
 `--json` provides structured results for scripts; `--quiet` suppresses routine human output. Exit codes are `0` success, `1` transfer/connection error, `2` usage/configuration error and `130` cancellation. Cleanup completes before the executable exits.
 
 See [commands](https://h2ooooooo.github.io/dockline/cli/commands.html), [configuration](https://h2ooooooo.github.io/dockline/cli/configuration.html), [CLI integration](https://h2ooooooo.github.io/dockline/guide/cli-integration.html) and the sample YAML files in this package's `examples/` directory.
+
+## Saved application profiles
+
+The CLI reads YAML/environment connection configuration and performs file operations. It does not read native FileZilla, WinSCP, PuTTY or IDE settings and has no SSH command subcommand. Use the optional shared `@jalsoedesign/portline-dockline` integration from code when executing a reader's saved profile.
+
+[Shared profile integration](https://h2ooooooo.github.io/dockline/guide/saved-profiles)

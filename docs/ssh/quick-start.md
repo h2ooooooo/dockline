@@ -5,7 +5,7 @@ Execute one command and inspect the result. An SSH login needs command-execution
 ## Install
 
 ```sh
-npm install @jalsoedesign/dockline-ssh-client
+npm install @jalsoedesign/dockline-ssh-client@rc
 ```
 
 ## Set your connection details
@@ -50,6 +50,7 @@ const client = new SshClient({
     username: SFTP_USERNAME,
     password: SFTP_PASSWORD,
     hostFingerprint: SFTP_SHA256,
+    readyTimeout: 30000,
 });
 
 await client.withConnection(async session => {
@@ -76,6 +77,7 @@ const client = new SshClient({
     username: SFTP_USERNAME,
     password: SFTP_PASSWORD,
     hostFingerprint: SFTP_SHA256,
+    readyTimeout: 30000,
 });
 
 await client.withConnection(async session => {
@@ -102,6 +104,7 @@ const client = new SshClient({
     username: SFTP_USERNAME,
     password: SFTP_PASSWORD,
     hostFingerprint: SFTP_SHA256,
+    readyTimeout: 30000,
 });
 
 await client.withConnection(async session => {
@@ -129,6 +132,7 @@ async function main() {
         username: SFTP_USERNAME,
         password: SFTP_PASSWORD,
         hostFingerprint: SFTP_SHA256,
+        readyTimeout: 30000,
     });
 
     await client.withConnection(async session => {
@@ -180,6 +184,8 @@ Exit code: 0
 ```
 
 The username depends on your server. The SDK returns stdout/stderr/code; the example prints them explicitly. Nonzero command exits reject unless `allowFailure` is selected. This first example performs no service restart or file transfer.
+
+For saved application settings, use the [shared profile integration](/guide/saved-profiles). [SSH configuration and services](/ssh/configuration) covers grouped keyboard-interactive challenges, host verification, authentication deadlines and runtime providers. The main transfer factory does not construct SSH command sessions.
 
 ## Command API
 

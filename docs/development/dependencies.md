@@ -24,15 +24,17 @@ The shared storage package describes the adapter interface. The ordinary Docklin
 
 ## Development and documentation
 
-| Group | Packages / versions | Use |
+| Group | Packages | Use |
 | --- | --- | --- |
-| Compiler | TypeScript `6.0.3`, Node types `22.20.2` | ESM/declaration builds and source/test type checks. |
-| Test runner | Vitest `5.0.0`, Vite `8.3.0`, tsx `4.23.13` | Tests and TypeScript execution. |
-| Protocol fixtures | `ftp-srv` `4.6.3`, `ssh2` `1.17.0` | Disposable local test servers; not a second application client stack. |
-| Code/style | ESLint `10.10.0`, TypeScript ESLint `8.70.0`, Stylistic `5.10.0`, Stylelint `17.15.0` and their declared support packages | Shared four-space and vertical formatting contract. |
-| Docs, separate installation | VitePress `1.6.4`, Vue `3.5.30`, Sass `1.104.0` | Markdown site and one Sunset theme. |
+| Compiler | TypeScript and Node types | ESM/declaration builds and source/test type checks. |
+| Test runner | Vitest, Vite and tsx | Tests and TypeScript execution. |
+| Protocol fixtures | `ftp-srv` and `ssh2` | Disposable local endpoints, outside published transport runtime dependencies. |
+| Code/style | ESLint, typescript-eslint, Stylistic and Stylelint | Shared coding/formatting contract. |
+| Documentation | VitePress, Vue and Sass | Private, separately installed Markdown site. |
 
-The FTP test server's UUID dependency is overridden to released `11.1.1`. The documentation installation overrides VitePress's Vite to released `6.4.3`. These are ordinary npm version overrides; dependency source is not modified. Recheck behavior when changing a version outside a parent's declared range.
+Exact versions belong to the root, package and documentation manifests and their lockfiles; these tables do not maintain a second version list.
+
+The FTP test server's UUID dependency is overridden to released `11.1.1`. The documentation installation overrides VitePress's Vite to the released version declared in its manifest. These are ordinary npm version overrides; dependency source is not modified. Recheck behavior when changing a version outside a parent's declared range.
 
 Root `allowScripts` permits the required locked esbuild install script while optional CPU acceleration, tracing and SSH install scripts remain disabled. The documentation project's allowlist is separate. Review both manifests when changing native/build dependencies. A blocked install script is not evidence that a required binary was installed successfully.
 
@@ -69,6 +71,10 @@ These correctness boundaries are independent of npm vulnerability counts. They r
 ## SSH client
 
 The optional SSH workspace uses `ssh2` for command channels and the existing Dockline SFTP client for file transfers. It shares the Node version requirement and introduces no patches or forks. Application-specific configuration and prompt interfaces are supplied by callbacks.
+
+## Saved settings integration
+
+The optional Portline–Dockline bridge is a separate Portline package. It requires core/abstract contracts and declares FTP, SFTP and SSH clients as optional peers. Reader packages need no protocol dependencies. Dockline packages remain independently usable with ordinary configuration. Native credential/trust sources are separate from runtime callbacks and transport sessions; [saved-profile integration](/guide/saved-profiles) describes the boundaries.
 
 ## Verify unpublished dependencies
 

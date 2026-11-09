@@ -1,6 +1,6 @@
 {
     "name": "@jalsoedesign/dockline-abstract",
-    "version": "1.1.0",
+    "version": "1.1.0-rc.1",
     "description": "Shared contracts, errors and transfer utilities for Dockline protocol clients",
     "type": "module",
     "license": "MIT",
@@ -21,7 +21,8 @@
         "README.md"
     ],
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "tag": "rc"
     },
     "engines": {
         "node": "^22.22.2 || ^24.15.0 || >=26.0.0",

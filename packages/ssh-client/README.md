@@ -5,10 +5,10 @@
 `@jalsoedesign/dockline-ssh-client` provides scoped SSH command execution and SFTP transfers. It is independently installable; core, FTP and SFTP consumers do not need to install it.
 
 ```sh
-npm install @jalsoedesign/dockline-ssh-client
+npm install @jalsoedesign/dockline-ssh-client@rc
 ```
 
-This new workspace must be published before that registry command is available. Repository users can build it with `npm run build --workspace @jalsoedesign/dockline-ssh-client`.
+For a repository build, use `npm run build --workspace @jalsoedesign/dockline-ssh-client`.
 
 ```ts
 import {SshClient} from '@jalsoedesign/dockline-ssh-client';
@@ -38,9 +38,9 @@ await client.withConnection(async server => {
 });
 ```
 
-Without an explicit fingerprint or a supplied `trust(host, port, fingerprint)` callback, connections reject unknown hosts. The application owns trust persistence and any prompt UI. Supply optional `ask`, `log`, `signal` and `directory` callbacks/settings as the constructor's second argument. `ask` receives an input/password challenge and returns its answer. No CLI prompt implementation is bundled.
+Without an explicit fingerprint or a supplied `trust(host, port, fingerprint)` callback, connections reject unknown hosts. The application owns trust persistence and any prompt UI. Supply optional `ask`, `log`, `signal` and `directory` callbacks/settings as the constructor's second argument. `ask` receives an input/password challenge and returns its answer. No CLI prompt implementation is bundled. When connection `keyboardInteractive` is enabled, an optional `keyboardInteractive` service accepts the same string or grouped challenge callback as Dockline SFTP. It receives the original server name, instructions, language, complete prompt list and cancellation signal. A string answers exactly one prompt; callbacks must return one string per prompt. The existing `ask` service remains the fallback when no grouped handler is supplied.
 
-`withConnection` authenticates and closes its connection in `finally`. Passwords, private-key passphrases, explicit SSH agents and keyboard-interactive authentication are supported. Agent forwarding is not enabled. An SFTP account does not necessarily have command-execution permission.
+`withConnection` authenticates and closes its connection in `finally`. Passwords, private-key passphrases, explicit SSH agents and keyboard-interactive authentication are supported. The optional `readyTimeout` sets a positive integer handshake/authentication deadline in milliseconds and defaults to `60000`. Agent forwarding is not enabled. An SFTP account does not necessarily have command-execution permission.
 
 ## Command API
 
@@ -62,9 +62,15 @@ See the [SSH package source](https://github.com/h2ooooooo/dockline/tree/main/pac
 
 ### PuTTY key files
 
-`privateKeyPath` accepts PPK v3 keys directly, including encrypted keys when `passphrase` is supplied. SSH commands and SFTP transfers share the same in-memory reader. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).
+`privateKeyPath` accepts PPK v2/v3 keys directly, including encrypted keys when `passphrase` is supplied. SSH commands and SFTP transfers share the same in-memory reader. See [key formats and resource limits](https://h2ooooooo.github.io/dockline/guide/sftp#putty-ppk-keys).
 
 
 ## Shared key utilities
 
 SSH/SFTP private-key handling now uses `@jalsoedesign/dockline-keys`. It supports modern OpenSSH, PPK v2/v3, PKCS#8 and traditional PEM, including encrypted inputs. The independent package also supplies bidirectional conversion, encrypted exports, public-key extraction and fingerprints without requiring a transport client. Existing SFTP key helper/error exports remain compatible. See [key utilities](https://h2ooooooo.github.io/dockline/guide/keys).
+
+## Saved application profiles
+
+For native saved sessions, use the selected reader with the optional shared `@jalsoedesign/portline-dockline` bridge and its `withSsh` API. The bridge preserves explicit credential/trust ownership and loads this client only for command execution. The main Dockline transfer factory remains FTP/FTPS/SFTP. Forwarding, SSH hops and persistent interactive terminals are not implemented by this command client.
+
+[Shared profile integration](https://h2ooooooo.github.io/dockline/guide/saved-profiles)

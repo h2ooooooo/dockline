@@ -2,6 +2,12 @@
 
 Dockline offers one transfer API over independently usable protocol clients. It owns network sessions and transfer mechanics. Applications own configuration sources, user interaction, credential persistence, deployment policy and recovery decisions.
 
+## Saved settings and the shared profile boundary
+
+Application readers interpret native settings into Portline profiles and provide explicit credential/trust resolution. The optional `@jalsoedesign/portline-dockline` bridge performs shared conversion and scoped file/SSH execution. That package belongs to Portline; Dockline does not import native settings readers, Portline contracts or application-specific factories. Profiles hold references and supported settings, while resolved connection configuration can contain secrets.
+
+The bridge refuses unsupported native options and SSH hops, requires explicit SSH/SFTP host trust, preserves required FTP TLS and reports absent protocol handlers. The direct Dockline SDK remains usable without this layer. See [saved profiles](/guide/saved-profiles).
+
 ## Components and dependencies
 
 ```text
@@ -32,6 +38,8 @@ checksums, traversal, capabilities and session pools.
 | `packages/abstract/src/` | Transport-independent adapter/configuration contracts, option resolution, errors, observation, transfer tools, capabilities and pools. |
 | `packages/ftp-client/src/` | FTP/FTPS operations, TLS, common-config factory, filename encoding and advertised feature/hash negotiation. |
 | `packages/sftp-client/src/` | SFTP operations, common-config factory, SSH authentication, application-owned host trust and managed known-hosts persistence. |
+| `packages/ssh-client/src/` | SSH command sessions, grouped interactive authentication, sudo and independently opened SFTP file helpers. |
+| `packages/keys/src/` | Independent key inspection, format conversion and encrypted export. |
 | `packages/*/tests/` | Package regressions and disposable local protocol endpoints. |
 | `scripts/` | Shared build, style and isolated package/consumer validation. |
 | `docs/` | Independently installed VitePress documentation. |
@@ -63,6 +71,8 @@ Credential providers receive the actual connection attempt, protocol family, hos
 Trust policies can look up a remembered host key and request acceptance through either a CLI or UI. When `requireTrustPolicy` is true, both `hasTrustPolicy` and `acceptTrustPolicy` are required. This flag is opt-in. Applications requiring verification must supply a trust policy or host verifier; the low-level permissive default is not described as verified trust.
 
 Managed known hosts records only explicit approval against the previously inspected state. Changed keys and competing updates require fresh approval. The store contains public host identity data, not passwords or private authentication keys. Credential encryption and application account storage are outside the SDK.
+
+SSH command sessions use `SshClient`, not the transfer factory. A fingerprint or explicit trust callback is required. Optional grouped keyboard-interactive services preserve server metadata and all prompts; `ask` is the fallback. `readyTimeout` defaults to 60000 ms and bounds authentication. `signal` can bound the whole direct session; command/transfer deadlines remain separate. See [SSH configuration](/ssh/configuration).
 
 ## Paths and local files
 

@@ -8,6 +8,8 @@ export interface SshOptions {
     agent?: string;
     keyboardInteractive?: boolean;
     hostFingerprint?: string;
+    /** Positive handshake/authentication deadline in milliseconds; defaults to 60000. */
+    readyTimeout?: number;
     sudo?: {password?: 'prompt' | 'none'; passwordEnv?: string};
 }
 export interface Question {

@@ -12,7 +12,7 @@ From a new directory:
 
 ```sh
 npm init -y
-npm install @jalsoedesign/dockline-core @jalsoedesign/dockline-sftp-client
+npm install @jalsoedesign/dockline-core@rc @jalsoedesign/dockline-sftp-client@rc
 ```
 
 ## Set your connection details
