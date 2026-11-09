@@ -65,7 +65,8 @@ export async function checkLockfile(repository, candidates) {
 
             const candidate = candidates?.get(name);
 
-            if (candidate && candidate.version === entry.version) {
+            if (candidate) {
+                assert.equal(entry.version, candidate.version, 'Lockfile does not match the selected release version: ' + name);
                 assert.equal(entry.integrity, candidate.integrity, 'Lockfile does not match the verified release artifact: ' + name);
             }
         }

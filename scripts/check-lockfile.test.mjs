@@ -72,3 +72,18 @@ test('candidate integrity and manifest drift fail before an install', async () =
         await assert.rejects(checkLockfile(directory), /Root lockfile differs/);
     });
 });
+
+test('a retained stable version cannot replace the selected release candidate', async () => {
+    await fixture(async (directory, lock, save) => {
+        await save();
+
+        const candidates = new Map();
+
+        candidates.set('@jalsoedesign/example', {
+            version: '0.1.0-rc.1',
+            integrity: lock.packages['node_modules/@jalsoedesign/example'].integrity,
+        });
+
+        await assert.rejects(checkLockfile(directory, candidates), /selected release version/);
+    });
+});
