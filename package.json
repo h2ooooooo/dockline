@@ -63,7 +63,8 @@
         "check:locks": "node scripts/check-lockfile.mjs",
         "test:locks": "node --test scripts/check-lockfile.test.mjs",
         "release:lock": "node scripts/release-bootstrap.mjs --lock",
-        "check:bootstrap": "node scripts/release-bootstrap.mjs"
+        "check:bootstrap": "node scripts/release-bootstrap.mjs",
+        "test:docs-links": "node --test scripts/doc-links.test.mjs"
     },
     "devDependencies": {
         "@eslint/js": "10.0.1",

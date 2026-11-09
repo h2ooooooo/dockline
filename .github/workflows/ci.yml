@@ -64,4 +64,7 @@ jobs:
       - uses: ./.github/actions/setup-npm
       - run: npm run docs:install
       - run: npm run audit:docs
-      - run: npm run docs:build
+      - run: npm run test:docs-links && npm run docs:build
+        env:
+          DOCKLINE_DOCS_BASE: /dockline/
+          DOCKLINE_GITHUB_PAGES: 'true'
